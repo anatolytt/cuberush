@@ -23,8 +23,8 @@ enum class Events {
     BF555,
     MBLD;
 
-    fun getEventString(context : Context) : String {
-        val event =  when(this) {
+    fun getEventStringId() : Int{
+        return when(this) {
             CUBE222 -> R.string.cube222
             CUBE333 -> R.string.cube333
             CUBE444 -> R.string.cube444
@@ -41,7 +41,6 @@ enum class Events {
             BF555 ->  R.string.cube555bf
             MBLD -> R.string.multibld
         }
-        return context.getString(event)
     }
 
 
