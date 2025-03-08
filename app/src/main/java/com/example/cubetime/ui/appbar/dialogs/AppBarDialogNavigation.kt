@@ -15,6 +15,7 @@ fun AppBarDialogNavigation(dialogToShow: MutableState<DialogsState>) {
 
         DialogsState.EVENT -> {
             EventDialog(
+         ScreenTimer
                 onDismiss = { dialogToShow.value = DialogsState.NONE },
                 onBack = { dialogToShow.value = DialogsState.SESSION }
             )
