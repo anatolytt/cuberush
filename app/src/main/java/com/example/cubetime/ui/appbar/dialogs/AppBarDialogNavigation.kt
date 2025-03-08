@@ -15,8 +15,8 @@ fun AppBarDialogNavigation(dialogToShow: MutableState<DialogsState>) {
 
         DialogsState.EVENT -> {
             EventDialog(
-                // onDismiss = { showSessionDialog = dialogsState.NONE }
-                // onBack = { dialogToShow = dialogsState.SESSION }
+                onDismiss = { dialogToShow.value = DialogsState.NONE },
+                onBack = { dialogToShow.value = DialogsState.SESSION }
             )
         }
         DialogsState.NONE -> {}

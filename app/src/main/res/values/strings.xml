@@ -9,6 +9,8 @@
     <string name="select_session">New session</string>
     <string name="create_session">Create session</string>
 
+    <string name="back_to_session">Back</string>
+
 
     <string name="cube222">Cube 2x2x2</string>
     <string name="cube333">Cube 3x3x3</string>
