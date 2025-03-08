@@ -23,21 +23,39 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.cubetime.model.Events
+import com.example.cubetime.ui.appbar.dialogs.AppBarDialogNavigation
+import com.example.cubetime.ui.appbar.dialogs.DialogsState
 import com.example.cubetime.ui.appbar.dialogs.EventDialog
+import com.example.cubetime.ui.shared.SharedViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(context: Context, event: String) {
+fun AppBar(context: Context) {
+    val sharedViewModel : SharedViewModel = viewModel()
+
+    val dialogToShow =  remember {
+        mutableStateOf<DialogsState>(DialogsState.NONE)
+    }
+
+    AppBarDialogNavigation(dialogToShow)
+
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = event,
+                text = sharedViewModel.currentEvent.getEventString(context),
             )
                 },
         colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
@@ -59,7 +77,7 @@ fun AppBar(context: Context, event: String) {
                     contentDescription = "Change session dialog"
                 )
             }
-            IconButton(onClick = { Toast.makeText(context, "Change session dialog", Toast.LENGTH_SHORT).show() }) {
+            IconButton(onClick = { dialogToShow.value = DialogsState.SESSION }) {
                 Icon(
                     imageVector = Icons.Default.Face,
                     tint = MaterialTheme.colorScheme.onBackground,

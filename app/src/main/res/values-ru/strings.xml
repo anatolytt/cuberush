@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name ="timer">Таймер</string>
+    <string name ="solves">Сборки</string>
+    <string name ="statistics">Статистика</string>
+
+    <string name="select_event">Выберете дисциплину</string>
+    <string name="select_session">Выберете сессию</string>
+    <string name="create_session">Новая сессия</string>
+
+
+    <string name="cube222">Куб 2x2x2</string>
+    <string name="cube333">Куб 3x3x3</string>
+    <string name="cube444">Куб 4x4x4</string>
+    <string name="cube555">Куб 5x5x5</string>
+    <string name="cube666">Куб 6x6x6</string>
+    <string name="cube777">Куб 7x7x7</string>
+    <string name="oh">Одной рукой</string>
+    <string name="pyra">Пираминкс</string>
+    <string name="skewb">Скьюб</string>
+    <string name="mega">Мегаминкс</string>
+    <string name="clock">Клок</string>
+    <string name="sq1">Скваер-1</string>
+    <string name="cube333bf">3x3x3 вслепую</string>
+    <string name="cube444bf">4x4x4 вслепую</string>
+    <string name="cube555bf">5x5x5 вслепую</string>
+    <string name="multibld">Мультиблайнд</string>
+</resources>
