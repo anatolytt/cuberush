@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.Navigation
 import androidx.navigation.compose.rememberNavController
+import com.example.cubetime.model.Events
 import com.example.cubetime.ui.appbar.AppBar
 import com.example.cubetime.ui.navigation.Navigation
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationBar
@@ -64,7 +65,7 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                         )
                     },
-                    topBar = { AppBar(this@MainActivity, "3x3x3 Cube") }
+                    topBar = { AppBar(this@MainActivity) }
                 ) { padding ->
                         Navigation (
                             navController,

@@ -3,6 +3,8 @@ package com.example.cubetime.ui.appbar.dialogs
 import android.widget.Spinner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.content.MediaType.Companion.Text
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,32 +14,60 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.cubetime.R
+import com.example.cubetime.model.Events
+import com.example.cubetime.model.Session
 
-@Preview
+
 @Composable
-fun SessionDialog() {
+fun SessionDialog(
+    onDismiss : () -> Unit,
+    onNext: () -> Unit,
+    sessions: List<Session> =
+        listOf(
+            Session(name = "some session", event = Events.SQ1),
+            Session(name = "some session", event = Events.CUBE333),
+            Session(name = "some sessfasion", event = Events.CUBE555),
+            Session(name = "some sfasddession", event = Events.SQ1),
+            Session(name = "somasdf ssion", event = Events.SQ1),
+            Session(name = "some session", event = Events.PYRA),
+            Session(name = "some sefsassion", event = Events.SKEWB),
+            Session(name = "somasfdassion", event = Events.SQ1),
+            Session(name = "soadfame adffn", event = Events.CUBE222),
+            Session(name = "so1we", event = Events.SQ1),
+            Session(name = "r", event = Events.CUBE777)
+        )) {
     Dialog(
-        onDismissRequest = { }
+        onDismissRequest = { onDismiss() }
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(400.dp)
-                .padding(16.dp),
+                .height(500.dp)
+                .padding(20.dp),
             shape = RoundedCornerShape(16.dp),
         ) {
             Column (
@@ -47,22 +77,69 @@ fun SessionDialog() {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(40.dp)
-                        .padding(12.dp)
+                        .wrapContentHeight()
+                        .padding(12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+
+
                 ) {
                     Text (
-                        text="Choose session",
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically),
+                        text= stringResource(R.string.select_session),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+
                     )
+                    FilledTonalButton(
+                        onClick = { onNext() },
+                        Modifier.padding(1.dp)
+                    ) {
+                        Text (
+                            text = stringResource(R.string.create_session),
+                            fontSize = 14.sp
+                        )
+                    }
 
                 }
                 Spacer(
                     modifier = Modifier
                         .background(MaterialTheme.colorScheme.surfaceDim)
                         .fillMaxWidth()
-                        .height(3.dp)
+                        .height(1.dp)
                 )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(8.dp)
+                ) {
+                    items(sessions.size) { index ->
+                        val session = sessions[index]
+                        Row (
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 10.dp, horizontal = 22.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(session.event.getIconDrawableId()),
+                                contentDescription = "sessionEventIcon",
+                                modifier = Modifier
+                                    .width(20.dp)
+                                    .height(20.dp)
+                            )
+                            Text(
+                                text = sessions[index].name,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 35.dp)
+                            )
+                        }
+
+                    }
+                }
             }
         }
     }

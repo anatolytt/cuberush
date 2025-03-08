@@ -1,3 +1,29 @@
 <resources>
-    <string name="app_name">CubeTime</string>
+    <string name="app_name" translatable="false">CubeTime</string>
+
+    <string name ="timer">Timer</string>
+    <string name ="solves">Solves</string>
+    <string name ="statistics">Statistics</string>
+
+    <string name="select_event">Select event</string>
+    <string name="select_session">New session</string>
+    <string name="create_session">Create session</string>
+
+
+    <string name="cube222">Cube 2x2x2</string>
+    <string name="cube333">Cube 3x3x3</string>
+    <string name="cube444">Cube 4x4x4</string>
+    <string name="cube555">Cube 5x5x5</string>
+    <string name="cube666">Cube 6x6x6</string>
+    <string name="cube777">Cube 7x7x7</string>
+    <string name="oh">One-Handed</string>
+    <string name="pyra">Pyraminx</string>
+    <string name="skewb">Skewb</string>
+    <string name="mega">Megaminx</string>
+    <string name="clock">Clock</string>
+    <string name="sq1">Square-1</string>
+    <string name="cube333bf">3x3x3 BLD</string>
+    <string name="cube444bf">4x4x4 BLD</string>
+    <string name="cube555bf">5x5x5 BLD</string>
+    <string name="multibld">MBLD</string>
 </resources>
