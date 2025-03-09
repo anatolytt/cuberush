@@ -1,5 +1,6 @@
 package com.example.cubetime
 
+import ScrambleScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,6 +29,7 @@ import com.example.cubetime.ui.navigation.Navigation
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationBar
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationItem
 import com.example.cubetime.ui.theme.CubeTimeTheme
+import com.example.cubetime.utils.Scrambler
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +75,8 @@ class MainActivity : ComponentActivity() {
                         )
                 }
             }
+
+            ScrambleScreen(scrambler = Scrambler(), event = Events.CUBE333)
         }
     }
 }
