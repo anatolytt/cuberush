@@ -9,12 +9,16 @@ import androidx.compose.ui.unit.sp
 import com.example.cubetime.R
 import com.example.cubetime.model.Events
 import com.example.cubetime.utils.Scrambler
-import kotlinx.coroutines.runBlocking
-
+import kotlinx.coroutines.launch
 
 @Composable
 fun ScramblerScreen(scrambler: Scrambler, event: Events) {
-    var scramble by remember { mutableStateOf(getScramble(scrambler, event)) }
+    var scramble by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(event) {
+        scramble = scrambler.generateScramble(event)
+    }
 
     Column(
         modifier = Modifier
@@ -24,25 +28,26 @@ fun ScramblerScreen(scrambler: Scrambler, event: Events) {
     ) {
         Text(
             text = scramble,
-            fontSize = 30.sp,
+            fontSize = 20.sp,
             modifier = Modifier
-                .padding(bottom = 16.dp))
+                .padding(bottom = 16.dp)
+        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 16.dp),
             contentAlignment = Alignment.CenterEnd
         ) {
-            IconButton(onClick = { scramble = getScramble(scrambler, event) }) {
+            IconButton(onClick = {
+                coroutineScope.launch {
+                    scramble = scrambler.generateScramble(event)
+                }
+            }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.img),
-                    contentDescription = "sdpkfmsdlkf"
+                    painter = painterResource(id = R.drawable.img_1),
+                    contentDescription = "Generate scramble"
                 )
             }
         }
     }
-}
-
-fun getScramble(scrambler: Scrambler, event: Events): String {
-    return runBlocking { scrambler.generateScramble(event) }
 }
