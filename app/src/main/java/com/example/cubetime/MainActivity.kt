@@ -1,6 +1,7 @@
 package com.example.cubetime
 
-import ScrambleScreen
+
+import ScramblerScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -76,7 +77,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            ScrambleScreen(scrambler = Scrambler(), event = Events.CUBE333)
+            ScramblerScreen(scrambler = Scrambler(), event = Events.CUBE333)
         }
     }
 }

@@ -13,7 +13,7 @@ import kotlinx.coroutines.runBlocking
 
 
 @Composable
-fun ScrambleScreen(scrambler: Scrambler, event: Events) {
+fun ScramblerScreen(scrambler: Scrambler, event: Events) {
     var scramble by remember { mutableStateOf(getScramble(scrambler, event)) }
 
     Column(
