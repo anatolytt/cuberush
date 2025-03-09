@@ -1,7 +1,5 @@
 package com.example.cubetime
 
-
-import ScramblerScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,6 +27,7 @@ import com.example.cubetime.ui.appbar.AppBar
 import com.example.cubetime.ui.navigation.Navigation
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationBar
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationItem
+import com.example.cubetime.ui.screens.timer.TimerScreen
 import com.example.cubetime.ui.theme.CubeTimeTheme
 import com.example.cubetime.utils.Scrambler
 
@@ -77,7 +76,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            ScramblerScreen(scrambler = Scrambler(), event = Events.CUBE333)
+            TimerScreen()
         }
     }
 }

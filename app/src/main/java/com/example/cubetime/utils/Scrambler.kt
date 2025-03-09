@@ -14,6 +14,7 @@ class Scrambler {
 
     suspend fun createScramblePicture(scrambler: String, event: Events) : Svg? {
         val eventPuzzleRegistry = event.getPuzzleRegistry()
+
         val imageSvg : Svg? = eventPuzzleRegistry.scrambler.drawScramble(scrambler, mutableMapOf())
         return imageSvg
     }
