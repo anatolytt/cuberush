@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            ScramblerScreen(scrambler = Scrambler(), event = Events.MEGA)
+            ScramblerScreen(scrambler = Scrambler(), event = Events.CUBE333)
         }
     }
 }

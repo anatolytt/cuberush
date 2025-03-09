@@ -26,16 +26,18 @@ fun ScramblerScreen(scrambler: Scrambler, event: Events) {
             .padding(top = 150.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = scramble,
-            fontSize = 20.sp,
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-        )
+        scramble.split("\n").forEach { line ->
+            Text(
+                text = line,
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .padding(bottom = 5.dp, start = 10.dp, end = 10.dp)
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(end = 16.dp),
+                .padding(end = 5.dp),
             contentAlignment = Alignment.CenterEnd
         ) {
             IconButton(onClick = {
@@ -51,3 +53,4 @@ fun ScramblerScreen(scrambler: Scrambler, event: Events) {
         }
     }
 }
+
