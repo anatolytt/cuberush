@@ -17,25 +17,25 @@ class SharedViewModel : ViewModel() {
     private val _currentEvent = mutableStateOf<Events>(Events.CUBE333)
     val currentEvent : Events get() = _currentEvent.value
 
-    fun setEvent(event: Events) {
-        _currentEvent.value = event
-        generateNewScrambleAndImage()
-
-    }
-
-
-    private val currentSession = mutableStateOf<Session>(Session(
+    private val _currentSession = mutableStateOf<Session>(Session(
         name = "MainSession",
         event = Events.CUBE333,
         createDate = null,
         id = null
     ))
+    val currentSession : Session get() = _currentSession.value
 
     private val _currentScramble = mutableStateOf<String>("")
     val currentScramble: String get() = _currentScramble.value
 
     private val _currentImage = mutableStateOf<String?>("")
     val currentImage : String? get() = _currentImage.value
+
+    fun setEvent(event: Events) {
+        _currentEvent.value = event
+        generateNewScrambleAndImage()
+    }
+
 
     fun generateNewScrambleAndImage () {
         viewModelScope.launch (Dispatchers.Default){

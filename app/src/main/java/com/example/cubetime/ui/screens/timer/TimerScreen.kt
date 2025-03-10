@@ -1,13 +1,8 @@
 package com.example.cubetime.ui.screens.timer
 
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.widget.TextView
-import androidx.compose.foundation.Image
+
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,50 +11,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.ImageLoader
-import coil.compose.rememberAsyncImagePainter
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.utils.Scrambler
-import kotlinx.coroutines.coroutineScope
-import org.worldcubeassociation.tnoodle.svglite.Svg
-
-
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cubetime.R
 import com.example.cubetime.model.Events
-import com.example.cubetime.utils.Scrambler
 import kotlinx.coroutines.launch
 
 
-@Preview(showBackground = true)
 @Composable
-fun TimerScreen() {
+fun TimerScreen(viewModel: SharedViewModel) {
     val scrambler = Scrambler()
     val event = Events.CUBE333
     var scramble by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 
-
-
-    LaunchedEffect(event) {
-        scramble = scrambler.generateScramble(event)
-    }
     //вверех и низ экрана таймера( срамбл и картинга снизу )
 
     Column(
@@ -68,16 +41,15 @@ fun TimerScreen() {
 
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-            scramble.split("\n").forEach { line ->
                 Text(
-                    text = line,
+                    text = viewModel.currentScramble,
                     textAlign = TextAlign.Center,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
 
                     modifier = Modifier
                         .padding(bottom = 5.dp, start = 10.dp, end = 10.dp)
                 )
-            }
+
             Row (
                 modifier = Modifier
                     .fillMaxWidth()
@@ -99,7 +71,7 @@ fun TimerScreen() {
 
                     }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.timeradd),
+                            painter = painterResource(id = R.drawable.dnf),
                             contentDescription = "Generate scramble"
                         )
                     }
@@ -134,7 +106,7 @@ fun TimerScreen() {
                 ) {
                     Text(text = "Разброс:8.77\nСреднее:12 \nЛучшее:12\nК-во:21",
                         fontSize = 10.sp,
-                        modifier = Modifier.padding(bottom = 7.dp, top = 7.dp, end = 7.dp, start = 7.dp))
+                        modifier = Modifier.padding(7.dp))
                 }
 
                     ScrambleImage(
@@ -147,9 +119,9 @@ fun TimerScreen() {
                     shape = CardDefaults.shape,
                     elevation = CardDefaults.elevatedCardElevation(5.dp)
                 ) {
-                    Text(text = "Ao5: 2.37\nAo12: 19.32\nAo50: 2.37\nAo100: ...",
+                    Text(text = "Ao5: 2.37\nAo12: 19.32\nAo50: 2.37\nAo100: 1:22.12",
                         fontSize = 10.sp,
-                        modifier = Modifier.padding(bottom = 7.dp, top = 7.dp, end = 7.dp, start = 7.dp))
+                        modifier = Modifier.padding(7.dp))
                 }
             }
 
@@ -215,7 +187,7 @@ fun TimerScreen() {
             IconButton(onClick = {}
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.commentadd),
+                    painter = painterResource(id = R.drawable.dnf),
                     contentDescription = "Generate scramble"
                 )
             }

@@ -7,5 +7,5 @@ import com.example.cubetime.ui.shared.SharedViewModel
 
 
 @Composable
-fun StatisticsScreen() {
+fun StatisticsScreen(viewModel: SharedViewModel) {
 }

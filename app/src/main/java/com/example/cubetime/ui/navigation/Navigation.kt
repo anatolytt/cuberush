@@ -27,13 +27,17 @@ fun Navigation(navController: NavHostController, viewModel: SharedViewModel, mod
         startDestination = "timer") {
         composable(route = "timer") {
             TimerScreen(viewModel)
+        }
 
         composable(route = "solves") {
             SolvesScreen(viewModel)
+        }
 
         composable(route = "statistics") {
             StatisticsScreen(viewModel)
-        
         }
+
     }
 }
+
+
