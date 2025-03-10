@@ -23,7 +23,7 @@ fun Navigation(navController: NavHostController, modifierNavHost: Modifier) {
         modifier = modifierNavHost,
         startDestination = "timer") {
         composable(route = "timer") {
-//            TimerScreen()
+            TimerScreen()
         }
         composable(route = "solves") {
             SolvesScreen()
