@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -31,11 +32,14 @@ import androidx.compose.ui.window.Dialog
 import com.example.cubetime.R
 import com.example.cubetime.model.Events
 import com.example.cubetime.model.EventDialog
+import com.example.cubetime.ui.shared.SharedViewModel
+import kotlinx.coroutines.coroutineScope
 
 @Composable
 fun EventDialog(
     onDismiss : () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    viewModel: SharedViewModel
 ) {
     Dialog(
         onDismissRequest = { onDismiss() }
@@ -66,7 +70,9 @@ fun EventDialog(
                         ) {
 
                             IconButton(
-                                onClick = {},
+                                onClick = {
+                                    viewModel.setEvent(event)
+                                },
                                 modifier = Modifier
                                     .padding(1.dp)
                                     .fillMaxWidth()
