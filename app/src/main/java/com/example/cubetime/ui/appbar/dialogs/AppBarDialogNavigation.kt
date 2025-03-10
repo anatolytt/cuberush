@@ -12,7 +12,7 @@ fun AppBarDialogNavigation(dialogToShow: MutableState<DialogsState>, viewModel: 
         DialogsState.SESSION -> {
             SessionDialog(
                 onDismiss = { dialogToShow.value = DialogsState.NONE },
-                onNext = { dialogToShow.value = DialogsState.EVENT }
+                onNext = { dialogToShow.value = DialogsState.EVENT },
             )
         }
 

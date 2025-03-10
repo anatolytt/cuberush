@@ -11,9 +11,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cubetime.ui.screens.solves.SolvesScreen
+
 import com.example.cubetime.ui.screens.statistics.StatisticsScreen
 import com.example.cubetime.ui.screens.timer.TimerScreen
 import com.example.cubetime.ui.shared.SharedViewModel
+import com.example.cubetime.ui.screens.solves.SolvesScreen
+import com.example.cubetime.ui.screens.timer.TimerScreen
+
 
 @Composable
 fun Navigation(navController: NavHostController, viewModel: SharedViewModel, modifierNavHost: Modifier) {
@@ -23,12 +27,13 @@ fun Navigation(navController: NavHostController, viewModel: SharedViewModel, mod
         startDestination = "timer") {
         composable(route = "timer") {
             TimerScreen(viewModel)
-        }
+
         composable(route = "solves") {
             SolvesScreen(viewModel)
-        }
+
         composable(route = "statistics") {
             StatisticsScreen(viewModel)
+        
         }
     }
 }

@@ -31,6 +31,7 @@ import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationBa
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationItem
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.ui.theme.CubeTimeTheme
+import com.example.cubetime.utils.Scrambler
 
 class MainActivity : ComponentActivity() {
     val viewModel : SharedViewModel by viewModels()
@@ -81,6 +82,7 @@ class MainActivity : ComponentActivity() {
                         )
                 }
             }
+
         }
     }
 }

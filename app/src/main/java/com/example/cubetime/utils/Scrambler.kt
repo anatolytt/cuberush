@@ -16,7 +16,10 @@ class Scrambler {
         val eventPuzzleRegistry = event.getPuzzleRegistry()
         val imageSvg : Svg? = eventPuzzleRegistry.scrambler.drawScramble(scramble, mutableMapOf())
         return imageSvg?.toString()
+
     }
+
+
 
 }
 

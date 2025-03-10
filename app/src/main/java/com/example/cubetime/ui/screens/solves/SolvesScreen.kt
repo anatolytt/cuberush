@@ -8,5 +8,4 @@ import com.example.cubetime.ui.shared.SharedViewModel
 fun SolvesScreen(
     viewModel: SharedViewModel
 ){
-    remember { viewModel }
 }
