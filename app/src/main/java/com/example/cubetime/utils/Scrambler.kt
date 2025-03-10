@@ -12,10 +12,10 @@ class Scrambler {
         return eventPuzzleRegistry.scrambler.generateScramble()
     }
 
-    suspend fun createScramblePicture(scrambler: String, event: Events) : Svg? {
+    suspend fun createScramblePicture(scramble: String, event: Events) : String? {
         val eventPuzzleRegistry = event.getPuzzleRegistry()
-        val imageSvg : Svg? = eventPuzzleRegistry.scrambler.drawScramble(scrambler, mutableMapOf())
-        return imageSvg
+        val imageSvg : Svg? = eventPuzzleRegistry.scrambler.drawScramble(scramble, mutableMapOf())
+        return imageSvg?.toString()
     }
 
 }

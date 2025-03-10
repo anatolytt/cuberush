@@ -44,26 +44,24 @@ import com.example.cubetime.ui.shared.SharedViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(context: Context) {
-    val sharedViewModel : SharedViewModel = viewModel()
-
+fun AppBar(viewModel: SharedViewModel) {
     val dialogToShow =  remember {
         mutableStateOf<DialogsState>(DialogsState.NONE)
     }
 
-    AppBarDialogNavigation(dialogToShow)
+    AppBarDialogNavigation(dialogToShow, viewModel = viewModel)
 
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = stringResource(sharedViewModel.currentEvent.getEventStringId()),
+                text = stringResource(viewModel.currentEvent.getEventStringId()),
             )
                 },
         colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary
         ),
         navigationIcon = {
-            IconButton(onClick = { Toast.makeText(context, "Navigate to settings", Toast.LENGTH_SHORT).show() }) {
+            IconButton(onClick = {}) {
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Open settings"
@@ -71,7 +69,7 @@ fun AppBar(context: Context) {
             }
         },
         actions = {
-            IconButton(onClick = { Toast.makeText(context, "Change mode dialog", Toast.LENGTH_SHORT).show() }) {
+            IconButton(onClick = {}) {
                 Icon(
                     imageVector = Icons.Default.Menu,
                     tint = MaterialTheme.colorScheme.onBackground,

@@ -2,6 +2,7 @@ package com.example.cubetime.ui.appbar.dialogs
 
 import android.widget.Spinner
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.content.MediaType.Companion.Text
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,9 +38,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cubetime.R
 import com.example.cubetime.model.Events
 import com.example.cubetime.model.Session
+import com.example.cubetime.ui.shared.SharedViewModel
 
 
 @Composable
@@ -60,6 +63,8 @@ fun SessionDialog(
             Session(name = "so1we", event = Events.SQ1),
             Session(name = "r", event = Events.CUBE777)
         )) {
+
+    val viewModel : SharedViewModel = viewModel()
     Dialog(
         onDismissRequest = { onDismiss() }
     ) {
@@ -120,8 +125,11 @@ fun SessionDialog(
                         Row (
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 10.dp, horizontal = 22.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                                .padding(vertical = 10.dp, horizontal = 22.dp)
+                                .clickable { viewModel.setEvent(session.event) },
+
+                            verticalAlignment = Alignment.CenterVertically,
+
                         ) {
                             Icon(
                                 painter = painterResource(session.event.getIconDrawableId()),

@@ -40,8 +40,6 @@ android {
 }
 
 dependencies {
-
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -59,4 +57,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation (libs.androidx.navigation.compose)
     implementation(libs.lib.scrambles)
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-svg:2.4.0")
 }
