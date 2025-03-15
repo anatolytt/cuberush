@@ -41,6 +41,11 @@ android {
 }
 
 dependencies {
+    //для настроек
+    implementation("androidx.datastore:datastore-preferences:1.1.3")
+
+
+
     implementation("com.google.accompanist:accompanist-drawablepainter:0.30.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

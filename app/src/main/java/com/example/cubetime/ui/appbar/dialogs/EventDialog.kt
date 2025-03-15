@@ -18,12 +18,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -53,6 +55,10 @@ fun EventDialog(
             Column (
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                //ВВОД НАЗВАНИЯ СЕССИИ
+
+                Text("ВВеДИТе НАЗВАНИЕ СЕССИИ")
+                
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
                     modifier = Modifier.fillMaxWidth(),
@@ -90,13 +96,30 @@ fun EventDialog(
 
                     }
                 }
-                   Button(
-                       onClick = { onBack() },
-                   ) {
-                       Text(
-                           text = stringResource(R.string.back_to_session)
-                       )
-                   }
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(bottom = 20.dp, end = 10.dp, start = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+
+                )
+                {
+                    Button(
+                        onClick = { onBack() },
+                    ) {
+                        Text(
+                            text = stringResource(R.string.back_to_session)
+                        )
+                    }
+                    //КНОПКА СОЗДАНИЯ СЕССИЯ
+                    Button(
+                        onClick = { onBack() },
+                    ) {
+                        Text(
+                            "CREATE"
+                        )
+                    }
+                }
+
                 }
             }
         }

@@ -1,40 +1,50 @@
 package com.example.cubetime.ui.navigation
 
-import androidx.compose.foundation.background
+import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.cubetime.ui.screens.solves.SolvesScreen
 
 import com.example.cubetime.ui.screens.statistics.StatisticsScreen
 import com.example.cubetime.ui.screens.timer.TimerScreen
+import com.example.cubetime.ui.settings.SettingsData
+import com.example.cubetime.ui.settings.SettingsDataManager
 import com.example.cubetime.ui.shared.SharedViewModel
-import com.example.cubetime.ui.screens.solves.SolvesScreen
-import com.example.cubetime.ui.screens.timer.TimerScreen
+import com.example.cubetime.ui.settings.SettingsScreen
+import kotlinx.coroutines.flow.Flow
+
 
 
 @Composable
-fun Navigation(navController: NavHostController, viewModel: SharedViewModel, modifierNavHost: Modifier) {
+fun Navigation(
+    navController: NavHostController,
+    viewModel: SharedViewModel,
+    modifierNavHost: Modifier
+) {
+
+    val context = LocalContext.current
+    val settings = SettingsDataManager(context)
     NavHost(
         navController = navController,
         modifier = modifierNavHost,
-        startDestination = "timer") {
+        startDestination = "timer"
+    ) {
         composable(route = "timer") {
             TimerScreen(viewModel)
         }
-
         composable(route = "solves") {
             SolvesScreen(viewModel)
         }
-
         composable(route = "statistics") {
             StatisticsScreen(viewModel)
+        }
+        composable(route = "settings") {
+            SettingsScreen(settings)
         }
 
     }
