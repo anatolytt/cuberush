@@ -27,6 +27,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,22 +51,9 @@ import com.example.cubetime.ui.shared.SharedViewModel
 fun SessionDialog(
     onDismiss : () -> Unit,
     onNext: () -> Unit,
-    sessions: List<Session> =
-        listOf(
-            Session(name = "some session", event = Events.SQ1),
-            Session(name = "some session", event = Events.CUBE333),
-            Session(name = "some sessfasion", event = Events.CUBE555),
-            Session(name = "some sfasddession", event = Events.SQ1),
-            Session(name = "somasdf ssion", event = Events.SQ1),
-            Session(name = "some session", event = Events.PYRA),
-            Session(name = "some sefsassion", event = Events.SKEWB),
-            Session(name = "somasfdassion", event = Events.SQ1),
-            Session(name = "soadfame adffn", event = Events.CUBE222),
-            Session(name = "so1we", event = Events.SQ1),
-            Session(name = "r", event = Events.CUBE777)
-        )) {
+    viewModel: SharedViewModel) {
 
-    val viewModel : SharedViewModel = viewModel()
+
     Dialog(
         onDismissRequest = { onDismiss() }
     ) {
@@ -120,13 +109,13 @@ fun SessionDialog(
                         .weight(1f)
                         .padding(8.dp)
                 ) {
-                    items(sessions.size) { index ->
-                        val session = sessions[index]
+                    items(viewModel.sessions.size) { index ->
+                        val session = viewModel.sessions[index]
                         Row (
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 10.dp, horizontal = 22.dp)
-                                .clickable { viewModel.setEvent(session.event) },
+                                .clickable { viewModel.switchSessions(index) },
 
                             verticalAlignment = Alignment.CenterVertically,
 
@@ -139,7 +128,7 @@ fun SessionDialog(
                                     .height(20.dp)
                             )
                             Text(
-                                text = sessions[index].name,
+                                text = session.name,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 35.dp)

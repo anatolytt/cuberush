@@ -1,6 +1,10 @@
 package com.example.cubetime
 
 
+import android.content.Context
+
+
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,9 +17,14 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.sharp.Home
 import androidx.compose.material.icons.sharp.Search
 import androidx.compose.material3.Scaffold
+
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,15 +41,20 @@ import com.example.cubetime.utils.ChangeLanguage
 
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel : SharedViewModel by viewModels()
+
     val viewModel: SharedViewModel by viewModels()
+
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.setEvent(Events.CUBE333)
+        viewModel.switchSessions(0)
         enableEdgeToEdge()
         setContent {
+            LaunchedEffect(Unit) {  }
 
 
             val context = LocalContext.current
@@ -86,7 +100,8 @@ class MainActivity : ComponentActivity() {
                             onItemClick = {
                                 navController.navigate(it.route)
                             },
-                            modifier = Modifier
+                            modifier = Modifier,
+                            hideEverything = viewModel.everythingHidden
                         )
                     },
                     topBar = { AppBar(viewModel, navController) }
