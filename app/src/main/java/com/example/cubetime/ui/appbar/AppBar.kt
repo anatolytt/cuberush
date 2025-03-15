@@ -1,6 +1,7 @@
 package com.example.cubetime.ui.appbar
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Icon
 import android.widget.Toast
 import androidx.compose.foundation.border
@@ -30,11 +31,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.cubetime.model.Events
 import com.example.cubetime.ui.appbar.dialogs.AppBarDialogNavigation
 import com.example.cubetime.ui.appbar.dialogs.DialogsState
@@ -44,7 +47,10 @@ import com.example.cubetime.ui.shared.SharedViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(viewModel: SharedViewModel) {
+fun AppBar(viewModel: SharedViewModel,
+           navController: NavHostController,
+) {
+
     val dialogToShow =  remember {
         mutableStateOf<DialogsState>(DialogsState.NONE)
     }
@@ -61,7 +67,11 @@ fun AppBar(viewModel: SharedViewModel) {
             containerColor = MaterialTheme.colorScheme.primary
         ),
         navigationIcon = {
-            IconButton(onClick = {}) {
+            IconButton(onClick = {
+                navController.navigate("settings")
+
+            })
+            {
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Open settings"
@@ -86,6 +96,5 @@ fun AppBar(viewModel: SharedViewModel) {
         },
         modifier = Modifier
             .clip(shape = RoundedCornerShape(8.dp))
-
     )
 }

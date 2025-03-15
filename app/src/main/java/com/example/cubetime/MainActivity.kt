@@ -1,40 +1,40 @@
 package com.example.cubetime
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.sharp.AddCircle
 import androidx.compose.material.icons.sharp.Home
 import androidx.compose.material.icons.sharp.Search
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.Navigation
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.example.cubetime.model.Events
 import com.example.cubetime.ui.appbar.AppBar
 import com.example.cubetime.ui.navigation.Navigation
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationBar
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationItem
+import com.example.cubetime.ui.settings.SettingsDataManager
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.ui.theme.CubeTimeTheme
-import com.example.cubetime.utils.Scrambler
+import com.example.cubetime.utils.ChangeLanguage
+
 
 class MainActivity : ComponentActivity() {
-    val viewModel : SharedViewModel by viewModels()
+    val viewModel: SharedViewModel by viewModels()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,12 +42,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
 
+
+            val context = LocalContext.current
+            val settingsDataManager = SettingsDataManager(context)
+
+
+            val isDarkMode by settingsDataManager.getTheme().collectAsState(initial = false)
+            val language by settingsDataManager.getLanguage().collectAsState(initial = "ru")
+
+            ChangeLanguage(this, language)
+
+
+
             val navController = rememberNavController()
-            CubeTimeTheme {
+
+            CubeTimeTheme(
+                darkTheme = isDarkMode
+            ) {
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        BottomNavigationBar (
+                        BottomNavigationBar(
                             items = listOf(
                                 BottomNavigationItem(
                                     name = "Timer",
@@ -73,15 +89,16 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                         )
                     },
-                    topBar = { AppBar(viewModel) }
+                    topBar = { AppBar(viewModel, navController) }
                 ) { padding ->
-                        Navigation (
-                            navController,
-                            viewModel = viewModel,
-                            modifierNavHost = Modifier.padding(padding)
-                        )
+                    Navigation(
+                        navController,
+                        viewModel = viewModel,
+                        modifierNavHost = Modifier.padding(padding),
+                    )
                 }
             }
+
 
         }
     }
