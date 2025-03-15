@@ -9,6 +9,8 @@
     <string name="create_session">Новая сессия</string>
     <string name="back_to_session">Назад</string>
 
+    <string name="generating_scramble">Генерируется</string>
+
 
     <string name="cube222">Куб 2x2x2</string>
     <string name="cube333">Куб 3x3x3</string>

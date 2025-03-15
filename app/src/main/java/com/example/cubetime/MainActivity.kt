@@ -1,5 +1,6 @@
 package com.example.cubetime
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,13 +36,14 @@ import com.example.cubetime.ui.theme.CubeTimeTheme
 import com.example.cubetime.utils.Scrambler
 
 class MainActivity : ComponentActivity() {
-    val viewModel : SharedViewModel by viewModels()
+    private val viewModel : SharedViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.setEvent(Events.CUBE333)
+        viewModel.switchSessions(0)
         enableEdgeToEdge()
         setContent {
+            LaunchedEffect(Unit) {  }
 
             val navController = rememberNavController()
             CubeTimeTheme {
@@ -70,7 +73,8 @@ class MainActivity : ComponentActivity() {
                             onItemClick = {
                                 navController.navigate(it.route)
                             },
-                            modifier = Modifier
+                            modifier = Modifier,
+                            hideEverything = viewModel.everythingHidden
                         )
                     },
                     topBar = { AppBar(viewModel) }

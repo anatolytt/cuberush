@@ -3,9 +3,14 @@ package com.example.cubetime.ui.appbar
 import android.content.Context
 import android.graphics.drawable.Icon
 import android.widget.Toast
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
@@ -27,9 +32,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,17 +57,28 @@ fun AppBar(viewModel: SharedViewModel) {
         mutableStateOf<DialogsState>(DialogsState.NONE)
     }
 
+    val offsetY by animateFloatAsState(
+        targetValue = if (viewModel.everythingHidden) -600f else 0f,
+        animationSpec = tween(durationMillis = 300)
+    )
+
     AppBarDialogNavigation(dialogToShow, viewModel = viewModel)
 
     CenterAlignedTopAppBar(
         title = {
-            Text(
-                text = stringResource(viewModel.currentEvent.getEventStringId()),
-            )
+            val event = viewModel.currentSession.event
+            Row (verticalAlignment = Alignment.CenterVertically) {
+                Icon (
+                    painter = painterResource(event.getIconDrawableId()),
+                    contentDescription = stringResource(event.getEventStringId()),
+                    Modifier.size(20.dp)
+                )
+                Text(
+                    text = viewModel.currentSession.name,
+                    Modifier.padding(start = 10.dp)
+                )
+            }
                 },
-        colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary
-        ),
         navigationIcon = {
             IconButton(onClick = {}) {
                 Icon(
@@ -84,8 +103,12 @@ fun AppBar(viewModel: SharedViewModel) {
                 )
             }
         },
+
         modifier = Modifier
             .clip(shape = RoundedCornerShape(8.dp))
+            .graphicsLayer(
+                translationY = offsetY
+            )
 
     )
 }

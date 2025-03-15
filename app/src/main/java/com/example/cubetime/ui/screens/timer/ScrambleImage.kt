@@ -23,7 +23,7 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 
 @Composable
-fun ScrambleImage(svgString: String?, sizeDp: Int) {
+fun ScrambleImage(svgString: String?, sizeDp: Int, modifier: Modifier) {
     val context = LocalContext.current
 
     val imageLoader = remember {
@@ -47,15 +47,13 @@ fun ScrambleImage(svgString: String?, sizeDp: Int) {
                 imageLoader
             ),
             contentDescription = "scramble image",
-            modifier = Modifier.size(sizeDp.dp),
-            contentScale = ContentScale.Fit
+            modifier = modifier
         )
     } else {
-        // Плейсхолдер, пока изображение загружается
+        // пока изображение загружается
         Box(
-            modifier = Modifier
-                .size(sizeDp.dp)
-                .background(Color.LightGray)
+            modifier = modifier
+                .background(Color.Transparent)
         ) {
             Text(
                 text = "Loading...",

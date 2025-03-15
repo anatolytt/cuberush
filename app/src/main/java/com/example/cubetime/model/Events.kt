@@ -17,6 +17,7 @@ enum class Events {
     PYRA,
     SKEWB,
     SQ1,
+    CLOCK,
     MEGA,
     BF333,
     BF444,
@@ -35,6 +36,7 @@ enum class Events {
             PYRA ->  R.string.pyra
             SKEWB -> R.string.skewb
             SQ1 -> R.string.sq1
+            CLOCK -> R.drawable.clock
             MEGA -> R.string.mega
             BF333 -> R.string.cube333bf
             BF444 ->  R.string.cube444bf
@@ -56,6 +58,7 @@ enum class Events {
             PYRA ->  PuzzleRegistry.PYRA
             SKEWB -> PuzzleRegistry.SKEWB
             SQ1 -> PuzzleRegistry.SQ1
+            CLOCK -> PuzzleRegistry.CLOCK
             MEGA -> PuzzleRegistry.MEGA
             BF333 -> PuzzleRegistry.THREE_NI
             BF444 ->  PuzzleRegistry.FOUR_NI
@@ -76,6 +79,7 @@ enum class Events {
             PYRA ->  R.drawable.pyram
             SKEWB -> R.drawable.skewb
             SQ1 -> R.drawable.sq1
+            CLOCK -> R.drawable.clock
             MEGA -> R.drawable.minx
             BF333 -> R.drawable._333bf
             BF444 ->  R.drawable._444bf

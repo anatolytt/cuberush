@@ -71,7 +71,7 @@ fun EventDialog(
 
                             IconButton(
                                 onClick = {
-                                    viewModel.setEvent(event)
+
                                 },
                                 modifier = Modifier
                                     .padding(1.dp)
