@@ -34,15 +34,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.cubetime.R
+import com.example.cubetime.ui.settings.SettingsData
 
 
 @Composable
-fun TimerScreen(viewModel: SharedViewModel) {
+fun TimerScreen(viewModel: SharedViewModel,
+                settings: SettingsData
+) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
 
     val hideAnimation by animateFloatAsState(   // Анимация для скрытия элементов при запуске таймера
-        targetValue = if (viewModel.everythingHidden) 0f else 1f,
+        targetValue = if (viewModel.everythingHidden ) 0f else 1f,
         animationSpec = tween(durationMillis = 300)
     )
 
@@ -124,7 +127,8 @@ fun TimerScreen(viewModel: SharedViewModel) {
         Timer(
             hideEverything = ({ h: Boolean -> viewModel.hideEverything(h) }),
             modifier = Modifier.zIndex(0F),
-            viewModel = viewModel
+            viewModel = viewModel,
+            settings = settings
         )
 
         // Статистика

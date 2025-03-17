@@ -19,6 +19,10 @@ private val Context.dataStore:DataStore<Preferences>
 class SettingsDataManager(val context: Context) {
     private val themeKey = booleanPreferencesKey("ThemeApp")
     private val languageKey = stringPreferencesKey("LanguageApp")
+    private val inspectionKey = booleanPreferencesKey("inspection_enabled")
+    private val timehiddenKey = booleanPreferencesKey("time_hidden") // скрывать / не скрывать время
+    private val delayKey = booleanPreferencesKey("delay") //задержка перед стартом
+
 
 
 
@@ -26,27 +30,47 @@ class SettingsDataManager(val context: Context) {
         context.dataStore.edit { pref->
             pref[themeKey] = settingsData.isDarkMode
             pref[languageKey] = settingsData.language
+            pref[inspectionKey] = settingsData.isInspectionEnabled
+            pref[timehiddenKey] = settingsData.timehidden
+            pref[delayKey] = settingsData.delay
         }
     }
-
-
     fun getTheme(): Flow<Boolean> {
         return context.dataStore.data.map { preferences ->
             preferences[themeKey] ?: false
         }
     }
-
     fun getLanguage(): Flow<String> {
         return context.dataStore.data.map { preferences ->
             preferences[languageKey] ?: "ru"
         }
     }
+    fun getInspection(): Flow<Boolean> {
+        return context.dataStore.data.map { preferences ->
+            preferences[inspectionKey] ?: false
+        }
+    }
+    fun getTimeHidden(): Flow<Boolean> {
+        return context.dataStore.data.map { preferences ->
+            preferences[timehiddenKey] ?: false
+        }
+    }
+    fun getDelay(): Flow<Boolean> {
+        return context.dataStore.data.map { preferences ->
+            preferences[delayKey] ?: false
+        }
+    }
+
+
 
     fun getSettings(): Flow<SettingsData> {
         return context.dataStore.data.map { preferences ->
             SettingsData(
                 isDarkMode = preferences[themeKey] ?: false,
-                language = preferences[languageKey] ?: "ru"
+                language = preferences[languageKey] ?: "ru",
+                isInspectionEnabled = preferences[inspectionKey] ?: true,
+                timehidden = preferences[timehiddenKey] ?: false,
+                delay = preferences[delayKey] ?: false
             )
         }
     }

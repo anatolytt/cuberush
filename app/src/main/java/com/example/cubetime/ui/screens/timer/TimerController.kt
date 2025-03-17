@@ -2,6 +2,7 @@ package com.example.cubetime.ui.screens.timer
 
 import androidx.compose.runtime.mutableStateOf
 import com.example.cubetime.model.Penalties
+import com.example.cubetime.ui.settings.SettingsData
 import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,10 +12,13 @@ import kotlinx.coroutines.launch
 
 class TimerController (
         val hideEverything : (Boolean) -> Unit,
-        val generateScr: () -> Unit) {
-    val TIME_HIDDEN = false
-    val INSPECTION_ON = true
-    val DELAY_ON = false
+        val generateScr: () -> Unit,
+        settings: SettingsData
+) {
+
+    val TIME_HIDDEN = settings.timehidden
+    val INSPECTION_ON = settings.isInspectionEnabled //значение настроек ( по id )
+    val DELAY_ON = settings.delay //задержка преед стартом
 
     private val _currentTime = mutableStateOf<Int>(0)
     val currentTime: Int get() = _currentTime.value

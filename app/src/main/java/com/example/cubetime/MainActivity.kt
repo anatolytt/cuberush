@@ -4,7 +4,6 @@ package com.example.cubetime
 import android.content.Context
 
 
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -42,11 +41,7 @@ import com.example.cubetime.utils.ChangeLanguage
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel : SharedViewModel by viewModels()
-
-    val viewModel: SharedViewModel by viewModels()
-
-
+    private val viewModel: SharedViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,18 +49,18 @@ class MainActivity : ComponentActivity() {
         viewModel.switchSessions(0)
         enableEdgeToEdge()
         setContent {
-            LaunchedEffect(Unit) {  }
+            LaunchedEffect(Unit) { }
 
 
             val context = LocalContext.current
             val settingsDataManager = SettingsDataManager(context)
 
 
+
             val isDarkMode by settingsDataManager.getTheme().collectAsState(initial = false)
             val language by settingsDataManager.getLanguage().collectAsState(initial = "ru")
 
             ChangeLanguage(this, language)
-
 
 
             val navController = rememberNavController()
@@ -77,34 +72,40 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        BottomNavigationBar(
-                            items = listOf(
-                                BottomNavigationItem(
-                                    name = "Timer",
-                                    route = "timer",
-                                    icon = Icons.Default.Clear
-                                ),
-                                BottomNavigationItem(
-                                    name = "Solves",
-                                    route = "solves",
-                                    icon = Icons.Sharp.Home
-                                ),
-                                BottomNavigationItem(
-                                    name = "Statistics",
-                                    route = "statistics",
-                                    icon = Icons.Sharp.Search
-                                ),
+                        if (viewModel.everythingHidden == false) {
+                            BottomNavigationBar(
+                                items = listOf(
+                                    BottomNavigationItem(
+                                        name = "Timer",
+                                        route = "timer",
+                                        icon = Icons.Default.Clear
+                                    ),
+                                    BottomNavigationItem(
+                                        name = "Solves",
+                                        route = "solves",
+                                        icon = Icons.Sharp.Home
+                                    ),
+                                    BottomNavigationItem(
+                                        name = "Statistics",
+                                        route = "statistics",
+                                        icon = Icons.Sharp.Search
+                                    ),
 
-                                ),
-                            navController = navController,
-                            onItemClick = {
-                                navController.navigate(it.route)
-                            },
-                            modifier = Modifier,
-                            hideEverything = viewModel.everythingHidden
-                        )
+                                    ),
+                                navController = navController,
+                                onItemClick = {
+                                    navController.navigate(it.route)
+                                },
+                                modifier = Modifier,
+                                hideEverything = viewModel.everythingHidden
+                            )
+                        }
                     },
-                    topBar = { AppBar(viewModel, navController) }
+                    topBar = {
+                        if (viewModel.everythingHidden == false) {
+                            AppBar(viewModel, navController)
+                        }
+                    }
                 ) { padding ->
                     Navigation(
                         navController,
