@@ -20,9 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.FontScaling
 import androidx.compose.ui.unit.sp
 import com.example.cubetime.ui.shared.SharedViewModel
@@ -31,12 +34,14 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Timer(hideEverything: (Boolean) -> Unit, modifier: Modifier,
-          viewModel: SharedViewModel) {
-    val timer by remember { mutableStateOf(TimerController(hideEverything,
-                            {viewModel.generateNewScrambleAndImage()}))}
-
+fun Timer(
+    hideEverything: (Boolean) -> Unit,
+    modifier: Modifier,
+    viewModel: SharedViewModel)
+{
+    val timer = viewModel.timer
     var isLongPress by remember { mutableStateOf(false) }
+    var isPressed by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val delayColorAnimation: Color by animateColorAsState(
         if (isLongPress && (timer.INSPECTION_ON == (timer.timerState == TimerState.INSPECTION)) && timer.timerState != TimerState.GOING)  {
@@ -44,10 +49,11 @@ fun Timer(hideEverything: (Boolean) -> Unit, modifier: Modifier,
         } else {
             MaterialTheme.colorScheme.onBackground
         }
+
     )
 
     val delaySizeAnimation: Int by animateIntAsState(
-        if (isLongPress || timer.timerState != TimerState.INACTIVE) 110 else 80
+        if (isLongPress || timer.timerState != TimerState.INACTIVE) 100 else 70
     )
 
     Box(
@@ -62,12 +68,15 @@ fun Timer(hideEverything: (Boolean) -> Unit, modifier: Modifier,
                         }
                         else {
                             isLongPress = false
+                            isPressed = false
                             val pressJob = coroutineScope.launch {
+                                isPressed = true
                                 delay(500)
                                 isLongPress = true
                             }
                             try {
                                 awaitRelease()
+                                isPressed = false
                                 if (!isLongPress) {
                                     timer.shortPressAction()
                                 } else {
@@ -84,13 +93,20 @@ fun Timer(hideEverything: (Boolean) -> Unit, modifier: Modifier,
                 )
             },
     ) {
-        Text(
-            text = timer.currentTimeToShow,
-            fontSize = delaySizeAnimation.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Monospace,
-            color = delayColorAnimation
-        )
+
+            Text(
+                text =
+                    if (isPressed && timer.timerState == TimerState.INACTIVE) {
+                        "0.00"
+                    } else {
+                        timer.currentTimeToShow
+                    }
+                ,
+                fontSize = delaySizeAnimation.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Monospace,
+                color = delayColorAnimation)
+
     }
 
 }

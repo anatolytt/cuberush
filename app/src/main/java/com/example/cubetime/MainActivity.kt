@@ -6,6 +6,7 @@ import android.content.Context
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -38,16 +39,12 @@ import com.example.cubetime.ui.settings.SettingsDataManager
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.ui.theme.CubeTimeTheme
 import com.example.cubetime.utils.ChangeLanguage
+import com.example.cubetime.utils.TimeFormat
 
 
 class MainActivity : ComponentActivity() {
 
     private val viewModel : SharedViewModel by viewModels()
-
-    val viewModel: SharedViewModel by viewModels()
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,15 +60,12 @@ class MainActivity : ComponentActivity() {
 
             val isDarkMode by settingsDataManager.getTheme().collectAsState(initial = false)
             val language by settingsDataManager.getLanguage().collectAsState(initial = "ru")
-
             ChangeLanguage(this, language)
-
-
 
             val navController = rememberNavController()
 
             CubeTimeTheme(
-                darkTheme = isDarkMode
+
             ) {
 
                 Scaffold(

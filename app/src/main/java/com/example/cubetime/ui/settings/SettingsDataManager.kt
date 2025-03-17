@@ -46,7 +46,7 @@ class SettingsDataManager(val context: Context) {
         return context.dataStore.data.map { preferences ->
             SettingsData(
                 isDarkMode = preferences[themeKey] ?: false,
-                language = preferences[languageKey] ?: "ru"
+                language = preferences[languageKey] ?: "en"
             )
         }
     }

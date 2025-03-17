@@ -1,9 +1,11 @@
 package com.example.cubetime.ui.navigation
 
 import android.content.Context
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -24,7 +26,8 @@ import kotlinx.coroutines.flow.Flow
 fun Navigation(
     navController: NavHostController,
     viewModel: SharedViewModel,
-    modifierNavHost: Modifier
+    modifierNavHost: Modifier,
+
 ) {
 
     val context = LocalContext.current
