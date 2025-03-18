@@ -56,7 +56,7 @@ fun ScrambleImage(svgString: String?, sizeDp: Int, modifier: Modifier) {
                 .background(Color.Transparent)
         ) {
             Text(
-                text = "Loading...",
+                text = "Generating...",
                 modifier = Modifier.align(Alignment.Center),
                 color = Color.White
             )

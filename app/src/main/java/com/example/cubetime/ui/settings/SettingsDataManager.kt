@@ -71,6 +71,8 @@ class SettingsDataManager(val context: Context) {
                 isInspectionEnabled = preferences[inspectionKey] ?: true,
                 timehidden = preferences[timehiddenKey] ?: false,
                 delay = preferences[delayKey] ?: false
+                language = preferences[languageKey] ?: "en"
+
             )
         }
     }

@@ -1,11 +1,13 @@
 package com.example.cubetime.ui.navigation
 
 import android.content.Context
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -27,7 +29,6 @@ fun Navigation(
     navController: NavHostController,
     viewModel: SharedViewModel,
     modifierNavHost: Modifier,
-
 ) {
     //Я ТУТ НАМУДРИЛ - НЕ ЗНАЮ КАК ЕЩЕ ПРЕДАТЬ ПАРАМЕТРЫ Data class в TimerScreen
     val context = LocalContext.current

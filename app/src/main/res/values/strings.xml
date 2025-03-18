@@ -12,6 +12,7 @@
 
     <string name="generating_scramble">Generating</string>
 
+
     //Настройки
     <string name="settings">Settings</string>
     <string name="language">Language</string>
@@ -30,6 +31,21 @@
 
 
 
+
+
+
+    <string name="enter_scramble">Enter custom scramble</string>
+    <string name="enter_time">Enter time</string>
+    <string name="enter_comment">Enter comment</string>
+    <string name="delete_solve">Delete solve?</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="done">Done</string>
+    <string name="delete">Delete</string>
+
+    <string name="plus_two">+2</string>
+    <string name="dnf">DNF</string>
+    <string name="no_penalty">No penalty</string>
 
 
     <string name="cube222">Cube 2x2x2</string>

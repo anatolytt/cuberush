@@ -50,7 +50,7 @@ fun EventDialog(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = Dp.Unspecified, max = 800.dp)
-                .padding(10.dp))
+                .padding(5.dp))
         {
             Column (
                 horizontalAlignment = Alignment.CenterHorizontally
