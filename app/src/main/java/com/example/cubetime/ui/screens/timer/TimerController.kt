@@ -1,27 +1,34 @@
 package com.example.cubetime.ui.screens.timer
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import com.example.cubetime.model.Penalties
 import com.example.cubetime.ui.settings.SettingsData
+import com.example.cubetime.ui.settings.SettingsDataManager
+import com.example.cubetime.ui.settings.TimerSettings
 import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class TimerController (
-        val hideEverything : (Boolean) -> Unit = {},
-        val generateScr: () -> Unit = {}) {
+class TimerController(
+    val hideEverything: (Boolean) -> Unit = {},
+    val generateScr: () -> Unit = {},
+    val settings: MutableState<TimerSettings>
+) {
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-    val TIME_HIDDEN = false
-    val INSPECTION_ON = false
-    val DELAY_ON = true
-
+    val TIME_HIDDEN get() = settings.value.timehidden
+    val INSPECTION_ON get() = settings.value.isInspectionEnabled
+    val DELAY_ON get() = settings.value.delay
 
     private val _currentTime = mutableStateOf<Int>(0)
     val currentTime: Int get() = _currentTime.value
-
 
     val currentTimeToShow: String get() = timeToShow()
 
@@ -35,8 +42,6 @@ class TimerController (
     val isFirstSolve get() = _isFirstSolve.value
 
     var timerJob: Job? = null
-
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     fun startInspection() {
         timerJob?.cancel()

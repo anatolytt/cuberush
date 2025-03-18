@@ -3,14 +3,10 @@ package com.example.cubetime.ui.screens.timer
 
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.animateIntSizeAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Text
@@ -22,14 +18,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.cubetime.ui.shared.SharedViewModel
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
 
 import androidx.compose.material3.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -41,7 +35,7 @@ import com.example.cubetime.R
 import com.example.cubetime.model.Penalties
 import com.example.cubetime.ui.screens.timer.dialogs.DialogTypes
 import com.example.cubetime.ui.screens.timer.dialogs.TimerScreenDialogs
-import kotlin.concurrent.timer
+import com.example.cubetime.ui.settings.SettingsData
 
 
 @Composable
@@ -52,7 +46,7 @@ fun TimerScreen(viewModel: SharedViewModel) {
 
     var currentDialog by remember { mutableStateOf(DialogTypes.NONE) }
     val hideAnimation by animateFloatAsState(   // Анимация для скрытия элементов при запуске таймера
-        targetValue = if (viewModel.everythingHidden ) 0f else 1f,
+        targetValue = if (viewModel.everythingHidden) 0f else 1f,
         animationSpec = tween(durationMillis = 300)
     )
 

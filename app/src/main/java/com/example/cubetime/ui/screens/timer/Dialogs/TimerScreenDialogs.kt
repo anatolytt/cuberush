@@ -1,6 +1,7 @@
 package com.example.cubetime.ui.screens.timer.dialogs
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import com.example.cubetime.ui.shared.SharedViewModel
 
 
@@ -31,7 +32,9 @@ fun TimerScreenDialogs(viewModel: SharedViewModel, closeDialog: () -> Unit, dial
         DialogTypes.ADD_COMMENT -> {
             CommentDialog(
                 onDismiss = closeDialog,
-                action = { }
+                action = {
+
+                }
             )
         }
         DialogTypes.NONE -> {

@@ -28,6 +28,8 @@ import androidx.compose.runtime.getValue
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.compose.rememberNavController
 import com.example.cubetime.model.Events
 import com.example.cubetime.ui.appbar.AppBar
@@ -35,44 +37,50 @@ import com.example.cubetime.ui.navigation.Navigation
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationBar
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationItem
 import com.example.cubetime.ui.settings.SettingsDataManager
+import com.example.cubetime.ui.settings.TimerSettings
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.ui.theme.CubeTimeTheme
 import com.example.cubetime.utils.ChangeLanguage
 import com.example.cubetime.utils.TimeFormat
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.util.prefs.Preferences
+
+
 
 
 class MainActivity : ComponentActivity() {
 
     private val viewModel: SharedViewModel by viewModels()
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.switchSessions(0)
         enableEdgeToEdge()
         setContent {
-            LaunchedEffect(Unit) { }
-
 
             val context = LocalContext.current
             val settingsDataManager = SettingsDataManager(context)
-
-
-
-            val isDarkMode by settingsDataManager.getTheme().collectAsState(initial = false)
             val language by settingsDataManager.getLanguage().collectAsState(initial = "ru")
+            val theme by settingsDataManager.getTheme().collectAsState(initial = false)
             ChangeLanguage(this, language)
+
+            val timerSettings by settingsDataManager.getTimerSettings().collectAsState(
+                    initial = TimerSettings(false, false, false))
+            viewModel.updateTimerSettings(timerSettings)
+
+            LaunchedEffect (Unit) {
+                viewModel.switchSessions(0)
+            }
+
 
             val navController = rememberNavController()
 
             CubeTimeTheme(
-
+                darkTheme = theme
             ) {
-
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        if (viewModel.everythingHidden == false) {
+                        if (!viewModel.settingsScreenOpen) {
                             BottomNavigationBar(
                                 items = listOf(
                                     BottomNavigationItem(
@@ -102,15 +110,17 @@ class MainActivity : ComponentActivity() {
                         }
                     },
                     topBar = {
-                        if (viewModel.everythingHidden == false) {
+                        if (!viewModel.settingsScreenOpen) {
                             AppBar(viewModel, navController)
                         }
+
                     }
                 ) { padding ->
                     Navigation(
                         navController,
                         viewModel = viewModel,
                         modifierNavHost = Modifier.padding(padding),
+                        settingsDataManager = settingsDataManager
                     )
                 }
             }

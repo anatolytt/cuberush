@@ -62,20 +62,9 @@ fun SettingsScreen(
     val timehidden by settingsDataManager.getTimeHidden().collectAsState(initial = false)
     val delayEnabled by settingsDataManager.getDelay().collectAsState(initial = false)
 
-
-
     var showLanguageSheet by remember { mutableStateOf(false) }
     val coroutine = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        viewModel.hideEverything(true)  // скрыть панели при открытии экрана
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            viewModel.hideEverything(false)  // показать панели при закрытии экрана
-        }
-    }
 
 
 
@@ -92,9 +81,12 @@ fun SettingsScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            IconButton(onClick = {navController.popBackStack()}) {
+            IconButton(onClick = {
+                navController.popBackStack()
+                viewModel.changeSettingsVisibility()
+            }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.arrowback),
+                    painter = painterResource(id = R.drawable.reload),
                     contentDescription = "Back"
                 )
             }
@@ -119,7 +111,6 @@ fun SettingsScreen(
         Text(
             text = stringResource(R.string.language),
             modifier = Modifier.padding(start = 70.dp),
-
         )
         Box(
             modifier = Modifier.fillMaxWidth()
@@ -202,15 +193,7 @@ fun SettingsScreen(
                     checked = isDarkMode,
                     onCheckedChange = { isChecked ->
                         coroutine.launch {
-                            settingsDataManager.saveSettings(
-                                SettingsData(
-                                    isDarkMode = isChecked,
-                                    language = language,
-                                    isInspectionEnabled = isInspection,
-                                    timehidden = timehidden,
-                                    delay = delayEnabled
-                                )
-                            )
+                            settingsDataManager.setTheme(isChecked)
                         }
                     }
                 )
@@ -263,16 +246,7 @@ fun SettingsScreen(
                     checked = isInspection,
                     onCheckedChange = { isChecked ->
                         coroutine.launch {
-                            settingsDataManager.saveSettings(
-                                SettingsData(
-                                    isDarkMode = isDarkMode,
-                                    language = language,
-                                    isInspectionEnabled = isChecked,
-                                    timehidden = timehidden,
-                                    delay = delayEnabled
-
-                                )
-                            )
+                            settingsDataManager.setInspection(isChecked)
                         }
                     }
                 )
@@ -315,15 +289,7 @@ fun SettingsScreen(
                     checked = delayEnabled,
                     onCheckedChange = { isChecked ->
                         coroutine.launch {
-                            settingsDataManager.saveSettings(
-                                SettingsData(
-                                    isDarkMode = isDarkMode,
-                                    language = language,
-                                    isInspectionEnabled = isInspection,
-                                    timehidden = timehidden,
-                                    delay = isChecked
-                                )
-                            )
+                            settingsDataManager.setDelay(isChecked)
                         }
                     }
                 )
@@ -331,6 +297,7 @@ fun SettingsScreen(
 
 
         }
+
         //блок скрытия таймера
         Box(
             modifier = Modifier.fillMaxWidth()
@@ -365,15 +332,7 @@ fun SettingsScreen(
                     checked = timehidden,
                     onCheckedChange = { isChecked ->
                         coroutine.launch {
-                            settingsDataManager.saveSettings(
-                                SettingsData(
-                                    isDarkMode = isDarkMode,
-                                    language = language,
-                                    isInspectionEnabled = isInspection,
-                                    timehidden = isChecked,
-                                    delay = delayEnabled
-                                )
-                            )
+                            settingsDataManager.setTimeIsHidden(isChecked)
                         }
                     }
                 )
@@ -385,9 +344,6 @@ fun SettingsScreen(
     }
 
 
-
-
-
 //проверка открыто ли окно с выбором языка
     if (showLanguageSheet) {
         ModalBottomSheet(
@@ -396,12 +352,7 @@ fun SettingsScreen(
             LanguageSelectionSheet(
                 onLanguageSelected = { selectedLanguage ->
                     coroutine.launch {
-                        settingsDataManager.saveSettings(
-                            SettingsData(
-                                isDarkMode = isDarkMode,
-                                language = selectedLanguage
-                            )
-                        )
+                        settingsDataManager.setLanguage(selectedLanguage)
                         ChangeLanguage(settingsDataManager.context, selectedLanguage)
                         showLanguageSheet = false
                     }
@@ -431,6 +382,7 @@ fun LanguageSelectionSheet(
         }
     }
 }
+
 //для списка языков
 @Composable
 fun LanguageItem(

@@ -12,8 +12,9 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-private val Context.dataStore:DataStore<Preferences>
-                by preferencesDataStore("datastore")
+import java.sql.Time
+
+private val Context.dataStore:DataStore<Preferences> by preferencesDataStore("datastore")
 
 
 class SettingsDataManager(val context: Context) {
@@ -23,18 +24,35 @@ class SettingsDataManager(val context: Context) {
     private val timehiddenKey = booleanPreferencesKey("time_hidden") // скрывать / не скрывать время
     private val delayKey = booleanPreferencesKey("delay") //задержка перед стартом
 
-
-
-
-    suspend fun  saveSettings(settingsData: SettingsData){
-        context.dataStore.edit { pref->
-            pref[themeKey] = settingsData.isDarkMode
-            pref[languageKey] = settingsData.language
-            pref[inspectionKey] = settingsData.isInspectionEnabled
-            pref[timehiddenKey] = settingsData.timehidden
-            pref[delayKey] = settingsData.delay
+    suspend fun  <T> saveSetting(key: Preferences.Key<T>, newValue: T){
+        context.dataStore.edit { pref ->
+            pref[key] = newValue
         }
     }
+
+    suspend fun setTheme(value: Boolean) {
+        saveSetting(themeKey, value)
+    }
+
+    suspend fun setLanguage(value: String) {
+        saveSetting(languageKey, value)
+    }
+
+    suspend fun setInspection(value: Boolean) {
+        saveSetting(inspectionKey, value)
+    }
+
+    suspend fun setTimeIsHidden(value: Boolean) {
+        saveSetting(timehiddenKey, value)
+    }
+
+    suspend fun setDelay (value: Boolean) {
+        saveSetting(delayKey, value)
+    }
+
+
+
+
     fun getTheme(): Flow<Boolean> {
         return context.dataStore.data.map { preferences ->
             preferences[themeKey] ?: false
@@ -61,26 +79,16 @@ class SettingsDataManager(val context: Context) {
         }
     }
 
-
-
-    fun getSettings(): Flow<SettingsData> {
+    fun getTimerSettings() : Flow<TimerSettings> {
         return context.dataStore.data.map { preferences ->
-            SettingsData(
-                isDarkMode = preferences[themeKey] ?: false,
-                language = preferences[languageKey] ?: "ru",
-                isInspectionEnabled = preferences[inspectionKey] ?: true,
-                timehidden = preferences[timehiddenKey] ?: false,
-                delay = preferences[delayKey] ?: false
-                language = preferences[languageKey] ?: "en"
-
+            TimerSettings(
+                  isInspectionEnabled = preferences[inspectionKey] ?: true,
+                  timehidden = preferences[timehiddenKey] ?: true,
+                  delay = preferences[delayKey] ?: true,
             )
+
         }
     }
-
-
-
-
-
 
 
 }

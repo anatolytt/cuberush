@@ -35,9 +35,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-Timer(hideEverything: (Boolean) -> Unit, modifier: Modifier,
-          viewModel: SharedViewModel,
-          settings: SettingsData
+fun Timer(hideEverything: (Boolean) -> Unit, modifier: Modifier,
+          viewModel: SharedViewModel
 ) 
 {
     val timer = viewModel.timer
