@@ -29,6 +29,8 @@ class SharedViewModel : ViewModel() {
     private val _currentSessionID = mutableStateOf(0)   // Пока id будет индекс в массиве, потом исправим
     val currentSessionID get() = _currentSessionID.value
 
+
+
     private val _sessions = mutableStateListOf<Session>(            // Потом добавим получение сессий из БД
             Session(name = "MAIN", event = Events.SQ1),
             Session(name = "333 2h",  event = Events.CUBE333),

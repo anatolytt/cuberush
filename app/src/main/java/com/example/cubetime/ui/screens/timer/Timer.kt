@@ -28,16 +28,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.FontScaling
 import androidx.compose.ui.unit.sp
+import com.example.cubetime.ui.settings.SettingsData
 import com.example.cubetime.ui.shared.SharedViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Timer(
-    hideEverything: (Boolean) -> Unit,
-    modifier: Modifier,
-    viewModel: SharedViewModel)
+Timer(hideEverything: (Boolean) -> Unit, modifier: Modifier,
+          viewModel: SharedViewModel,
+          settings: SettingsData
+) 
 {
     val timer = viewModel.timer
     var isLongPress by remember { mutableStateOf(false) }

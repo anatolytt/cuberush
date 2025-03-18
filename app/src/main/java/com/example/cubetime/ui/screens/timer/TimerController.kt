@@ -2,6 +2,7 @@ package com.example.cubetime.ui.screens.timer
 
 import androidx.compose.runtime.mutableStateOf
 import com.example.cubetime.model.Penalties
+import com.example.cubetime.ui.settings.SettingsData
 import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,7 @@ class TimerController (
     val TIME_HIDDEN = false
     val INSPECTION_ON = false
     val DELAY_ON = true
+
 
     private val _currentTime = mutableStateOf<Int>(0)
     val currentTime: Int get() = _currentTime.value

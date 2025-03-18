@@ -11,6 +11,20 @@
 
     <string name="generating_scramble">Генерируется</string>
 
+    <string name="settings">Настройки</string>
+    <string name="language">Язык</string>
+    <string name="selectlanguage">Выбрать язык</string>
+    <string name="russia">Русский</string>
+    <string name="theme">Тема</string>
+    <string name="Light">Светлая</string>
+    <string name="Dark">Темная</string>
+    <string name="INSPECTION">Инспекция</string>
+    <string name="delay">Задержка</string>
+    <string name="settinstimer">Настройки таймера</string>
+    <string name="TIMEEVENT">Прятать время</string>
+
+
+
     <string name="enter_scramble">Введите кастомный скрамбл</string>
     <string name="enter_time">Введите время</string>
     <string name="enter_comment">Введите комментарий</string>

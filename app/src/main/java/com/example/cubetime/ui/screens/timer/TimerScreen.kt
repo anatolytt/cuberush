@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.cubetime.R
+
 import com.example.cubetime.model.Penalties
 import com.example.cubetime.ui.screens.timer.dialogs.DialogTypes
 import com.example.cubetime.ui.screens.timer.dialogs.TimerScreenDialogs
@@ -51,7 +52,7 @@ fun TimerScreen(viewModel: SharedViewModel) {
 
     var currentDialog by remember { mutableStateOf(DialogTypes.NONE) }
     val hideAnimation by animateFloatAsState(   // Анимация для скрытия элементов при запуске таймера
-        targetValue = if (viewModel.everythingHidden) 0f else 1f,
+        targetValue = if (viewModel.everythingHidden ) 0f else 1f,
         animationSpec = tween(durationMillis = 300)
     )
 

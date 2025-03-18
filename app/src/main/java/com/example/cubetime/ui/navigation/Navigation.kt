@@ -3,6 +3,8 @@ package com.example.cubetime.ui.navigation
 import android.content.Context
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -27,18 +29,26 @@ fun Navigation(
     navController: NavHostController,
     viewModel: SharedViewModel,
     modifierNavHost: Modifier,
-
 ) {
-
+    //Я ТУТ НАМУДРИЛ - НЕ ЗНАЮ КАК ЕЩЕ ПРЕДАТЬ ПАРАМЕТРЫ Data class в TimerScreen
     val context = LocalContext.current
-    val settings = SettingsDataManager(context)
+    val settingss = SettingsDataManager(context)
+    val settingsFlow = settingss.getSettings()
+    val settingsData by settingsFlow.collectAsState(initial = SettingsData(
+        isDarkMode = true,
+        language = "ru",
+        isInspectionEnabled = false,
+        timehidden = false,
+        delay = false
+    ))
     NavHost(
         navController = navController,
         modifier = modifierNavHost,
-        startDestination = "timer"
+        startDestination = "timer",
+
     ) {
         composable(route = "timer") {
-            TimerScreen(viewModel)
+            TimerScreen(viewModel, settings = settingsData)
         }
         composable(route = "solves") {
             SolvesScreen(viewModel)
@@ -47,7 +57,7 @@ fun Navigation(
             StatisticsScreen(viewModel)
         }
         composable(route = "settings") {
-            SettingsScreen(settings)
+            SettingsScreen(settingss,viewModel,navController)
         }
 
     }
