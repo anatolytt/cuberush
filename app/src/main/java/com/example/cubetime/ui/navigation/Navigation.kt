@@ -12,7 +12,6 @@ import com.example.cubetime.ui.screens.solves.SolvesScreen
 
 import com.example.cubetime.ui.screens.statistics.StatisticsScreen
 import com.example.cubetime.ui.screens.timer.TimerScreen
-import com.example.cubetime.ui.settings.SettingsData
 import com.example.cubetime.ui.settings.SettingsDataManager
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.ui.settings.SettingsScreen
