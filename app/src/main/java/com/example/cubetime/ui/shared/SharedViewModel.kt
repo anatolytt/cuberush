@@ -133,8 +133,8 @@ class SharedViewModel : ViewModel() {
         val newSession = Session(name, events)
         _sessions.add(newSession)
     }
-    fun selectEvent(event: Events) {
-        _selectedEvent.value = event
-    }
+//    fun selectEvent(event: Events) {
+//        _selectedEvent.value = event
+//    }
 }
 
