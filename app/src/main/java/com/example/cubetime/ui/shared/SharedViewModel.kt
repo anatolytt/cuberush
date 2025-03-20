@@ -2,8 +2,10 @@ package com.example.cubetime.ui.shared
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cubetime.model.Events
@@ -13,6 +15,7 @@ import com.example.cubetime.ui.settings.SettingsDataManager
 import com.example.cubetime.ui.settings.TimerSettings
 import com.example.cubetime.utils.Scrambler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Timer
@@ -36,7 +39,8 @@ class SharedViewModel : ViewModel() {
     val sessions get() = _sessions.toList()
     val currentSession get() = sessions[currentSessionID]
 
-    private val nextScrambles = ArrayDeque<String>()
+    private var nextScrambles by mutableStateOf(ArrayDeque<String>())
+
     private val _currentScramble = mutableStateOf<String>("")
     val currentScramble get() = _currentScramble.value
 
@@ -54,9 +58,12 @@ class SharedViewModel : ViewModel() {
     )
     val timer get() = _timer.value
 
-    //для выбора головоломок при созднии сессии ( состояние выбора)
+    //для выбора головоломок при созднии сессии (состояние выбора)
     private val _selectedEvent = mutableStateOf<Events?>(null)
     val selectedEvent get() = _selectedEvent.value
+
+    private var scramblesGeneratingJob by mutableStateOf<Job?>(null)
+    private var scramblesUpdateJob by mutableStateOf<Job?>(null)
 
 
 
@@ -75,7 +82,7 @@ class SharedViewModel : ViewModel() {
 
     fun updateScramble() {
         generateScrambles()
-        viewModelScope.launch (Dispatchers.Default) {
+        scramblesUpdateJob = viewModelScope.launch (Dispatchers.Default) {
             withContext(Dispatchers.Main) { _currentScramble.value = "Generating..." }
             while (true) {
                 if (nextScrambles.size > 0) {
@@ -102,7 +109,7 @@ class SharedViewModel : ViewModel() {
     }
 
     fun generateScrambles() {
-        viewModelScope.launch (Dispatchers.Default) {
+        scramblesGeneratingJob = viewModelScope.launch (Dispatchers.Default) {
             while (nextScrambles.size < KEEP_GENERATED) {
                 val scramble = Scrambler().generateScramble(currentSession.event)
                 withContext(Dispatchers.Main) {
@@ -118,8 +125,10 @@ class SharedViewModel : ViewModel() {
     }
 
     fun switchSessions(sessionId : Int) {
+        nextScrambles = ArrayDeque<String>()
+        scramblesGeneratingJob?.cancel()
+        scramblesUpdateJob?.cancel()
         _currentSessionID.value = sessionId
-        nextScrambles.clear()
         updateScramble()
     }
 
@@ -129,12 +138,23 @@ class SharedViewModel : ViewModel() {
 
 
     //функция Создание сесcии
-    fun creatSession(name:String, events: Events){
+    fun createSession(name:String, events: Events){
         val newSession = Session(name, events)
         _sessions.add(newSession)
     }
-//    fun selectEvent(event: Events) {
-//        _selectedEvent.value = event
-//    }
+
+    fun deleteSession(session: Session) {
+        val idToDelete = _sessions.indexOf(session)
+        if (idToDelete <= _currentSessionID.value) {
+            _currentSessionID.value -= 1
+        }
+        _sessions.remove(session)
+    }
+
+    fun renameSession(session: Session, index: Int, newName: String) {
+        val newSession = session.copy(name = newName)
+        _sessions[index] = newSession
+    }
+
 }
 

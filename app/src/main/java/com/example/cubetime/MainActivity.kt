@@ -10,6 +10,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -75,12 +78,14 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
 
             CubeTimeTheme(
-                darkTheme = theme
+                isCustomDarkTheme = theme
             ) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        if (!viewModel.settingsScreenOpen) {
+                        AnimatedVisibility(
+                            visible = !viewModel.settingsScreenOpen,
+                            exit = fadeOut() + slideOutVertically { it }) {
                             BottomNavigationBar(
                                 items = listOf(
                                     BottomNavigationItem(
@@ -110,7 +115,10 @@ class MainActivity : ComponentActivity() {
                         }
                     },
                     topBar = {
-                        if (!viewModel.settingsScreenOpen) {
+                        AnimatedVisibility(
+                            visible = !viewModel.settingsScreenOpen,
+                            exit = fadeOut() + slideOutVertically { it }
+                        ) {
                             AppBar(viewModel, navController)
                         }
 

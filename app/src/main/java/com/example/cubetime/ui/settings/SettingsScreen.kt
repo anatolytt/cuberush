@@ -1,5 +1,6 @@
 package com.example.cubetime.ui.settings
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -34,11 +36,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.dataStore
@@ -63,10 +67,14 @@ fun SettingsScreen(
     val delayEnabled by settingsDataManager.getDelay().collectAsState(initial = false)
 
     var showLanguageSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutine = rememberCoroutineScope()
 
 
-
+    BackHandler {
+        viewModel.changeSettingsVisibility()
+        navController.popBackStack()
+    }
 
     Column(
         modifier = Modifier
@@ -110,7 +118,8 @@ fun SettingsScreen(
         //БЛОК ЯЗЫКА
         Text(
             text = stringResource(R.string.language),
-            modifier = Modifier.padding(start = 70.dp),
+            fontWeight = FontWeight.ExtraBold,
+            modifier = Modifier.padding(start = 40.dp),
         )
         Box(
             modifier = Modifier.fillMaxWidth()
@@ -118,7 +127,13 @@ fun SettingsScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp, start = 10.dp),
+                    .clickable {
+                        coroutine.launch {
+                            showLanguageSheet = true
+                            sheetState.show()
+                        }
+                            }
+                    .padding(top = 20.dp, bottom = 20.dp, start = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
@@ -136,18 +151,13 @@ fun SettingsScreen(
                 )
             }
 
-            IconButton(
-                onClick = { showLanguageSheet = true },
+            Icon(
+                painter = painterResource(id = R.drawable.chevrondown),
+                contentDescription = "Select language",
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .padding(end = 20.dp, top = 13.dp)
-
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.chevrondown),
-                    contentDescription = "Select language",
-                )
-            }
+            )
         }
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -156,8 +166,8 @@ fun SettingsScreen(
         //БЛОК ТЕМЫ
         Text(
             text = stringResource(R.string.theme),
-            modifier = Modifier.padding(start = 70.dp),
-
+            fontWeight = FontWeight.ExtraBold,
+            modifier = Modifier.padding(start = 40.dp),
             )
 
         Box(
@@ -209,8 +219,8 @@ fun SettingsScreen(
         //БЛОК ИНСПЕКЦИИ
         Text(
             text = stringResource(R.string.settinstimer),
-            modifier = Modifier.padding(start = 70.dp),
-
+            fontWeight = FontWeight.ExtraBold,
+            modifier = Modifier.padding(start = 40.dp),
             )
 
         Box(
@@ -347,7 +357,13 @@ fun SettingsScreen(
 //проверка открыто ли окно с выбором языка
     if (showLanguageSheet) {
         ModalBottomSheet(
-            onDismissRequest = { showLanguageSheet = false }
+            onDismissRequest = {
+                coroutine.launch {
+                    sheetState.hide()
+                    showLanguageSheet = false
+                }
+            },
+            sheetState = sheetState
         ) {
             LanguageSelectionSheet(
                 onLanguageSelected = { selectedLanguage ->

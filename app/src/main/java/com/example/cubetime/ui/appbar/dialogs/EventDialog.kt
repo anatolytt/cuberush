@@ -142,7 +142,7 @@ fun EventDialog(
                             val sessionName = text.text.trim()
 
                             if (selectEvents != null) {
-                                viewModel.creatSession(sessionName, selectEvents)
+                                viewModel.createSession(sessionName, selectEvents)
                             }
                             viewModel.switchSessions(viewModel.sessions.size-1)
                             onDismiss()
