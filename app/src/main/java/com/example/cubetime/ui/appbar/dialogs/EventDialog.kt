@@ -1,5 +1,7 @@
 package com.example.cubetime.ui.appbar.dialogs
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,12 +19,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -39,10 +47,13 @@ import kotlinx.coroutines.coroutineScope
 
 @Composable
 fun EventDialog(
-    onDismiss : () -> Unit,
+    onDismiss: () -> Unit,
     onBack: () -> Unit,
     viewModel: SharedViewModel
 ) {
+    var text by remember { mutableStateOf(TextFieldValue(" ")) }
+
+
     Dialog(
         onDismissRequest = { onDismiss() }
     ) {
@@ -50,19 +61,25 @@ fun EventDialog(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = Dp.Unspecified, max = 800.dp)
-                .padding(5.dp))
+                .padding(5.dp)
+        )
         {
-            Column (
+            Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                //ВВОД НАЗВАНИЯ СЕССИИ
 
-                Text("ВВеДИТе НАЗВАНИЕ СЕССИИ")
-                
+                //ВВОД НАЗВАНИЯ СЕССИИ ( name)
+                TextField(
+                    value = text,
+                    onValueChange = { newText ->
+                        text = newText
+                    }
+                )
+
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(15.dp) ,
+                    contentPadding = PaddingValues(15.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalArrangement = Arrangement.spacedBy(5.dp)
 
@@ -72,11 +89,18 @@ fun EventDialog(
                     items(eventsList.size) { index ->
                         val event = eventsList[index]
                         Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .background(
+                                    if (event == viewModel.selectedEvent)
+                                        MaterialTheme.colorScheme.onPrimary
+                                    else MaterialTheme.colorScheme.surfaceVariant
+                                )
                         ) {
 
                             IconButton(
                                 onClick = {
+                                    viewModel.selectEvent(event)
 
                                 },
                                 modifier = Modifier
@@ -97,7 +121,8 @@ fun EventDialog(
                     }
                 }
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(bottom = 20.dp, end = 10.dp, start = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
 
@@ -110,9 +135,19 @@ fun EventDialog(
                             text = stringResource(R.string.back_to_session)
                         )
                     }
+
                     //КНОПКА СОЗДАНИЯ СЕССИЯ
                     Button(
-                        onClick = { onBack() },
+                        onClick = {
+                            val sessionName = text.text.trim()
+                            val selectedEvent = viewModel.selectedEvent
+
+                            if (selectedEvent != null) {
+                                viewModel.creatSession(sessionName, selectedEvent)
+                            }
+                            onDismiss()
+                        }
+
                     ) {
                         Text(
                             "CREATE"
@@ -120,9 +155,9 @@ fun EventDialog(
                     }
                 }
 
-                }
             }
         }
+    }
 }
 
 

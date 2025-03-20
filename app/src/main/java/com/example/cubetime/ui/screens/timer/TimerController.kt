@@ -4,7 +4,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import com.example.cubetime.model.Penalties
-import com.example.cubetime.ui.settings.SettingsData
 import com.example.cubetime.ui.settings.SettingsDataManager
 import com.example.cubetime.ui.settings.TimerSettings
 import com.example.cubetime.utils.TimeFormat

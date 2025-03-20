@@ -35,7 +35,6 @@ import com.example.cubetime.R
 import com.example.cubetime.model.Penalties
 import com.example.cubetime.ui.screens.timer.dialogs.DialogTypes
 import com.example.cubetime.ui.screens.timer.dialogs.TimerScreenDialogs
-import com.example.cubetime.ui.settings.SettingsData
 
 
 @Composable

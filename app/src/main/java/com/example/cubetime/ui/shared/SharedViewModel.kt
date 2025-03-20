@@ -28,16 +28,8 @@ class SharedViewModel : ViewModel() {
 
     private val _sessions = mutableStateListOf<Session>(            // Потом добавим получение сессий из БД
             Session(name = "MAIN", event = Events.CUBE333),
-            Session(name = "333 2h",  event = Events.SQ1),
-            Session(name = "my 555 session", event = Events.CUBE555),
-            Session(name = "best event", event = Events.CLOCK),
-            Session(name = "worfsdklajl", event = Events.SQ1),
-            Session(name = "pyra", event = Events.PYRA),
-            Session(name = "скуб", event = Events.SKEWB),
-            Session(name = "скван", event = Events.SQ1),
-            Session(name = "какое-то название", event = Events.CUBE222),
-            Session(name = "аофлд", event = Events.SQ1),
-            Session(name = "фалыщзс", event = Events.CUBE777)
+
+
     )
 
 
@@ -61,6 +53,11 @@ class SharedViewModel : ViewModel() {
         settings = timerSettings)
     )
     val timer get() = _timer.value
+
+    //для выбора головоломок при созднии сессии ( состояние выбора)
+    private val _selectedEvent = mutableStateOf<Events?>(null)
+    val selectedEvent get() = _selectedEvent.value
+
 
 
     fun changeSettingsVisibility () {
@@ -128,6 +125,16 @@ class SharedViewModel : ViewModel() {
 
     fun hideEverything(hide: Boolean) {
         _everythingHidden.value = hide
+    }
+
+
+    //функция Создание сесcии
+    fun creatSession(name:String, events: Events){
+        val newSession = Session(name, events)
+        _sessions.add(newSession)
+    }
+    fun selectEvent(event: Events) {
+        _selectedEvent.value = event
     }
 }
 
