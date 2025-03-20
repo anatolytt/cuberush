@@ -52,6 +52,7 @@ fun EventDialog(
     viewModel: SharedViewModel
 ) {
     var text by remember { mutableStateOf(TextFieldValue(" ")) }
+    var selectEvents by remember { mutableStateOf(Events.CUBE333) }
 
 
     Dialog(
@@ -92,7 +93,7 @@ fun EventDialog(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
                                 .background(
-                                    if (event == viewModel.selectedEvent)
+                                    if (event == selectEvents)
                                         MaterialTheme.colorScheme.onPrimary
                                     else MaterialTheme.colorScheme.surfaceVariant
                                 )
@@ -100,8 +101,7 @@ fun EventDialog(
 
                             IconButton(
                                 onClick = {
-                                    viewModel.selectEvent(event)
-
+                                     selectEvents = event
                                 },
                                 modifier = Modifier
                                     .padding(1.dp)
@@ -140,14 +140,13 @@ fun EventDialog(
                     Button(
                         onClick = {
                             val sessionName = text.text.trim()
-                            val selectedEvent = viewModel.selectedEvent
 
-                            if (selectedEvent != null) {
-                                viewModel.creatSession(sessionName, selectedEvent)
+                            if (selectEvents != null) {
+                                viewModel.creatSession(sessionName, selectEvents)
                             }
+                            viewModel.switchSessions(viewModel.sessions.size-1)
                             onDismiss()
                         }
-
                     ) {
                         Text(
                             "CREATE"
