@@ -88,7 +88,7 @@ fun AppBar(viewModel: SharedViewModel,
         navigationIcon = {
             IconButton(onClick = {
                 navController.navigate("settings")
-
+                viewModel.changeSettingsVisibility()
             })
             {
                 Icon(

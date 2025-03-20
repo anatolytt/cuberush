@@ -91,7 +91,7 @@ fun SessionDialog(
                     ) {
                         Text (
                             text = stringResource(R.string.create_session),
-                            fontSize = 14.sp
+                            fontSize = 10.sp
                         )
                     }
 

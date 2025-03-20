@@ -11,7 +11,43 @@
     <string name="back_to_session">Back</string>
 
     <string name="generating_scramble">Generating</string>
-  
+
+
+    //Настройки
+    <string name="settings">Settings</string>
+    <string name="language">Language</string>
+    <string name="selectlanguage">Select language</string>
+    <string name="russia">English</string>
+    <string name="theme">Theme</string>
+    <string name="Light">Light</string>
+    <string name="Dark">Dark</string>
+    <string name="INSPECTION">Inspection</string>
+    <string name="delay">Delay</string>
+    <string name="settinstimer">Settings Timer</string>
+    <string name="TIMEEVENT">Hide time</string>
+
+
+
+
+
+
+
+
+
+    <string name="enter_scramble">Enter custom scramble</string>
+    <string name="enter_time">Enter time</string>
+    <string name="enter_comment">Enter comment</string>
+    <string name="delete_solve">Delete solve?</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="done">Done</string>
+    <string name="delete">Delete</string>
+
+    <string name="plus_two">+2</string>
+    <string name="dnf">DNF</string>
+    <string name="no_penalty">No penalty</string>
+
+
     <string name="cube222">Cube 2x2x2</string>
     <string name="cube333">Cube 3x3x3</string>
     <string name="cube444">Cube 4x4x4</string>

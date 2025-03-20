@@ -11,6 +11,34 @@
 
     <string name="generating_scramble">Генерируется</string>
 
+    <string name="settings">Настройки</string>
+    <string name="language">Язык</string>
+    <string name="selectlanguage">Выбрать язык</string>
+    <string name="russia">Русский</string>
+    <string name="theme">Тема</string>
+    <string name="Light">Светлая</string>
+    <string name="Dark">Темная</string>
+    <string name="INSPECTION">Инспекция</string>
+    <string name="delay">Задержка</string>
+    <string name="settinstimer">Настройки таймера</string>
+    <string name="TIMEEVENT">Прятать время</string>
+
+
+
+    <string name="enter_scramble">Введите кастомный скрамбл</string>
+    <string name="enter_time">Введите время</string>
+    <string name="enter_comment">Введите комментарий</string>
+    <string name="delete_solve">Удалить сборку?</string>
+
+    <string name="cancel">Отменить</string>
+    <string name="ok">ОК</string>
+    <string name="done">Готово</string>
+    <string name="delete">Удалить</string>
+
+    <string name="plus_two">+2</string>
+    <string name="dnf">DNF</string>
+    <string name="no_penalty">Без штрафа</string>
+
 
     <string name="cube222">Куб 2x2x2</string>
     <string name="cube333">Куб 3x3x3</string>

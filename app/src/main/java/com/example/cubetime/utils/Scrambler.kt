@@ -1,6 +1,7 @@
 package com.example.cubetime.utils
 
 import com.example.cubetime.model.Events
+import org.worldcubeassociation.tnoodle.scrambles.InvalidScrambleException
 import org.worldcubeassociation.tnoodle.scrambles.Puzzle
 import org.worldcubeassociation.tnoodle.scrambles.PuzzleRegistry
 import org.worldcubeassociation.tnoodle.svglite.Color
@@ -14,12 +15,14 @@ class Scrambler {
 
     suspend fun createScramblePicture(scramble: String, event: Events) : String? {
         val eventPuzzleRegistry = event.getPuzzleRegistry()
-        val imageSvg : Svg? = eventPuzzleRegistry.scrambler.drawScramble(scramble, mutableMapOf())
-        return imageSvg?.toString()
-
+        var imageString: String? = null
+        try {
+            imageString =
+                eventPuzzleRegistry.scrambler.drawScramble(scramble, mutableMapOf())?.toString()
+        } catch (_: InvalidScrambleException) {
+            imageString = ""
+        }
+        return imageString
     }
-
-
-
 }
 
