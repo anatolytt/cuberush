@@ -25,6 +25,8 @@
     <string name="delay">Delay</string>
     <string name="settinstimer">Settings Timer</string>
     <string name="TIMEEVENT">Hide time</string>
+    <string name="creat">Create</string>
+
 
 
 
@@ -64,4 +66,11 @@
     <string name="cube444bf">4x4x4 BLD</string>
     <string name="cube555bf">5x5x5 BLD</string>
     <string name="multibld">MBLD</string>
+
+
+    //events dialog
+    <string name="maxlength">Max length: 15</string>
+    <string name="edittext">Sessian name</string>
+
+
 </resources>

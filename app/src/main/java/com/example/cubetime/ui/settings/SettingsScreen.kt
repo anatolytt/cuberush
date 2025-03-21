@@ -86,7 +86,7 @@ fun SettingsScreen(
                 viewModel.changeSettingsVisibility()
             }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.reload),
+                    painter = painterResource(id = R.drawable.arrowback),
                     contentDescription = "Back"
                 )
             }
@@ -400,13 +400,29 @@ fun LanguageItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = language,
                 fontSize = 18.sp,
                 modifier = Modifier.weight(1f)
             )
+            if (language =="Русский") {
+                Icon(
+                    painter = painterResource(id = R.drawable.flagforrussia),
+                    contentDescription = null,
+                    tint = Color.Unspecified
+
+                )
+            }
+            else{
+                Icon(
+                    painter = painterResource(id = R.drawable.flagforunitedstates),
+                    contentDescription = null,
+                    tint = Color.Unspecified
+
+                )
+            }
         }
     }
 }

@@ -129,7 +129,7 @@ class SharedViewModel : ViewModel() {
 
 
     //функция Создание сесcии
-    fun creatSession(name:String, events: Events){
+    fun createSession(name:String, events: Events){
         val newSession = Session(name, events)
         _sessions.add(newSession)
     }
