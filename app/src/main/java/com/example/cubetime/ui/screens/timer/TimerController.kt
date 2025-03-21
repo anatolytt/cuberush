@@ -16,8 +16,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class TimerController(
-    val hideEverything: (Boolean) -> Unit = {},
-    val generateScr: () -> Unit = {},
+    val hideEverything: (Boolean) -> Unit,
+    val generateScr: () -> Unit,
     val settings: MutableState<TimerSettings>
 ) {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -69,6 +69,7 @@ class TimerController(
         timerJob?.cancel()
         _currentTime.value = 0
         _timerState.value = TimerState.GOING
+        _penaltyState.value = Penalties.NONE
         timerJob = coroutineScope.launch () {
             while (timerState == TimerState.GOING) {
                 delay(10)

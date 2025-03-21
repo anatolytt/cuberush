@@ -86,12 +86,11 @@ private val darkScheme = darkColorScheme(
 
 @Composable
 fun CubeTimeTheme(
-
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    isCustomDarkTheme: Boolean,
     content: @Composable () -> Unit
 ) {
+
+    val darkTheme = isSystemInDarkTheme()
 
     val colorScheme = when {
         darkTheme -> darkScheme

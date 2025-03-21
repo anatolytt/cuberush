@@ -178,7 +178,7 @@ fun EventDialog(
                                 }
                                 viewModel.switchSessions(viewModel.sessions.size - 1)
                                 onDismiss()
-                            }
+
                         }
                     ) {
                         Text(

@@ -2,8 +2,7 @@ package com.example.cubetime.ui.appbar.dialogs
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.cubetime.ui.appbar.dialogs.sessionDialog.SessionDialog
 import com.example.cubetime.ui.shared.SharedViewModel
 
 @Composable
