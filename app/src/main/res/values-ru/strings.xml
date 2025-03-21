@@ -22,6 +22,7 @@
     <string name="delay">Задержка</string>
     <string name="settinstimer">Настройки таймера</string>
     <string name="TIMEEVENT">Прятать время</string>
+    <string name="creat">Создать</string>
 
 
 
@@ -29,15 +30,20 @@
     <string name="enter_time">Введите время</string>
     <string name="enter_comment">Введите комментарий</string>
     <string name="delete_solve">Удалить сборку?</string>
-
+    <string name="delete_session">Удалить сессию?</string>
+    <string name="edit_session_name">Переименовать сессию</string>
     <string name="cancel">Отменить</string>
     <string name="ok">ОК</string>
     <string name="done">Готово</string>
     <string name="delete">Удалить</string>
 
+    <string name="irreversible_action">Это действие необратимо</string>
+
     <string name="plus_two">+2</string>
     <string name="dnf">DNF</string>
     <string name="no_penalty">Без штрафа</string>
+
+    <string name="last_session_delete_toast">Невозможно удалить последнюю сессию</string>
 
 
     <string name="cube222">Куб 2x2x2</string>
@@ -56,4 +62,12 @@
     <string name="cube444bf">4x4x4 вслепую</string>
     <string name="cube555bf">5x5x5 вслепую</string>
     <string name="multibld">Мультиблайнд</string>
+
+    //events dialog
+    <string name="edittext">Название сессии</string>
+    <string name="maxlength">Максимальная длина: 15</string>
+
+
+
+
 </resources>

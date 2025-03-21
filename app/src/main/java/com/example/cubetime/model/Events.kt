@@ -36,7 +36,7 @@ enum class Events {
             PYRA ->  R.string.pyra
             SKEWB -> R.string.skewb
             SQ1 -> R.string.sq1
-            CLOCK -> R.drawable.clock
+            CLOCK -> R.string.clock
             MEGA -> R.string.mega
             BF333 -> R.string.cube333bf
             BF444 ->  R.string.cube444bf

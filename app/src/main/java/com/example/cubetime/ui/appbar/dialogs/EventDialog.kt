@@ -15,11 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -30,10 +33,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -51,8 +58,15 @@ fun EventDialog(
     onBack: () -> Unit,
     viewModel: SharedViewModel
 ) {
-    var text by remember { mutableStateOf(TextFieldValue(" ")) }
+    var text by remember { mutableStateOf(TextFieldValue("")) }
     var selectEvents by remember { mutableStateOf(Events.CUBE333) }
+    var isErrorTextLength = (text.text.length == 16)
+
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 
 
     Dialog(
@@ -61,20 +75,37 @@ fun EventDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = Dp.Unspecified, max = 800.dp)
-                .padding(5.dp)
+                .heightIn(min = Dp.Unspecified, max = 900.dp)
         )
         {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(15.dp)
             ) {
 
                 //ВВОД НАЗВАНИЯ СЕССИИ ( name)
-                TextField(
+                OutlinedTextField(
                     value = text,
+                    isError = (isErrorTextLength),
                     onValueChange = { newText ->
-                        text = newText
-                    }
+                        if (newText.text.length <= 16) {
+                            text = newText
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 30.dp, end = 30.dp)
+                        .focusRequester(focusRequester),
+
+                    label = {
+                        if (isErrorTextLength)
+                            Text(text= stringResource(R.string.maxlength),
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                                )
+                    },
+                    placeholder = { Text(text = stringResource(R.string.edittext)) }
+
                 )
 
                 LazyVerticalGrid(
@@ -92,26 +123,27 @@ fun EventDialog(
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
+                                .clickable { selectEvents = event }
+
                                 .background(
                                     if (event == selectEvents)
                                         MaterialTheme.colorScheme.onPrimary
-                                    else MaterialTheme.colorScheme.surfaceVariant
+                                    else MaterialTheme.colorScheme.surfaceVariant,
+                                    shape = RoundedCornerShape(15.dp)
                                 )
+
+
                         ) {
 
-                            IconButton(
-                                onClick = {
-                                     selectEvents = event
-                                },
+                            Icon(
                                 modifier = Modifier
                                     .padding(1.dp)
                                     .fillMaxWidth()
-                            ) {
-                                Icon(
-                                    painter = painterResource(event.getIconDrawableId()),
-                                    contentDescription = stringResource(event.getEventStringId())
-                                )
-                            }
+                                    .size(40.dp),
+
+                                painter = painterResource(event.getIconDrawableId()),
+                                contentDescription = stringResource(event.getEventStringId())
+                            )
                             Text(
                                 text = stringResource(event.getEventStringId()),
                                 fontSize = 11.sp
@@ -139,17 +171,18 @@ fun EventDialog(
                     //КНОПКА СОЗДАНИЯ СЕССИЯ
                     Button(
                         onClick = {
-                            val sessionName = text.text.trim()
+                            if (!isErrorTextLength && (text.text.length > 0)) {
+                                val sessionName = text.text.trim()
+                                if (selectEvents != null) {
+                                    viewModel.createSession(sessionName, selectEvents)
+                                }
+                                viewModel.switchSessions(viewModel.sessions.size - 1)
+                                onDismiss()
 
-                            if (selectEvents != null) {
-                                viewModel.creatSession(sessionName, selectEvents)
-                            }
-                            viewModel.switchSessions(viewModel.sessions.size-1)
-                            onDismiss()
                         }
                     ) {
                         Text(
-                            "CREATE"
+                            text = stringResource(R.string.creat)
                         )
                     }
                 }

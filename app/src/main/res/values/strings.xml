@@ -25,11 +25,7 @@
     <string name="delay">Delay</string>
     <string name="settinstimer">Settings Timer</string>
     <string name="TIMEEVENT">Hide time</string>
-
-
-
-
-
+    <string name="creat">Create</string>
 
 
 
@@ -38,14 +34,20 @@
     <string name="enter_time">Enter time</string>
     <string name="enter_comment">Enter comment</string>
     <string name="delete_solve">Delete solve?</string>
+    <string name="delete_session">Delete the session?</string>
+    <string name="edit_session_name">Rename the session</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="done">Done</string>
     <string name="delete">Delete</string>
 
+    <string name="irreversible_action">This action is irreversible</string>
+
     <string name="plus_two">+2</string>
     <string name="dnf">DNF</string>
     <string name="no_penalty">No penalty</string>
+
+    <string name="last_session_delete_toast">Can\'t delete the last session</string>
 
 
     <string name="cube222">Cube 2x2x2</string>
@@ -64,4 +66,11 @@
     <string name="cube444bf">4x4x4 BLD</string>
     <string name="cube555bf">5x5x5 BLD</string>
     <string name="multibld">MBLD</string>
+
+
+    //events dialog
+    <string name="maxlength">Max length: 15</string>
+    <string name="edittext">Sessian name</string>
+
+
 </resources>
