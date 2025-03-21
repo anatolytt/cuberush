@@ -22,6 +22,7 @@
     <string name="delay">Задержка</string>
     <string name="settinstimer">Настройки таймера</string>
     <string name="TIMEEVENT">Прятать время</string>
+    <string name="creat">Создать</string>
 
 
 
@@ -61,4 +62,12 @@
     <string name="cube444bf">4x4x4 вслепую</string>
     <string name="cube555bf">5x5x5 вслепую</string>
     <string name="multibld">Мультиблайнд</string>
+
+    //events dialog
+    <string name="edittext">Название сессии</string>
+    <string name="maxlength">Максимальная длина: 15</string>
+
+
+
+
 </resources>
