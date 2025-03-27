@@ -20,8 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -30,9 +32,15 @@ import com.example.cubetime.R
 @Composable
 fun CommentDialog(
     onDismiss: () -> Unit,
-    action: (String) -> Unit
+    action: (String) -> Unit,
+    initialComment: String = ""
 ) {
-    var enteredText by remember { mutableStateOf("") }
+    var enteredText by remember { mutableStateOf(
+        TextFieldValue(
+            text = initialComment,
+            selection = TextRange(initialComment.length)
+        )
+    ) }
     val focusRequester = remember { FocusRequester() }
     Dialog(
         onDismissRequest = onDismiss
@@ -80,7 +88,7 @@ fun CommentDialog(
                     }
 
                     OutlinedButton(onClick = {
-                        action(enteredText)
+                        action(enteredText.text)
                         onDismiss()
                     }) {
                         Text(stringResource(R.string.done))

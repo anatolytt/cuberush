@@ -35,6 +35,7 @@ import com.example.cubetime.R
 import com.example.cubetime.model.Penalties
 import com.example.cubetime.ui.screens.timer.dialogs.DialogTypes
 import com.example.cubetime.ui.screens.timer.dialogs.TimerScreenDialogs
+import com.example.cubetime.ui.shared.ScrambleImage
 
 
 @Composable
@@ -46,7 +47,7 @@ fun TimerScreen(viewModel: SharedViewModel) {
     var currentDialog by remember { mutableStateOf(DialogTypes.NONE) }
     val hideAnimation by animateFloatAsState(   // Анимация для скрытия элементов при запуске таймера
         targetValue = if (viewModel.everythingHidden) 0f else 1f,
-        animationSpec = tween(durationMillis = 300)
+        animationSpec = tween(durationMillis = 100)
     )
 
     var scrambleIsBig by remember { mutableStateOf(false) }
@@ -217,9 +218,7 @@ fun TimerScreen(viewModel: SharedViewModel) {
             contentAlignment = Alignment.BottomCenter) {
             ScrambleImage(
                 svgString = viewModel.currentImage,
-                sizeDp = scrambleSizeAnimation,
-                modifier = Modifier
-                    .size(scrambleSizeAnimation.dp)
+                sizeDp = scrambleSizeAnimation.dp
             )
         }
 

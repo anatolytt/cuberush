@@ -21,7 +21,7 @@ class TimerController(
     val hideEverything: (Boolean) -> Unit,
     val generateScr: () -> Unit,
     val settings: MutableState<TimerSettings>,
-    val addSolve: (Solve) -> Unit
+    val addSolve: (Int, Penalties) -> Unit
 ) {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -87,11 +87,8 @@ class TimerController(
         _isFirstSolve.value = false
         hideEverything(false)
         generateScr()
-        Solve(
-            result = 29
-        ).result = _currentTime.value
 
-        addSolve(Solve(currentTime))
+        addSolve(currentTime, penaltyState)
 
 
 
@@ -112,11 +109,10 @@ class TimerController(
     private fun timeToShow() : String {
         return when (timerState) {
             TimerState.INACTIVE -> {
-                when (penaltyState) {
-                    Penalties.PLUS2 -> TimeFormat.millisToString(currentTime+2000) + "+"
-                    Penalties.DNF -> "DNF"
-                    Penalties.NONE -> TimeFormat.millisToString(currentTime)
-                }
+                TimeFormat.millisToString(
+                    millis = currentTime,
+                    penalty = penaltyState
+                )
             }
             TimerState.INSPECTION -> {
                 when (penaltyState) {
@@ -129,7 +125,10 @@ class TimerController(
                 if (TIME_HIDDEN) {
                     "..."
                 } else {
-                    TimeFormat.millisToString(currentTime)
+                    TimeFormat.millisToString(
+                        millis = currentTime,
+                        penalty = penaltyState
+                    )
                 }
             }
         }
