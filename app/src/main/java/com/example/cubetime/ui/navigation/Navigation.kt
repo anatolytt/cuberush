@@ -22,7 +22,8 @@ fun Navigation(
     navController: NavHostController,
     viewModel: SharedViewModel,
     modifierNavHost: Modifier,
-    settingsDataManager: SettingsDataManager
+    settingsDataManager: SettingsDataManager,
+
 ) {
 
     NavHost(

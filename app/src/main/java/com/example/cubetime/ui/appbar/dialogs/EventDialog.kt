@@ -49,6 +49,7 @@ import androidx.compose.ui.window.Dialog
 import com.example.cubetime.R
 import com.example.cubetime.model.Events
 import com.example.cubetime.model.EventDialog
+import com.example.cubetime.ui.appbar.dialogs.sessionDialog.SessionTextField
 import com.example.cubetime.ui.shared.SharedViewModel
 import kotlinx.coroutines.coroutineScope
 
@@ -58,15 +59,9 @@ fun EventDialog(
     onBack: () -> Unit,
     viewModel: SharedViewModel
 ) {
-    var text by remember { mutableStateOf(TextFieldValue("")) }
+    var text = remember { mutableStateOf("") }
     var selectEvents by remember { mutableStateOf(Events.CUBE333) }
-    var isErrorTextLength = (text.text.length == 16)
-
-    val focusRequester = remember { FocusRequester() }
-
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
+//    var isErrorTextLength = (text.value.text.length == 16)
 
 
     Dialog(
@@ -84,29 +79,7 @@ fun EventDialog(
             ) {
 
                 //ВВОД НАЗВАНИЯ СЕССИИ ( name)
-                OutlinedTextField(
-                    value = text,
-                    isError = (isErrorTextLength),
-                    onValueChange = { newText ->
-                        if (newText.text.length <= 16) {
-                            text = newText
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 30.dp, end = 30.dp)
-                        .focusRequester(focusRequester),
-
-                    label = {
-                        if (isErrorTextLength)
-                            Text(text= stringResource(R.string.maxlength),
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center
-                                )
-                    },
-                    placeholder = { Text(text = stringResource(R.string.edittext)) }
-
-                )
+                SessionTextField(text)
 
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
@@ -134,7 +107,6 @@ fun EventDialog(
 
 
                         ) {
-
                             Icon(
                                 modifier = Modifier
                                     .padding(1.dp)
@@ -171,20 +143,22 @@ fun EventDialog(
                     //КНОПКА СОЗДАНИЯ СЕССИЯ
                     Button(
                         onClick = {
-                            if (!isErrorTextLength && (text.text.length > 0)) {
-                                val sessionName = text.text.trim()
+                            if (!(text.value.length == 16) && (text.value.length > 0)) {
+                                val sessionName = text.value.trim()
                                 if (selectEvents != null) {
                                     viewModel.createSession(sessionName, selectEvents)
                                 }
                                 viewModel.switchSessions(viewModel.sessions.size - 1)
                                 onDismiss()
 
+                            }
                         }
                     ) {
                         Text(
                             text = stringResource(R.string.creat)
                         )
                     }
+
                 }
 
             }

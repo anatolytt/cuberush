@@ -1,23 +1,22 @@
 package com.example.cubetime.ui.screens.solves
 
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.Card
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import com.example.cubetime.model.Events
-import com.example.cubetime.model.Penalties
-import com.example.cubetime.model.Solve
-import com.example.cubetime.ui.screens.solves.dialogs.SolveBottomSheet
 import com.example.cubetime.ui.shared.SharedViewModel
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SolvesScreen(
     viewModel: SharedViewModel
@@ -61,4 +60,38 @@ fun SolvesScreen(
             }
         }
     ) { }
+    viewModel: SharedViewModel,
+) {
+
+    val solveList by remember { mutableStateOf(viewModel.solve) }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Строка поиска")
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            modifier = Modifier.fillMaxWidth(),
+        )
+        {
+            items(solveList.size) { index ->
+                val solve = solveList[index]
+                Card(
+                    modifier = Modifier.height(60.dp)
+
+                ) {
+                    Text(text = TimeFormat.millisToString(solve.result),
+                        modifier = Modifier.padding(5.dp)
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                    )
+
+                }
+
+            }
+        }
+    }
+
 }

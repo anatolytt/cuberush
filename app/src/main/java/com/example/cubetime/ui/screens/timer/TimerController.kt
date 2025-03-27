@@ -4,8 +4,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import com.example.cubetime.model.Penalties
+import com.example.cubetime.model.Solve
 import com.example.cubetime.ui.settings.SettingsDataManager
 import com.example.cubetime.ui.settings.TimerSettings
+import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +20,8 @@ import kotlinx.coroutines.launch
 class TimerController(
     val hideEverything: (Boolean) -> Unit,
     val generateScr: () -> Unit,
-    val settings: MutableState<TimerSettings>
+    val settings: MutableState<TimerSettings>,
+    val addSolve: (Solve) -> Unit
 ) {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -84,6 +87,14 @@ class TimerController(
         _isFirstSolve.value = false
         hideEverything(false)
         generateScr()
+        Solve(
+            result = 29
+        ).result = _currentTime.value
+
+        addSolve(Solve(currentTime))
+
+
+
     }
 
     fun stopAndDelete() {
@@ -94,6 +105,7 @@ class TimerController(
         _isFirstSolve.value = true
         hideEverything(false)
         generateScr()
+
     }
 
 
