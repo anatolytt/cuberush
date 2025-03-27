@@ -100,11 +100,10 @@ class TimerController(
     private fun timeToShow() : String {
         return when (timerState) {
             TimerState.INACTIVE -> {
-                when (penaltyState) {
-                    Penalties.PLUS2 -> TimeFormat.millisToString(currentTime+2000) + "+"
-                    Penalties.DNF -> "DNF"
-                    Penalties.NONE -> TimeFormat.millisToString(currentTime)
-                }
+                TimeFormat.millisToString(
+                    millis = currentTime,
+                    penalty = penaltyState
+                )
             }
             TimerState.INSPECTION -> {
                 when (penaltyState) {
@@ -117,7 +116,10 @@ class TimerController(
                 if (TIME_HIDDEN) {
                     "..."
                 } else {
-                    TimeFormat.millisToString(currentTime)
+                    TimeFormat.millisToString(
+                        millis = currentTime,
+                        penalty = penaltyState
+                    )
                 }
             }
         }

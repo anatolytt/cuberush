@@ -1,4 +1,4 @@
-package com.example.cubetime.ui.screens.timer
+package com.example.cubetime.ui.shared
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,8 +14,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
@@ -23,7 +23,7 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 
 @Composable
-fun ScrambleImage(svgString: String?, sizeDp: Int, modifier: Modifier) {
+fun ScrambleImage(svgString: String?, sizeDp: Dp) {
     val context = LocalContext.current
 
     val imageLoader = remember {
@@ -33,6 +33,7 @@ fun ScrambleImage(svgString: String?, sizeDp: Int, modifier: Modifier) {
     }
 
     var imageData by remember { mutableStateOf<ByteArray?>(null) }
+
 
     LaunchedEffect(svgString) {
         imageData = svgString?.toByteArray()
@@ -47,13 +48,12 @@ fun ScrambleImage(svgString: String?, sizeDp: Int, modifier: Modifier) {
                 imageLoader
             ),
             contentDescription = "scramble image",
-            modifier = modifier
+            modifier = Modifier.size(sizeDp)
         )
     } else {
         // пока изображение загружается
         Box(
-            modifier = modifier
-                .background(Color.Transparent)
+            modifier = Modifier.size(sizeDp).background(Color.Transparent)
         ) {
             Text(
                 text = "Generating...",

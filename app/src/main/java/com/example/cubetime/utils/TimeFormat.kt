@@ -4,21 +4,36 @@ import android.util.Log
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
+import com.example.cubetime.model.Penalties
 import java.util.Locale
 
 object TimeFormat {
-    fun millisToString(millis: Int): String {
-        if (millis < 60000) {
-            return (String.format(Locale.US, "%.2f", (millis.toDouble()) / 1000))
+    fun millisToString(millis: Int, penalty: Penalties): String {
+        var plus = ""
+        var millisAfterPenalty = millis
+        if (penalty == Penalties.DNF) {
+            return "DNF"
+        }
+        if (penalty == Penalties.PLUS2) {
+            plus = "+"
+            millisAfterPenalty += 2000
+        }
+
+        if (millisAfterPenalty < 60000) {
+            return (String.format(
+                Locale.US,
+                "%.2f",
+                (millisAfterPenalty.toDouble()) / 1000)+plus
+                    )
         } else {
-            val minutes = millis / 60000
-            val millisLeft = millis % 60000
+            val minutes = millisAfterPenalty / 60000
+            val millisLeft = millisAfterPenalty % 60000
             val milliseconds = millisLeft % 1000 / 10
             var seconds = (millisLeft / 1000).toString()
             if (seconds.length == 1) {
                 seconds = "0" + seconds
             }
-            return ("${minutes}:${seconds}.${milliseconds}")
+            return ("${minutes}:${seconds}.${milliseconds}${plus}")
         }
     }
 

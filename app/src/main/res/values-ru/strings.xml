@@ -36,6 +36,7 @@
     <string name="ok">ОК</string>
     <string name="done">Готово</string>
     <string name="delete">Удалить</string>
+    <string name="share">Поделиться</string>
 
     <string name="irreversible_action">Это действие необратимо</string>
 
@@ -44,6 +45,9 @@
     <string name="no_penalty">Без штрафа</string>
 
     <string name="last_session_delete_toast">Невозможно удалить последнюю сессию</string>
+
+    <string name="time">Время: </string>
+    <string name="comment">Комментарий></string>
 
 
     <string name="cube222">Куб 2x2x2</string>
