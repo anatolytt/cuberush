@@ -21,6 +21,7 @@ import com.example.cubetime.model.Session
 @Composable
 fun SessionTextField(text: MutableState<String>){
 
+
     var isErrorTextLength = (text.value.length == 16)
     val focusRequester = remember { FocusRequester() }
 

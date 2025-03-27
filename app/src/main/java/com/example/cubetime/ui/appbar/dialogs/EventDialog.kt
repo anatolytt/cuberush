@@ -107,7 +107,6 @@ fun EventDialog(
 
 
                         ) {
-
                             Icon(
                                 modifier = Modifier
                                     .padding(1.dp)
