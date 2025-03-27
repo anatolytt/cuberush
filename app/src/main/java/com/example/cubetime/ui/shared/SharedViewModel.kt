@@ -39,14 +39,6 @@ class SharedViewModel : ViewModel() {
     )
     val solve get() = _solves.toList()
 
-    fun addToSolveList(solves:Solve){
-        _solves.add(solves)
-    }
-
-
-
-
-
     val sessions get() = _sessions.toList()
     val currentSession get() = sessions[currentSessionID]
 
@@ -67,7 +59,7 @@ class SharedViewModel : ViewModel() {
             hideEverything = { hide -> hideEverything(hide) },
             generateScr = { updateScramble() },
             settings = timerSettings,
-            addSolve =  {solves -> addToSolveList(solves)}
+            addSolve =  {time, penalty -> addToSolveList(time, penalty)}
         )
     )
     val timer get() = _timer.value
@@ -168,6 +160,19 @@ class SharedViewModel : ViewModel() {
     fun renameSession(session: Session, index: Int, newName: String) {
         val newSession = session.copy(name = newName)
         _sessions[index] = newSession
+    }
+
+    fun addToSolveList(time: Int, penalty: Penalties){
+        _solves.add(Solve(
+            result = time,
+            event = Events.CUBE333,
+            penalties = penalty,
+            date = "27.02.2025",
+            scramble = currentScramble,
+            comment = "",
+            reconstruction = "",
+            isCustomScramble = false
+        ))
     }
 
 

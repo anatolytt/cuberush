@@ -21,7 +21,7 @@ class TimerController(
     val hideEverything: (Boolean) -> Unit,
     val generateScr: () -> Unit,
     val settings: MutableState<TimerSettings>,
-    val addSolve: (Solve) -> Unit
+    val addSolve: (Int, Penalties) -> Unit
 ) {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -87,11 +87,8 @@ class TimerController(
         _isFirstSolve.value = false
         hideEverything(false)
         generateScr()
-        Solve(
-            result = 29
-        ).result = _currentTime.value
 
-        addSolve(Solve(currentTime))
+        addSolve(currentTime, penaltyState)
 
 
 

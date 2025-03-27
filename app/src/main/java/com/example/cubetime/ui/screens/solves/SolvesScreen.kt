@@ -1,6 +1,7 @@
 package com.example.cubetime.ui.screens.solves
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
@@ -12,19 +13,39 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.example.cubetime.model.Solve
+import com.example.cubetime.ui.screens.solves.dialogs.SolveBottomSheet
 import com.example.cubetime.ui.shared.SharedViewModel
+import com.example.cubetime.utils.TimeFormat
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SolvesScreen(
     viewModel: SharedViewModel
 ){
     var chosenSolve by remember { mutableStateOf<Solve?>(null) }
+    val solveList by remember { mutableStateOf(viewModel.solve) }
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
-
     )
 
     val scope = rememberCoroutineScope()
@@ -43,28 +64,6 @@ fun SolvesScreen(
         )
     }
 
-    Button(
-        onClick = {
-            chosenSolve = Solve(
-                result = 4987,
-                event = Events.CUBE333,
-                penalties = Penalties.NONE,
-                date = "22-03-2025",
-                scramble = "L' U' B2 D' L2 R2 D R2 U2 F2 R2 U' L' B L2 D' F D' U R",
-                comment = "аофвыджаофвылаофвыжа\nfadfafsdf\nadsfdas\nadsfadsfasfsafadsfffsdfafasfasfadsjflads",
-                reconstruction = "",
-                isCustomScramble = true
-            )
-            scope.launch {
-                sheetState.expand()
-            }
-        }
-    ) { }
-    viewModel: SharedViewModel,
-) {
-
-    val solveList by remember { mutableStateOf(viewModel.solve) }
-
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -78,13 +77,22 @@ fun SolvesScreen(
         {
             items(solveList.size) { index ->
                 val solve = solveList[index]
-                Card(
-                    modifier = Modifier.height(60.dp)
+                ElevatedCard(
+                    modifier = Modifier
+                        .height(60.dp)
+                        .padding(5.dp)
+                        .clickable {
+                            chosenSolve = solve
+                        },
+
 
                 ) {
-                    Text(text = TimeFormat.millisToString(solve.result),
-                        modifier = Modifier.padding(5.dp)
-                            .fillMaxWidth(),
+                    Text(
+                        text = TimeFormat.millisToString(solve.result, solve.penalties),
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(5.dp),
                         textAlign = TextAlign.Center,
                     )
 

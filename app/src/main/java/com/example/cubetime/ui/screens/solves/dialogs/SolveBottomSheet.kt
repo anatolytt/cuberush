@@ -237,7 +237,7 @@ fun SolveBottomSheet(
                     }
                 }
 
-                MyDivider(12.dp)
+                MyDivider(8.dp)
 
                 Row(
                     horizontalArrangement = Arrangement.End
@@ -278,6 +278,8 @@ fun SolveBottomSheet(
                         )
                     }
                 }
+
+                MyDivider(padding = 6.dp)
 
                 Card (
                     colors = CardDefaults.cardColors(
