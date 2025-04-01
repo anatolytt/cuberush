@@ -64,10 +64,6 @@ class SharedViewModel : ViewModel() {
     )
     val timer get() = _timer.value
 
-    //для выбора головоломок при созднии сессии (состояние выбора)
-    private val _selectedEvent = mutableStateOf<Events?>(null)
-    val selectedEvent get() = _selectedEvent.value
-
     private var scramblesGeneratingJob by mutableStateOf<Job?>(null)
     private var scramblesUpdateJob by mutableStateOf<Job?>(null)
 
@@ -164,6 +160,7 @@ class SharedViewModel : ViewModel() {
 
     fun addToSolveList(time: Int, penalty: Penalties){
         _solves.add(Solve(
+            id = "1",
             result = time,
             event = Events.CUBE333,
             penalties = penalty,
@@ -174,6 +171,56 @@ class SharedViewModel : ViewModel() {
             isCustomScramble = false
         ))
     }
+
+
+
+
+
+
+    //режим удаления ( вынес топбара вместо основного бара)
+    private val _longPressMode = mutableStateOf(false)
+    val longPressMode: Boolean get() = _longPressMode.value
+
+    private val _selectedSolveIds = mutableStateListOf<String>()
+    val selectedSolveIds: List<String> get() = _selectedSolveIds
+
+    fun enableDeleteMode(firstId: String) {
+        _longPressMode.value = true
+        _selectedSolveIds.clear()
+        _selectedSolveIds.add(firstId)
+    }
+
+
+    fun addIDInSolvesLits(id: String) {
+        if (_selectedSolveIds.contains(id)) {
+            _selectedSolveIds.remove(id)
+        }
+        else {
+            _selectedSolveIds.add(id)
+        }
+    }
+
+    fun disableDeleteMode() {
+        _longPressMode.value = false
+        _selectedSolveIds.clear()
+    }
+
+    fun deleteSelectedSolves() {
+        val indexToRemove = _solves.mapIndexedNotNull { index, solve ->
+            index.takeIf { solve.id in _selectedSolveIds }
+        }
+
+        indexToRemove.reversed().forEach { index ->
+            _solves.removeAt(index)
+        }
+
+        _selectedSolveIds.clear()
+        _longPressMode.value = false
+
+    }
+
+
+
 
 
 

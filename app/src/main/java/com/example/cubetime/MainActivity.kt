@@ -39,6 +39,7 @@ import com.example.cubetime.ui.appbar.AppBar
 import com.example.cubetime.ui.navigation.Navigation
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationBar
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationItem
+import com.example.cubetime.ui.screens.solves.TopBar
 import com.example.cubetime.ui.settings.SettingsDataManager
 import com.example.cubetime.ui.settings.TimerSettings
 import com.example.cubetime.ui.shared.SharedViewModel
@@ -119,9 +120,12 @@ class MainActivity : ComponentActivity() {
                             visible = !viewModel.settingsScreenOpen,
                             exit = fadeOut() + slideOutVertically { it }
                         ) {
-                            AppBar(viewModel, navController)
+                            if (viewModel.longPressMode) {
+                                TopBar(viewModel)
+                            } else {
+                                AppBar(viewModel, navController)
+                            }
                         }
-
                     }
                 ) { padding ->
                     Navigation(
