@@ -134,7 +134,8 @@ fun TimerScreen(viewModel: SharedViewModel) {
                             )
                         }
                         //ввод времени
-                        IconButton(onClick = {currentDialog = DialogTypes.ADD_TIME
+                        IconButton(onClick = {
+                            currentDialog = DialogTypes.ADD_TIME
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.dnf),
@@ -264,7 +265,10 @@ fun TimerScreen(viewModel: SharedViewModel) {
                     }
 
                     //кнопка для dnf
-                    IconButton(onClick = { timer.changePenalty(Penalties.DNF) }) {
+                    IconButton(onClick = {
+                        timer.changePenalty(Penalties.DNF)
+                        timerViewModel.updatePenalty(id=0, Penalties.DNF)
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.dnf),
                             contentDescription = "Generate scramble"
@@ -272,7 +276,10 @@ fun TimerScreen(viewModel: SharedViewModel) {
                     }
 
                     //кнопка добавление +2 ко времени
-                    IconButton(onClick = { timer.changePenalty(Penalties.PLUS2) }) {
+                    IconButton(onClick = {
+                        timer.changePenalty(Penalties.PLUS2)
+                        timerViewModel.updatePenalty(id=0, Penalties.PLUS2)
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.plustwo),
                             contentDescription = "Generate scramble"

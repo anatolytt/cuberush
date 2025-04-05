@@ -104,7 +104,7 @@ fun SolveBottomSheet(
     }
 
     var penalty by remember { mutableStateOf(solve.penalties) }
-    val commentState = remember { mutableStateOf("") }
+    val commentState = remember { mutableStateOf(solve.comment) }
 
     var showCommentDialog by remember { mutableStateOf(false) }
 

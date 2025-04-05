@@ -86,6 +86,7 @@ class TimerViewModel : ViewModel() {
     }
 
     fun deleteLastSolve() {
+        timer.clear()
         solvesRepository.deleteLastSolve()
     }
 
@@ -106,4 +107,7 @@ class TimerViewModel : ViewModel() {
         )
 
     }
+
+    fun updateComment(id: Int, new: String) = solvesRepository.updateComment(id, new, lastSolve=true)
+    fun updatePenalty(id: Int, new: Penalties) = solvesRepository.updatePenalty(id, new, lastSolve=true)
 }

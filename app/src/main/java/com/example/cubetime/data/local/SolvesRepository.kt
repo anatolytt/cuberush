@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
@@ -37,7 +38,9 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
     fun addSolve(solve: Solve) {
         coroutineScope.launch (Dispatchers.IO) {
             solvesDao.insertSolve(solve)
-            lastSolveId.value = solve.id
+            lastSolveId.update { solvesDao.getLastSolveId() }
+            Log.d("Solves", solve.id.toString())
+
         }
     }
 
@@ -45,15 +48,23 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
         return solvesDao.getSolveById(id)
     }
 
-    fun updateComment(id: Int, new: String) {
+    fun updateComment(id: Int=0, new: String, lastSolve: Boolean) {
         coroutineScope.launch (Dispatchers.IO) {
-            solvesDao.updateComment(id, new)
+            if (lastSolve) {
+                solvesDao.updateComment(lastSolveId.value, new)
+            } else {
+                solvesDao.updateComment(id, new)
+            }
         }
     }
 
-    fun updatePenalty(id: Int, new: Penalties) {
+    fun updatePenalty(id: Int=0, new: Penalties, lastSolve: Boolean) {
         coroutineScope.launch (Dispatchers.IO) {
-            solvesDao.updatePenalty(id, new)
+            if (lastSolve) {
+                solvesDao.updatePenalty(lastSolveId.value, new)
+            } else {
+                solvesDao.updatePenalty(id, new)
+            }
         }
     }
 
@@ -75,7 +86,8 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
 
     fun deleteLastSolve() {
         coroutineScope.launch (Dispatchers.IO) {
-            //solvesDao.deleteById(lastSolveId.value)
+            Log.d("SolvesRepository", lastSolveId.value.toString())
+            solvesDao.deleteById(lastSolveId.value)
         }
     }
 

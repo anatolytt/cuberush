@@ -41,7 +41,7 @@ class SolvesViewModel : ViewModel() {
         _chosenSolve.value = null
     }
 
-    fun updateComment(id: Int, new: String) = repository.updateComment(id, new)
-    fun updatePenalty(id: Int, new: Penalties) = repository.updatePenalty(id, new)
+    fun updateComment(id: Int, new: String) = repository.updateComment(id, new, false)
+    fun updatePenalty(id: Int, new: Penalties) = repository.updatePenalty(id, new, false)
     fun deleteSolve(id: Int) = repository.deleteSolveById(id)
 }

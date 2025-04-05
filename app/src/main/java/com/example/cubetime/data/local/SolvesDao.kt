@@ -34,6 +34,10 @@ interface SolvesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSolve(solve: Solve) : Unit
 
+    @Query("SELECT id FROM Solve ORDER BY id DESC")
+    fun getLastSolveId() : Int
+
+
 
     @Query("DELETE FROM Solve WHERE id = :id")
     fun deleteById(id: Int) : Int

@@ -129,7 +129,7 @@ fun SolvesScreen(
 //                        ),
                 ) {
                     Text(
-                        text = TimeFormat.millisToString(solve.result, Penalties.NONE),
+                        text = TimeFormat.millisToString(solve.result, solve.penalties),
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .fillMaxSize()

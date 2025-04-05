@@ -94,11 +94,15 @@ class TimerController(
 
     fun stopAndDelete() {
         timerJob?.cancel()
+        clear()
         _timerState.value = TimerState.INACTIVE
+        hideEverything(false)
+    }
+
+    fun clear() {
         _currentTime.value = 0
         _penaltyState.value = Penalties.NONE
         _isFirstSolve.value = true
-        hideEverything(false)
         generateScr()
     }
 
@@ -145,6 +149,7 @@ class TimerController(
     ) {
         _currentTime.value = TimeFormat.inputTextToMillis(solveMillis)
         _penaltyState.value = penalty
+        addSolve(currentTime, penaltyState)
         _isFirstSolve.value = false
     }
 
