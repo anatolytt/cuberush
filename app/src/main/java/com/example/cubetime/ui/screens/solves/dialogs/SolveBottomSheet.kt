@@ -74,8 +74,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cubetime.R
-import com.example.cubetime.model.Penalties
-import com.example.cubetime.model.Solve
+import com.example.cubetime.data.model.Penalties
+import com.example.cubetime.data.model.Solve
+import com.example.cubetime.ui.screens.solves.SolvesViewModel
 import com.example.cubetime.ui.screens.timer.TimerScreen
 import com.example.cubetime.ui.screens.timer.dialogs.CommentDialog
 import com.example.cubetime.ui.shared.ScrambleImage
@@ -92,7 +93,7 @@ fun SolveBottomSheet(
     onDismiss: () -> Unit,
     sheetState: SheetState,
     solve: Solve,
-    viewModel: SharedViewModel
+    solvesViewModel: SolvesViewModel
 ) {
     var scrambleImageString by remember { mutableStateOf<String?>("") }
     LaunchedEffect (Unit) {
@@ -110,7 +111,10 @@ fun SolveBottomSheet(
     if (showCommentDialog) {
         CommentDialog(
             onDismiss = { showCommentDialog = false },
-            action = {newComment -> commentState.value = newComment},
+            action = {newComment ->
+                commentState.value = newComment
+                solvesViewModel.updateComment(solve.id, newComment)
+                     },
             initialComment = commentState.value
         )
     }
@@ -213,21 +217,30 @@ fun SolveBottomSheet(
                         Row() {
                             Spacer(modifier = Modifier.weight(1f))
                             PenaltyButton(
-                                action = { penalty = Penalties.NONE },
+                                action = {
+                                    penalty = Penalties.NONE
+                                    solvesViewModel.updatePenalty(solve.id, Penalties.NONE)
+                                         },
                                 text = stringResource(R.string.ok),
                                 painter = painterResource(id = R.drawable.cross),
                                 selected = (penalty == Penalties.NONE),
                                 modifier = Modifier
                             )
                             PenaltyButton(
-                                action = { penalty = Penalties.PLUS2 },
+                                action = {
+                                    penalty = Penalties.PLUS2
+                                    solvesViewModel.updatePenalty(solve.id, Penalties.PLUS2)
+                                         },
                                 text = stringResource(R.string.plus_two),
                                 painter = painterResource(id = R.drawable.plustwo),
                                 selected = (penalty == Penalties.PLUS2),
                                 modifier = Modifier.padding(start = 6.dp)
                             )
                             PenaltyButton(
-                                action = { penalty = Penalties.DNF},
+                                action = {
+                                    penalty = Penalties.DNF
+                                    solvesViewModel.updatePenalty(solve.id, Penalties.DNF)
+                                         },
                                 text = stringResource(R.string.dnf),
                                 painter = painterResource(id = R.drawable.dnf),
                                 selected = penalty == Penalties.DNF,
@@ -245,6 +258,7 @@ fun SolveBottomSheet(
                     Spacer(modifier = Modifier.weight(1f))
                     Button(
                         onClick = {
+                            solvesViewModel.deleteSolve(solve.id)
                             onDismiss()
                         },
                         colors = ButtonDefaults.buttonColors(

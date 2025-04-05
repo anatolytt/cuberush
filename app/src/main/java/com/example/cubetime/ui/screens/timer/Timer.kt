@@ -34,11 +34,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Timer(hideEverything: (Boolean) -> Unit, modifier: Modifier,
-          viewModel: SharedViewModel
+fun Timer(hideEverything: (Boolean) -> Unit,
+          modifier: Modifier,
+          timerViewModel: TimerViewModel
 ) 
 {
-    val timer = viewModel.timer
+    val timer = timerViewModel.timer
     var isLongPress by remember { mutableStateOf(false) }
     var isPressed by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()

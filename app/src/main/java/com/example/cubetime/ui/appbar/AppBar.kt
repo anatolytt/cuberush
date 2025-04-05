@@ -29,6 +29,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.cubetime.model.Events
+import com.example.cubetime.data.model.Events
 import com.example.cubetime.ui.appbar.dialogs.AppBarDialogNavigation
 import com.example.cubetime.ui.appbar.dialogs.DialogsState
 import com.example.cubetime.ui.appbar.dialogs.EventDialog
@@ -58,7 +59,7 @@ import com.example.cubetime.ui.shared.SharedViewModel
 fun AppBar(viewModel: SharedViewModel,
            navController: NavHostController,
 ) {
-
+    val appBarViewModel : AppBarViewModel = viewModel()
     val dialogToShow =  remember {
         mutableStateOf<DialogsState>(DialogsState.NONE)
     }
@@ -68,11 +69,13 @@ fun AppBar(viewModel: SharedViewModel,
         animationSpec = tween(durationMillis = 300)
     )
 
-    AppBarDialogNavigation(dialogToShow, viewModel = viewModel)
+    val currentSession by appBarViewModel.repository.currentSession.collectAsState()
+
+    AppBarDialogNavigation(dialogToShow, viewModel = viewModel, appBarViewModel=appBarViewModel)
 
     CenterAlignedTopAppBar(
         title = {
-            val event = viewModel.currentSession.event
+            val event = currentSession.event
             Row (verticalAlignment = Alignment.CenterVertically) {
                 Icon (
                     painter = painterResource(event.getIconDrawableId()),
@@ -80,7 +83,7 @@ fun AppBar(viewModel: SharedViewModel,
                     Modifier.size(20.dp)
                 )
                 Text(
-                    text = viewModel.currentSession.name,
+                    text = currentSession.name,
                     Modifier.padding(start = 10.dp)
                 )
             }

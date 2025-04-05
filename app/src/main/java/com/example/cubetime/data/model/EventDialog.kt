@@ -1,4 +1,4 @@
-package com.example.cubetime.model
+package com.example.cubetime.data.model
 
 data class EventDialog(
     val event: Events,

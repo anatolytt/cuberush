@@ -22,7 +22,7 @@ fun TopBar(viewModel: SharedViewModel){
         title = { Text("Выбрано элементов") },
         navigationIcon = {
             IconButton(onClick = {
-                viewModel.disableDeleteMode()
+                //viewModel.disableDeleteMode()
             }
             ) {
                 Icon(
@@ -32,7 +32,9 @@ fun TopBar(viewModel: SharedViewModel){
             }
         },
         actions = {
-            IconButton(onClick = {viewModel.deleteSelectedSolves() }) {
+            IconButton(onClick = {
+             //   viewModel.deleteSelectedSolves()
+            }) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "удалить выбранное"

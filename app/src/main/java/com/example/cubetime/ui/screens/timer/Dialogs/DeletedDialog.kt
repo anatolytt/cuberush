@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.cubetime.R
-import com.example.cubetime.model.Events
+import com.example.cubetime.data.model.Events
 @Preview(showBackground = true)
 @Composable
 fun DeletedDialog(

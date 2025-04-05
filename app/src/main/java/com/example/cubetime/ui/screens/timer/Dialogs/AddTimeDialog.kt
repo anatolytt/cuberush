@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.cubetime.R
-import com.example.cubetime.model.Penalties
+import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.ui.shared.PenaltiesDropdownMenu
 import com.example.cubetime.utils.TimeFormat
 

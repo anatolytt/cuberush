@@ -21,7 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import com.example.cubetime.R
-import com.example.cubetime.model.Penalties
+import com.example.cubetime.data.model.Penalties
 
 @Composable
 fun PenaltiesDropdownMenu(setPenalty: (Penalties) -> Unit, iconSize: Dp) {

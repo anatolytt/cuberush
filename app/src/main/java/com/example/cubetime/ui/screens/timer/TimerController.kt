@@ -1,10 +1,11 @@
 package com.example.cubetime.ui.screens.timer
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
-import com.example.cubetime.model.Penalties
-import com.example.cubetime.model.Solve
+import com.example.cubetime.data.model.Penalties
+import com.example.cubetime.data.model.Solve
 import com.example.cubetime.ui.settings.SettingsDataManager
 import com.example.cubetime.ui.settings.TimerSettings
 import com.example.cubetime.ui.shared.SharedViewModel
@@ -18,8 +19,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class TimerController(
-    val hideEverything: (Boolean) -> Unit,
     val generateScr: () -> Unit,
+    val hideEverything: (Boolean) -> Unit,
     val settings: MutableState<TimerSettings>,
     val addSolve: (Int, Penalties) -> Unit
 ) {
@@ -86,11 +87,8 @@ class TimerController(
         _timerState.value = TimerState.INACTIVE
         _isFirstSolve.value = false
         hideEverything(false)
-        generateScr()
-
         addSolve(currentTime, penaltyState)
-
-
+        generateScr()
 
     }
 
@@ -102,7 +100,6 @@ class TimerController(
         _isFirstSolve.value = true
         hideEverything(false)
         generateScr()
-
     }
 
 
@@ -144,7 +141,8 @@ class TimerController(
 
     fun inputSolve(
         solveMillis: String,
-        penalty: Penalties) {
+        penalty: Penalties
+    ) {
         _currentTime.value = TimeFormat.inputTextToMillis(solveMillis)
         _penaltyState.value = penalty
         _isFirstSolve.value = false

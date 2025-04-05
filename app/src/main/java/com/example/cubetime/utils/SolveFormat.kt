@@ -1,9 +1,9 @@
 package com.example.cubetime.utils
 
-import com.example.cubetime.model.Solve
+import com.example.cubetime.data.model.Solve
 
 object ResultFormat {
-    fun solveToShare(solve:Solve) {
+    fun solveToShare(solve: Solve) {
         val time = TimeFormat.millisToString(
             millis = solve.result,
             penalty = solve.penalties

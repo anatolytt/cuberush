@@ -1,4 +1,4 @@
-package com.example.cubetime.model
+package com.example.cubetime.data.model
 
 import com.example.cubetime.R
 

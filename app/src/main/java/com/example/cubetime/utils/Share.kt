@@ -2,7 +2,7 @@ package com.example.cubetime.utils
 
 import android.content.Context
 import android.content.Intent
-import com.example.cubetime.model.Solve
+import com.example.cubetime.data.model.Solve
 
 class Sharing() {
     fun shareSolve(solve: Solve, context: Context) {

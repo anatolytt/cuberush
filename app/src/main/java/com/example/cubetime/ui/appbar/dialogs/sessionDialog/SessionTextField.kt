@@ -16,7 +16,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.cubetime.R
-import com.example.cubetime.model.Session
+import com.example.cubetime.data.model.Session
 
 @Composable
 fun SessionTextField(text: MutableState<String>){

@@ -34,7 +34,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.compose.rememberNavController
-import com.example.cubetime.model.Events
+import com.example.cubetime.data.local.AppDatabase
+import com.example.cubetime.data.local.SolvesRepository
+import com.example.cubetime.data.model.Events
 import com.example.cubetime.ui.appbar.AppBar
 import com.example.cubetime.ui.navigation.Navigation
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationBar
@@ -58,9 +60,9 @@ class MainActivity : ComponentActivity() {
     private val viewModel: SharedViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppDatabase.init(this)
         enableEdgeToEdge()
         setContent {
-
             val context = LocalContext.current
             val settingsDataManager = SettingsDataManager(context)
             val language by settingsDataManager.getLanguage().collectAsState(initial = "ru")
@@ -69,12 +71,6 @@ class MainActivity : ComponentActivity() {
 
             val timerSettings by settingsDataManager.getTimerSettings().collectAsState(
                     initial = TimerSettings(false, false, false))
-            viewModel.updateTimerSettings(timerSettings)
-
-            LaunchedEffect (Unit) {
-                viewModel.switchSessions(0)
-            }
-
 
             val navController = rememberNavController()
 
@@ -120,11 +116,11 @@ class MainActivity : ComponentActivity() {
                             visible = !viewModel.settingsScreenOpen,
                             exit = fadeOut() + slideOutVertically { it }
                         ) {
-                            if (viewModel.longPressMode) {
-                                TopBar(viewModel)
-                            } else {
+                            //if (viewModel.longPressMode) {
+                             //   TopBar(viewModel)
+                            //} else {
                                 AppBar(viewModel, navController)
-                            }
+                            //}
                         }
                     }
                 ) { padding ->

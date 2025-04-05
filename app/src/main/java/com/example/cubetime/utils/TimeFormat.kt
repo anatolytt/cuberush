@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
-import com.example.cubetime.model.Penalties
+import com.example.cubetime.data.model.Penalties
 import java.util.Locale
 
 object TimeFormat {

@@ -1,5 +1,6 @@
 package com.example.cubetime.ui.screens.solves
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -30,6 +32,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,23 +44,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.cubetime.model.Solve
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.cubetime.data.model.Penalties
+import com.example.cubetime.data.model.Solve
 import com.example.cubetime.ui.screens.solves.dialogs.SolveBottomSheet
+import com.example.cubetime.ui.screens.timer.TimerViewModel
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.utils.TimeFormat
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SolvesScreen(
-    viewModel: SharedViewModel
+    viewModel: SharedViewModel,
+    solvesViewModel: SolvesViewModel = viewModel()
 ){
-    var chosenSolve by remember { mutableStateOf<Solve?>(null) }
-    val solveList = viewModel.solve
+    var chosenSolve = solvesViewModel.chosenSolve
+    val solveList by solvesViewModel.solvesList.collectAsState(initial = emptyList())
 
 
     val sheetState = rememberModalBottomSheetState(
@@ -70,12 +80,11 @@ fun SolvesScreen(
             onDismiss = {
                 scope.launch {
                     sheetState.hide()
-                    chosenSolve = null
-                }
-                        },
+                    solvesViewModel.unchooseSolve()
+                } },
             sheetState = sheetState,
             solve = chosenSolve!!,
-            viewModel = viewModel,
+            solvesViewModel = solvesViewModel
         )
     }
 
@@ -91,12 +100,10 @@ fun SolvesScreen(
             modifier = Modifier.fillMaxWidth(),
         )
         {
-            val reversedList = solveList.reversed()
-            items(reversedList.size) { index ->
-                val solve = reversedList[index]
-                val isSelected = viewModel.selectedSolveIds.contains(solve.id)
+            items(solveList) { solve ->
+               // val isSelected = viewModel.selectedSolveIds.contains(solve.id)
 
-                solve.id  = ""+index
+                //solve.id  = ""+index
                 ElevatedCard(
                     modifier = Modifier
                         .height(60.dp)
@@ -105,25 +112,24 @@ fun SolvesScreen(
                         .clip(RoundedCornerShape(12.dp))
                         .combinedClickable(
                             onClick = {
-                                if (viewModel.longPressMode) {
-                                    viewModel.addIDInSolvesLits(solve.id)
-                                } else {
-                                    chosenSolve = solve
-                                }
+//                                if (viewModel.longPressMode) {
+//                                    viewModel.addIDInSolvesLits(solve.id)
+//                                } else {
+                                    solvesViewModel.chooseSolveById(solve.id)
+//                                }
                             },
                             onLongClick = {
-                                viewModel.enableDeleteMode(solve.id)
+                                //viewModel.enableDeleteMode(solve.id)
                             }
                         )
-                        .border(
-                            width = if (isSelected) 2.dp else 0.dp,
-                            color = if (isSelected) Color.Black else Color.Transparent,
-                            shape = MaterialTheme.shapes.medium
-                        ),
+//                        .border(
+//                            width = if (isSelected) 2.dp else 0.dp,
+//                            color = if (isSelected) Color.Black else Color.Transparent,
+//                            shape = MaterialTheme.shapes.medium
+//                        ),
                 ) {
                     Text(
-
-                        text = TimeFormat.millisToString(solve.result, solve.penalties),
+                        text = TimeFormat.millisToString(solve.result, Penalties.NONE),
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .fillMaxSize()

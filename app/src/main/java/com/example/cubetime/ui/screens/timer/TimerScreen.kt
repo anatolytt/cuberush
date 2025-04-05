@@ -3,6 +3,7 @@ package com.example.cubetime.ui.screens.timer
 
 
 import androidx.activity.compose.BackHandler
+import androidx.activity.viewModels
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
@@ -20,30 +21,45 @@ import com.example.cubetime.ui.shared.SharedViewModel
 import androidx.compose.foundation.layout.*
 
 import androidx.compose.material3.*
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cubetime.R
 
-import com.example.cubetime.model.Penalties
+import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.ui.screens.timer.dialogs.DialogTypes
 import com.example.cubetime.ui.screens.timer.dialogs.TimerScreenDialogs
+import com.example.cubetime.ui.settings.SettingsDataManager
+import com.example.cubetime.ui.settings.TimerSettings
 import com.example.cubetime.ui.shared.ScrambleImage
 
 
 @Composable
 fun TimerScreen(viewModel: SharedViewModel) {
-    val timer = viewModel.timer
+    val settingsDataManager = SettingsDataManager(LocalContext.current)
+    val timerSettings by settingsDataManager.getTimerSettings().collectAsState(
+        initial = TimerSettings(false, false, false)
+    )
+
+    val timerViewModel : TimerViewModel = viewModel()
+    LaunchedEffect(Unit) {
+        timerViewModel.init(timerSettings, {hide -> viewModel.hideEverything(hide)})
+    }
+    val timer = timerViewModel.timer
+
+
     val configuration = LocalConfiguration.current
-
-
     var currentDialog by remember { mutableStateOf(DialogTypes.NONE) }
     val hideAnimation by animateFloatAsState(   // Анимация для скрытия элементов при запуске таймера
         targetValue = if (viewModel.everythingHidden) 0f else 1f,
@@ -71,7 +87,8 @@ fun TimerScreen(viewModel: SharedViewModel) {
     TimerScreenDialogs(
         dialog = currentDialog,
         viewModel = viewModel,
-        closeDialog = {currentDialog = DialogTypes.NONE}
+        closeDialog = {currentDialog = DialogTypes.NONE},
+        timerViewModel = timerViewModel
     )
 
     // Скрамбл и кнопки для управления скрамблом
@@ -91,7 +108,7 @@ fun TimerScreen(viewModel: SharedViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = viewModel.currentScramble,
+                    text = timerViewModel.currentScramble,
                     textAlign = TextAlign.Center,
                     fontSize = 16.sp,
 
@@ -127,7 +144,7 @@ fun TimerScreen(viewModel: SharedViewModel) {
                     }
                     //веертушка для срамбла
                     IconButton(onClick = {
-                        viewModel.updateScramble()
+                        timerViewModel.updateCurrentScramble()
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrowreload),
@@ -148,7 +165,7 @@ fun TimerScreen(viewModel: SharedViewModel) {
                     Modifier.zIndex(0F)
                 }
             },
-            viewModel = viewModel
+            timerViewModel = timerViewModel
         )
 
         // Статистика
@@ -217,7 +234,7 @@ fun TimerScreen(viewModel: SharedViewModel) {
             .offset(y=scrambleMoveAnimation),
             contentAlignment = Alignment.BottomCenter) {
             ScrambleImage(
-                svgString = viewModel.currentImage,
+                svgString = timerViewModel.currentImage,
                 sizeDp = scrambleSizeAnimation.dp
             )
         }
@@ -269,8 +286,6 @@ fun TimerScreen(viewModel: SharedViewModel) {
                             contentDescription = "Generate scramble"
                         )
                     }
-
-
                 }
 
             }

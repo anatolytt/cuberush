@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,17 +37,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.cubetime.R
-import com.example.cubetime.model.Session
+import com.example.cubetime.data.model.Session
+import com.example.cubetime.ui.appbar.AppBarViewModel
 import com.example.cubetime.ui.shared.SharedViewModel
+import kotlin.coroutines.CoroutineContext
 
 
 @Composable
 fun SessionDialog(
     onDismiss : () -> Unit,
     onNext: () -> Unit,
-    viewModel: SharedViewModel) {
+    viewModel: SharedViewModel,
+    appBarViewModel: AppBarViewModel) {
 
     val context = LocalContext.current
+
+    val sessionsList = appBarViewModel.sessionsList.collectAsState(initial = emptyList())
 
     var showSessionDialog by remember { mutableStateOf(false) }
     var sessionToDelete by remember { mutableStateOf<Session?>(null) }
@@ -62,7 +68,7 @@ fun SessionDialog(
         DeleteSessionDialog(
             onDismiss = {showSessionDialog = false},
             action = {
-                viewModel.deleteSession(sessionToDelete!!)
+                appBarViewModel.deleteSession(sessionToDelete!!)
                 sessionToDelete = null
             }
         )
@@ -73,7 +79,7 @@ fun SessionDialog(
         EditSessionDialog(
             onDismiss = { showEditSessionDialog = false },
             action = { newName ->
-                viewModel.renameSession(sessionToEdit!!, sessionToEditId!!, newName)
+                appBarViewModel.renameSession(sessionToEdit!!, sessionToEditId!!, newName)
                 sessionToEdit = null
                 sessionToEditId = null
             }
@@ -139,11 +145,11 @@ fun SessionDialog(
                         .weight(1f)
                 ) {
                     itemsIndexed(
-                        items = viewModel.sessions,
+                        items = sessionsList.value,
                         key = {index, session -> session.name}) {index, session  ->
                         SwipeSessionItem(
                             deleteAction = {
-                                if (viewModel.sessions.size == 1) {
+                                if (sessionsList.value.size == 1) {
                                     sessionIdWithMenuOpen = null
                                     Toast.makeText(
                                         context,
@@ -168,7 +174,7 @@ fun SessionDialog(
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .clickable { viewModel.switchSessions(index) }
+                                        .clickable { appBarViewModel.switchSessions(session.name) }
                                         .padding(vertical = 10.dp, horizontal = 22.dp),
                                     verticalAlignment = Alignment.CenterVertically,
 

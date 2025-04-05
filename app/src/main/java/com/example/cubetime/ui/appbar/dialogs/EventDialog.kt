@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,8 +48,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.cubetime.R
-import com.example.cubetime.model.Events
-import com.example.cubetime.model.EventDialog
+import com.example.cubetime.data.model.Events
+import com.example.cubetime.data.model.EventDialog
+import com.example.cubetime.ui.appbar.AppBarViewModel
 import com.example.cubetime.ui.appbar.dialogs.sessionDialog.SessionTextField
 import com.example.cubetime.ui.shared.SharedViewModel
 import kotlinx.coroutines.coroutineScope
@@ -57,12 +59,12 @@ import kotlinx.coroutines.coroutineScope
 fun EventDialog(
     onDismiss: () -> Unit,
     onBack: () -> Unit,
-    viewModel: SharedViewModel
+    viewModel: SharedViewModel,
+    appBarViewModel: AppBarViewModel
 ) {
     var text = remember { mutableStateOf("") }
     var selectEvents by remember { mutableStateOf(Events.CUBE333) }
-//    var isErrorTextLength = (text.value.text.length == 16)
-
+    val sessionsList = appBarViewModel.sessionsList.collectAsState(initial = emptyList())
 
     Dialog(
         onDismissRequest = { onDismiss() }
@@ -146,9 +148,11 @@ fun EventDialog(
                             if (!(text.value.length == 16) && (text.value.length > 0)) {
                                 val sessionName = text.value.trim()
                                 if (selectEvents != null) {
-                                    viewModel.createSession(sessionName, selectEvents)
+                                    appBarViewModel.addSession(sessionName, selectEvents)
                                 }
-                                viewModel.switchSessions(viewModel.sessions.size - 1)
+                                appBarViewModel.switchSessions(
+                                    sessionsList.value[sessionsList.value.size-1].name
+                                )
                                 onDismiss()
 
                             }

@@ -1,4 +1,4 @@
-package com.example.cubetime.model
+package com.example.cubetime.data.model
 
 import android.content.Context
 import android.graphics.drawable.VectorDrawable
