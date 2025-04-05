@@ -13,6 +13,7 @@ import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.data.model.Session
 import com.example.cubetime.data.model.Solve
 import com.example.cubetime.ui.settings.TimerSettings
+import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.utils.Scrambler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -42,7 +43,7 @@ class TimerViewModel : ViewModel() {
         scramblesRepository = ScramblesRepository.getInstance()
         _currentScramble = scramblesRepository.currentScramble
         timerSettings.value = settings
-        this.hideEverything = hideEverything
+        this.hideEverything = {hide -> hideEverything(hide)}
         updateCurrentScramble()
     }
 
@@ -51,7 +52,7 @@ class TimerViewModel : ViewModel() {
             generateScr = { updateCurrentScramble() },
             addSolve = { time, penalty -> addSolve(time, penalty) },
             settings = timerSettings,
-            hideEverything = hideEverything
+            hideEverything = {hide -> hideEverything(hide)}
         )
     )
     val timer get() = _timer.value
