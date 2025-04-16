@@ -13,16 +13,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cubetime.ui.shared.SharedViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(viewModel: SharedViewModel){
+fun TopBar(
+    solvesViewModel: SolvesViewModel
+){
     TopAppBar(
         title = { Text("Выбрано элементов") },
         navigationIcon = {
             IconButton(onClick = {
-                //viewModel.disableDeleteMode()
+                solvesViewModel.disableDeleteMode()
             }
             ) {
                 Icon(
@@ -33,8 +36,12 @@ fun TopBar(viewModel: SharedViewModel){
         },
         actions = {
             IconButton(onClick = {
-             //   viewModel.deleteSelectedSolves()
-            }) {
+                solvesViewModel.deleteSelectedSolves()
+                solvesViewModel.disableDeleteMode2()
+
+            },
+                enabled = solvesViewModel.selectedSolveIds.isNotEmpty()
+            ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "удалить выбранное"

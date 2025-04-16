@@ -65,7 +65,6 @@ fun TimerScreen(viewModel: SharedViewModel) {
         targetValue = if (viewModel.everythingHidden) 0f else 1f,
         animationSpec = tween(durationMillis = 100)
     )
-
     var scrambleIsBig by remember { mutableStateOf(false) }
     val scrambleSizeAnimation by animateIntAsState(
         targetValue = if (scrambleIsBig) 350 else 130,

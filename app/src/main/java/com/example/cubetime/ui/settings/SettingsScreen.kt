@@ -61,7 +61,6 @@ fun SettingsScreen(
     navController: NavController
 ) {
     val isDarkMode by settingsDataManager.getTheme().collectAsState(initial = false)
-    val language by settingsDataManager.getLanguage().collectAsState(initial = "en")
     val isInspection by settingsDataManager.getInspection().collectAsState(initial = false)
     val timehidden by settingsDataManager.getTimeHidden().collectAsState(initial = false)
     val delayEnabled by settingsDataManager.getDelay().collectAsState(initial = false)

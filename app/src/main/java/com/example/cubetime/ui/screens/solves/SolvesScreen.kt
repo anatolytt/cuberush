@@ -57,14 +57,15 @@ import com.example.cubetime.ui.screens.timer.TimerViewModel
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SolvesScreen(
-    viewModel: SharedViewModel,
-    solvesViewModel: SolvesViewModel = viewModel()
-){
+
+    solvesViewModel: SolvesViewModel
+) {
     var chosenSolve = solvesViewModel.chosenSolve
     val solveList by solvesViewModel.solvesList.collectAsState(initial = emptyList())
 
@@ -81,7 +82,8 @@ fun SolvesScreen(
                 scope.launch {
                     sheetState.hide()
                     solvesViewModel.unchooseSolve()
-                } },
+                }
+            },
             sheetState = sheetState,
             solve = chosenSolve!!,
             solvesViewModel = solvesViewModel
@@ -101,32 +103,32 @@ fun SolvesScreen(
         )
         {
             items(solveList) { solve ->
-               // val isSelected = viewModel.selectedSolveIds.contains(solve.id)
+                val isSelected = solvesViewModel.selectedSolveIds.contains(solve.id)
 
-                //solve.id  = ""+index
                 ElevatedCard(
                     modifier = Modifier
                         .height(60.dp)
                         .padding(5.dp)
-                        //ripple эффект
                         .clip(RoundedCornerShape(12.dp))
                         .combinedClickable(
                             onClick = {
-//                                if (viewModel.longPressMode) {
-//                                    viewModel.addIDInSolvesLits(solve.id)
-//                                } else {
+                                if (solvesViewModel.longPressMode) {
+                                    solvesViewModel.enableDeleteMode(solve.id)
+
+                                } else {
                                     solvesViewModel.chooseSolveById(solve.id)
-//                                }
+                                }
                             },
                             onLongClick = {
-                                //viewModel.enableDeleteMode(solve.id)
+                                solvesViewModel.enableDeleteMode(solve.id)
+
                             }
                         )
-//                        .border(
-//                            width = if (isSelected) 2.dp else 0.dp,
-//                            color = if (isSelected) Color.Black else Color.Transparent,
-//                            shape = MaterialTheme.shapes.medium
-//                        ),
+                        .border(
+                            width = if (isSelected) 2.dp else 0.dp,
+                            color = if (isSelected) Color.Black else Color.Transparent,
+                            shape = MaterialTheme.shapes.medium
+                        ),
                 ) {
                     Text(
                         text = TimeFormat.millisToString(solve.result, solve.penalties),

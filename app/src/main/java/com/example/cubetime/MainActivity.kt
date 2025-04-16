@@ -41,6 +41,7 @@ import com.example.cubetime.ui.appbar.AppBar
 import com.example.cubetime.ui.navigation.Navigation
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationBar
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationItem
+import com.example.cubetime.ui.screens.solves.SolvesViewModel
 import com.example.cubetime.ui.screens.solves.TopBar
 import com.example.cubetime.ui.settings.SettingsDataManager
 import com.example.cubetime.ui.settings.TimerSettings
@@ -58,6 +59,8 @@ import java.util.prefs.Preferences
 class MainActivity : ComponentActivity() {
 
     private val viewModel: SharedViewModel by viewModels()
+    private val solvesViewModel: SolvesViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppDatabase.init(this)
@@ -73,6 +76,7 @@ class MainActivity : ComponentActivity() {
                     initial = TimerSettings(false, false, false))
 
             val navController = rememberNavController()
+
 
             CubeTimeTheme(
                 isCustomDarkTheme = theme
@@ -116,11 +120,11 @@ class MainActivity : ComponentActivity() {
                             visible = !viewModel.settingsScreenOpen,
                             exit = fadeOut() + slideOutVertically { it }
                         ) {
-                            //if (viewModel.longPressMode) {
-                             //   TopBar(viewModel)
-                            //} else {
+                            if (solvesViewModel.longPressMode) {
+                                TopBar(solvesViewModel)
+                            } else {
                                 AppBar(viewModel, navController)
-                            //}
+                            }
                         }
                     }
                 ) { padding ->
@@ -128,7 +132,8 @@ class MainActivity : ComponentActivity() {
                         navController,
                         viewModel = viewModel,
                         modifierNavHost = Modifier.padding(padding),
-                        settingsDataManager = settingsDataManager
+                        settingsDataManager = settingsDataManager,
+                        solvesViewModel = solvesViewModel,
                     )
                 }
             }
