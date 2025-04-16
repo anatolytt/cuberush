@@ -151,7 +151,7 @@ fun EventDialog(
                                     appBarViewModel.addSession(sessionName, selectEvents)
                                 }
                                 appBarViewModel.switchSessions(
-                                    sessionsList.value[sessionsList.value.size-1].name
+                                    sessionsList.value[sessionsList.value.size-1].id
                                 )
                                 onDismiss()
 

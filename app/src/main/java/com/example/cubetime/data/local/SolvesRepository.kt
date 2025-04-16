@@ -26,13 +26,13 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
 
     val lastSolveId = MutableStateFlow<Int>(0)
     val sessions : Flow<List<Session>> = solvesDao.getAllSessions()
-    var currentSession =  MutableStateFlow<Session>(Session("", Events.SQ1, ""))
+    var currentSession =  MutableStateFlow<Session>(Session(0, "", Events.CUBE333, ""))
     val shortSolves: Flow<List<ShortSolve>> = currentSession.flatMapLatest { session ->
         solvesDao.getAllShortSessionSolves(session.name)
     }
 
     init {
-        addSession(Session("Main", Events.CUBE333, ""))
+        addSession(Session(0, "Main", Events.CUBE333, ""))
     }
 
     fun addSolve(solve: Solve) {
@@ -40,7 +40,6 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
             solvesDao.insertSolve(solve)
             lastSolveId.update { solvesDao.getLastSolveId() }
             Log.d("Solves", solve.id.toString())
-
         }
     }
 
@@ -70,16 +69,27 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
 
     fun addSession(session: Session) {
         coroutineScope.launch (Dispatchers.IO) {
-            solvesDao.insertSession(session)
-            updateCurrentSessionByName(session.name)
+            val id: Int  = solvesDao.insertSession(session).toInt()
+            updateCurrentSessionById(id)
         }
     }
 
-    fun updateCurrentSessionByName(name: String) {
+    fun deleteSession(id: Int) {
+        coroutineScope.launch (Dispatchers.IO) {
+            solvesDao.deleteSessionById(id)
+        }
+    }
+    fun updateSessionName(id: Int, newName: String) {
+        coroutineScope.launch (Dispatchers.IO) {
+            solvesDao.updateSessionName(id, newName)
+        }
+    }
+
+    fun updateCurrentSessionById(id: Int) {
         Log.d("Solves", "вызвано")
         coroutineScope.launch (Dispatchers.IO) {
             ScramblesRepository.getInstance().clearScrambles()
-            currentSession.value = solvesDao.getSessionByName(name)
+            currentSession.value = solvesDao.getSessionById(id)
             ScramblesRepository.getInstance().updateNextScramble(currentSession.value.event)
         }
     }

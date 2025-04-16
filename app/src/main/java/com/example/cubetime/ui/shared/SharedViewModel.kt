@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cubetime.data.local.AppDatabase
@@ -14,8 +15,9 @@ import com.example.cubetime.data.model.Events
 import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.data.model.Session
 import com.example.cubetime.data.model.Solve
+import com.example.cubetime.ui.screens.settings.SettingsDataManager
 import com.example.cubetime.ui.screens.timer.TimerController
-import com.example.cubetime.ui.settings.TimerSettings
+import com.example.cubetime.ui.screens.settings.TimerSettings
 import com.example.cubetime.utils.Scrambler
 import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.Dispatchers

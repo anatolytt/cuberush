@@ -1,4 +1,4 @@
-package com.example.cubetime.ui.settings
+package com.example.cubetime.ui.screens.settings
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable

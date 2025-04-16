@@ -40,23 +40,23 @@ import com.example.cubetime.R
 import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.ui.screens.timer.dialogs.DialogTypes
 import com.example.cubetime.ui.screens.timer.dialogs.TimerScreenDialogs
-import com.example.cubetime.ui.settings.SettingsDataManager
-import com.example.cubetime.ui.settings.TimerSettings
+import com.example.cubetime.ui.screens.settings.SettingsDataManager
+import com.example.cubetime.ui.screens.settings.TimerSettings
 import com.example.cubetime.ui.shared.ScrambleImage
 
 
 @Composable
-fun TimerScreen(viewModel: SharedViewModel) {
-    val settingsDataManager = SettingsDataManager(LocalContext.current)
+fun TimerScreen(viewModel: SharedViewModel, settingsDataManager: SettingsDataManager) {
     val timerSettings by settingsDataManager.getTimerSettings().collectAsState(
-        initial = TimerSettings(false, false, false)
+        initial = TimerSettings(true, true, false)
     )
 
     val timerViewModel : TimerViewModel = viewModel()
     LaunchedEffect(Unit) {
-        timerViewModel.init(timerSettings, {hide -> viewModel.hideEverything(hide)})
+        timerViewModel.init({hide -> viewModel.hideEverything(hide)})
     }
     val timer = timerViewModel.timer
+    timerViewModel.updateTimerSettings(timerSettings)
 
 
     val configuration = LocalConfiguration.current

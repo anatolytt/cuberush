@@ -12,7 +12,7 @@ import com.example.cubetime.data.local.SolvesRepository
 import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.data.model.Session
 import com.example.cubetime.data.model.Solve
-import com.example.cubetime.ui.settings.TimerSettings
+import com.example.cubetime.ui.screens.settings.TimerSettings
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.utils.Scrambler
 import kotlinx.coroutines.Dispatchers
@@ -30,11 +30,13 @@ class TimerViewModel : ViewModel() {
     lateinit var currentSession: MutableStateFlow<Session>
     var _currentScramble = mutableStateOf<String> ("")
     val currentScramble get() = _currentScramble.value
+    var _currentImage = mutableStateOf<String?> ("")
+    val currentImage get() = _currentImage.value
     private var timerSettings = mutableStateOf(TimerSettings(false, false, false))
     var hideEverything: (Boolean) -> Unit = {}
 
 
-    fun init (settings: TimerSettings, hideEverything: (Boolean) -> Unit) {
+    fun init (hideEverything: (Boolean) -> Unit) {
         val db = AppDatabase.getInstance()
         val dao = db.SolvesDao()
         solvesRepository = SolvesRepository.getInstance(dao)
@@ -42,9 +44,13 @@ class TimerViewModel : ViewModel() {
         currentSession = solvesRepository.currentSession
         scramblesRepository = ScramblesRepository.getInstance()
         _currentScramble = scramblesRepository.currentScramble
-        timerSettings.value = settings
+        _currentImage = scramblesRepository.currentImage
         this.hideEverything = {hide -> hideEverything(hide)}
         updateCurrentScramble()
+    }
+
+    fun updateTimerSettings(settings: TimerSettings) {
+        timerSettings.value = settings
     }
 
     private val _timer = mutableStateOf(
@@ -57,31 +63,16 @@ class TimerViewModel : ViewModel() {
     )
     val timer get() = _timer.value
 
-    private val _currentImage = mutableStateOf<String?>("")
-    val currentImage get() = _currentImage.value
-
 
     fun inputScramble(scramble: String) {
         scramblesRepository.addScramble(scramble)
     }
 
-    fun updateImage() {
-        viewModelScope.launch(Dispatchers.Default) {
-            val pictureString = Scrambler().createScramblePicture(
-                currentScramble,
-                currentSession.value.event
-            )
-            withContext(Dispatchers.Main) {
-                _currentImage.value = pictureString
-            }
-        }
-    }
 
     fun updateCurrentScramble() {
         viewModelScope.launch {
             Log.d("TimerViewModel", currentSession.value.event.toString())
             scramblesRepository.updateNextScramble(currentSession.value.event)
-            updateImage()
         }
     }
 

@@ -33,21 +33,21 @@ class AppBarViewModel : ViewModel() {
     }
 
     fun addSession(name: String, events: Events) {
-        val newSession = Session(name, events, "")
+        val newSession = Session(0, name, events, "")
         repository.addSession(newSession)
     }
 
-    fun deleteSession(session: Session) {
-//        val idToDelete = _sessions.indexOf(session)
-//        if (idToDelete <= _currentSessionID.value) {
-//            _currentSessionID.value -= 1
-//        }
-//        _sessions.remove(session)
+    fun deleteSession(id: Int) {
+        repository.deleteSession(id)
     }
 
-    fun switchSessions(sessionName: String) {
+    fun renameSession(id: Int, newName: String) {
+        repository.updateSessionName(id, newName)
+    }
+
+    fun switchSessions(sessionId: Int) {
         clearScrambles()
-        repository.updateCurrentSessionByName(sessionName)
+        repository.updateCurrentSessionById(sessionId)
         viewModelScope.launch {
             scramblesRepository.updateNextScramble(repository.currentSession.value.event)
         }

@@ -1,4 +1,4 @@
-package com.example.cubetime.ui.settings
+package com.example.cubetime.ui.screens.settings
 
 data class LanguageOptionData(
     val label: String,

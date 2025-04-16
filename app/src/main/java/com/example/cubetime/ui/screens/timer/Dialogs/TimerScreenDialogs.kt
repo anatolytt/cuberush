@@ -28,16 +28,17 @@ fun TimerScreenDialogs(viewModel: SharedViewModel,
         DialogTypes.DELETE_SOLVE -> {
             DeleteSolveDialog(
                 onDismiss = closeDialog,
-                action = {timerViewModel.deleteLastSolve()}
+                action = {
+                    timerViewModel.deleteLastSolve()
+                }
             )
 
         }
         DialogTypes.ADD_COMMENT -> {
             CommentDialog(
                 onDismiss = closeDialog,
-                action = {
-
-                }
+                action = { comment -> timerViewModel.updateComment(0, comment)
+                },
             )
         }
         DialogTypes.NONE -> {
