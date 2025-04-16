@@ -46,6 +46,9 @@ class TimerController(
     private val _isFirstSolve = mutableStateOf(true)
     val isFirstSolve get() = _isFirstSolve.value
 
+    private val _delayAfterStopOn = mutableStateOf(false)
+    val delayAfterStopOn get() = _delayAfterStopOn.value
+
     var timerJob: Job? = null
 
     fun startInspection() {
@@ -87,11 +90,20 @@ class TimerController(
 
     fun stopTimer() {
         timerJob?.cancel()
+
+        // Задержка после остановки таймера
+        coroutineScope.launch {
+            _delayAfterStopOn.value = true
+            measureTime(1000)
+            _delayAfterStopOn.value = false
+        }
+
         _timerState.value = TimerState.INACTIVE
         _isFirstSolve.value = false
         hideEverything(false)
         addSolve(currentTime, penaltyState)
         generateScr()
+
 
     }
 
