@@ -1,4 +1,4 @@
-package com.example.cubetime.ui.settings
+package com.example.cubetime.ui.screens.settings
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -61,7 +61,6 @@ fun SettingsScreen(
     navController: NavController
 ) {
     val isDarkMode by settingsDataManager.getTheme().collectAsState(initial = false)
-    val language by settingsDataManager.getLanguage().collectAsState(initial = "en")
     val isInspection by settingsDataManager.getInspection().collectAsState(initial = false)
     val timehidden by settingsDataManager.getTimeHidden().collectAsState(initial = false)
     val delayEnabled by settingsDataManager.getDelay().collectAsState(initial = false)

@@ -22,6 +22,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -32,8 +33,9 @@ fun EditSessionDialog(
     onDismiss: () -> Unit,
     action: (String) -> Unit)
     {
-        var enteredText by remember { mutableStateOf("") }
-        val focusRequester = remember { FocusRequester() }
+        var enteredText = remember { mutableStateOf("") }
+
+
         Dialog(
             onDismissRequest = onDismiss
         ) {
@@ -43,9 +45,6 @@ fun EditSessionDialog(
 
             ) {
 
-                LaunchedEffect(Unit) {
-                    focusRequester.requestFocus()
-                }
                 Column (
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
@@ -57,16 +56,8 @@ fun EditSessionDialog(
                         modifier = Modifier
                             .padding(top = 15.dp)
                     )
-                    TextField(
-                        value = enteredText,
-                        onValueChange = { enteredText = it },
-                        textStyle = TextStyle(fontSize = 15.sp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 15.dp)
-                            .focusRequester(focusRequester)
+                    SessionTextField(enteredText)
 
-                    )
 
                     Row(
                         horizontalArrangement = Arrangement.End,
@@ -80,8 +71,11 @@ fun EditSessionDialog(
                         }
 
                         OutlinedButton(onClick = {
-                            action(enteredText)
-                            onDismiss()
+                            if (!(enteredText.value.length == 16) && (enteredText.value.length > 0)) {
+                                action(enteredText.value)
+                                onDismiss()
+
+                            }
                         }) {
                             Text(stringResource(R.string.done))
                         }

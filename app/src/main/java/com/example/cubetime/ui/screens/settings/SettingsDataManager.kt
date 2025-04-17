@@ -1,4 +1,4 @@
-package com.example.cubetime.ui.settings
+package com.example.cubetime.ui.screens.settings
 
 import android.content.Context
 import androidx.compose.ui.graphics.Color

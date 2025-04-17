@@ -89,7 +89,6 @@ fun CubeTimeTheme(
     isCustomDarkTheme: Boolean,
     content: @Composable () -> Unit
 ) {
-
     val darkTheme = isSystemInDarkTheme()
 
     val colorScheme = when {

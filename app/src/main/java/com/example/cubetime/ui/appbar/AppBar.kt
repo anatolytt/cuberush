@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
@@ -29,6 +30,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +48,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.cubetime.model.Events
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.cubetime.data.model.Events
 import com.example.cubetime.ui.appbar.dialogs.AppBarDialogNavigation
 import com.example.cubetime.ui.appbar.dialogs.DialogsState
 import com.example.cubetime.ui.appbar.dialogs.EventDialog
@@ -58,7 +61,8 @@ import com.example.cubetime.ui.shared.SharedViewModel
 fun AppBar(viewModel: SharedViewModel,
            navController: NavHostController,
 ) {
-
+    val appBarViewModel : AppBarViewModel = viewModel()
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
     val dialogToShow =  remember {
         mutableStateOf<DialogsState>(DialogsState.NONE)
     }
@@ -68,59 +72,88 @@ fun AppBar(viewModel: SharedViewModel,
         animationSpec = tween(durationMillis = 300)
     )
 
-    AppBarDialogNavigation(dialogToShow, viewModel = viewModel)
+    if (!viewModel.deleteSolveAppBar || currentRoute != "solves") {
+        val currentSession by appBarViewModel.repository.currentSession.collectAsState()
+        AppBarDialogNavigation(dialogToShow, viewModel = viewModel, appBarViewModel=appBarViewModel)
+        CenterAlignedTopAppBar(
+            title = {
+                val event = currentSession.event
+                Row (verticalAlignment = Alignment.CenterVertically) {
+                    Icon (
+                        painter = painterResource(event.getIconDrawableId()),
+                        contentDescription = stringResource(event.getEventStringId()),
+                        Modifier.size(20.dp)
+                    )
+                    Text(
+                        text = currentSession.name,
+                        Modifier.padding(start = 10.dp)
+                    )
+                }
+            },
+            navigationIcon = {
+                IconButton(onClick = {
+                    navController.navigate("settings")
+                    viewModel.changeSettingsVisibility()
+                })
+                {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Open settings"
+                    )
+                }
+            },
+            actions = {
+                IconButton(onClick = {}) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        contentDescription = "Change session dialog"
+                    )
+                }
+                IconButton(onClick = { dialogToShow.value = DialogsState.SESSION }) {
+                    Icon(
+                        imageVector = Icons.Default.Face,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        contentDescription = "Sessions dialog"
+                    )
+                }
+            },
 
-    CenterAlignedTopAppBar(
-        title = {
-            val event = viewModel.currentSession.event
-            Row (verticalAlignment = Alignment.CenterVertically) {
-                Icon (
-                    painter = painterResource(event.getIconDrawableId()),
-                    contentDescription = stringResource(event.getEventStringId()),
-                    Modifier.size(20.dp)
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(8.dp))
+
+                .graphicsLayer(
+                    translationY = offsetY
                 )
-                Text(
-                    text = viewModel.currentSession.name,
-                    Modifier.padding(start = 10.dp)
-                )
+
+
+        )
+    } else if (currentRoute == "solves") {
+        TopAppBar(
+            title = { Text("Выбрано элементов") },
+            navigationIcon = {
+                IconButton(onClick = {
+                    viewModel.changeAppBar()
+                }
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "выйти из режима выбора"
+                    )
+                }
+            },
+            actions = {
+                IconButton(onClick = {
+                    viewModel.deleteSolves()
+                    viewModel.changeAppBar()
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "удалить выбранное"
+                    )
+                }
             }
-                },
-        navigationIcon = {
-            IconButton(onClick = {
-                navController.navigate("settings")
-                viewModel.changeSettingsVisibility()
-            })
-            {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Open settings"
-                )
-            }
-        },
-        actions = {
-            IconButton(onClick = {}) {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    contentDescription = "Change session dialog"
-                )
-            }
-            IconButton(onClick = { dialogToShow.value = DialogsState.SESSION }) {
-                Icon(
-                    imageVector = Icons.Default.Face,
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    contentDescription = "Sessions dialog"
-                )
-            }
-        },
+        )
+    }
 
-        modifier = Modifier
-            .clip(shape = RoundedCornerShape(8.dp))
-
-            .graphicsLayer(
-                translationY = offsetY
-            )
-
-
-    )
 }

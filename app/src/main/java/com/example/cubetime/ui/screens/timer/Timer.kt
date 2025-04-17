@@ -19,7 +19,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -34,11 +36,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Timer(hideEverything: (Boolean) -> Unit, modifier: Modifier,
-          viewModel: SharedViewModel
+fun Timer(hideEverything: (Boolean) -> Unit,
+          modifier: Modifier,
+          timerViewModel: TimerViewModel
 ) 
 {
-    val timer = viewModel.timer
+    val timer = timerViewModel.timer
     var isLongPress by remember { mutableStateOf(false) }
     var isPressed by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -52,8 +55,9 @@ fun Timer(hideEverything: (Boolean) -> Unit, modifier: Modifier,
     )
 
     val delaySizeAnimation: Int by animateIntAsState(
-        if (isLongPress || timer.timerState != TimerState.INACTIVE) 100 else 70
+        if (isLongPress || timer.timerState != TimerState.INACTIVE) 95 else 70
     )
+    val haptic = LocalHapticFeedback.current
 
     Box(
         contentAlignment = Alignment.Center,
@@ -72,14 +76,17 @@ fun Timer(hideEverything: (Boolean) -> Unit, modifier: Modifier,
                                 isPressed = true
                                 delay(500)
                                 isLongPress = true
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                             try {
                                 awaitRelease()
                                 isPressed = false
-                                if (!isLongPress) {
-                                    timer.shortPressAction()
-                                } else {
-                                    timer.longPressAction()
+                                if (!timer.delayAfterStopOn) {
+                                    if (!isLongPress) {
+                                        timer.shortPressAction()
+                                    } else {
+                                        timer.longPressAction()
+                                    }
                                 }
                                 pressJob.cancel()
                                 isLongPress = false

@@ -1,6 +1,6 @@
 package com.example.cubetime.utils
 
-import com.example.cubetime.model.Events
+import com.example.cubetime.data.model.Events
 import org.worldcubeassociation.tnoodle.scrambles.InvalidScrambleException
 import org.worldcubeassociation.tnoodle.scrambles.Puzzle
 import org.worldcubeassociation.tnoodle.scrambles.PuzzleRegistry
