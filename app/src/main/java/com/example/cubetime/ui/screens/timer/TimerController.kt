@@ -94,7 +94,7 @@ class TimerController(
         // Задержка после остановки таймера
         coroutineScope.launch {
             _delayAfterStopOn.value = true
-            measureTime(1000)
+            measureTime(150)
             _delayAfterStopOn.value = false
         }
 

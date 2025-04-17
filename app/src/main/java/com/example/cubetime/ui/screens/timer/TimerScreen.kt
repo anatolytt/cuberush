@@ -46,12 +46,14 @@ import com.example.cubetime.ui.shared.ScrambleImage
 
 
 @Composable
-fun TimerScreen(viewModel: SharedViewModel, settingsDataManager: SettingsDataManager) {
+fun TimerScreen(
+    viewModel: SharedViewModel,
+    timerViewModel: TimerViewModel,
+    settingsDataManager: SettingsDataManager) {
     val timerSettings by settingsDataManager.getTimerSettings().collectAsState(
         initial = TimerSettings(true, true, false)
     )
 
-    val timerViewModel : TimerViewModel = viewModel()
     LaunchedEffect(Unit) {
         timerViewModel.init({hide -> viewModel.hideEverything(hide)})
     }

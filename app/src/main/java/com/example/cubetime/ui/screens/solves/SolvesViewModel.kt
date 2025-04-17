@@ -27,6 +27,7 @@ class SolvesViewModel : ViewModel() {
 
 
     init {
+        Log.d("SolvesVM", "Created")
         val db = AppDatabase.getInstance()
         val dao = db.SolvesDao()
         repository = SolvesRepository.getInstance(dao)
@@ -50,6 +51,7 @@ class SolvesViewModel : ViewModel() {
 
     private val _longPressMode = mutableStateOf(false)
     val longPressMode: Boolean get() = _longPressMode.value
+    val scrollPosition = mutableStateOf(0)
 
     private val _selectedSolveIds = mutableStateListOf<Int>()
     val selectedSolveIds: List<Int> get() = _selectedSolveIds
@@ -60,13 +62,6 @@ class SolvesViewModel : ViewModel() {
         } else {
             _selectedSolveIds.remove(id)
         }
-        _longPressMode.value = true
-    }
-
-    fun disableDeleteMode() {
-        _selectedSolveIds.clear()
-        _longPressMode.value = false
-
     }
 
     fun deleteSelectedSolves() {
@@ -78,7 +73,5 @@ class SolvesViewModel : ViewModel() {
         }
     }
 
-    fun disableDeleteMode2() {
-        _longPressMode.value = false
-    }
+
 }

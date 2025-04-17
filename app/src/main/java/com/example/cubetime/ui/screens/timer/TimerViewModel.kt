@@ -49,6 +49,10 @@ class TimerViewModel : ViewModel() {
         updateCurrentScramble()
     }
 
+    init {
+        Log.d("TimerVM", "created")
+    }
+
     fun updateTimerSettings(settings: TimerSettings) {
         timerSettings.value = settings
     }

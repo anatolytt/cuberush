@@ -1,6 +1,7 @@
 package com.example.cubetime.ui.shared
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -35,12 +36,20 @@ class SharedViewModel : ViewModel() {
     private val _everythingHidden = mutableStateOf(false)
     val everythingHidden get() = _everythingHidden.value
 
-    fun changeSettingsVisibility() {
-        _settingsScreenOpen.value = !_settingsScreenOpen.value
+    private val _deleteSolveAppBar = mutableStateOf(false)
+    val deleteSolveAppBar get() = _deleteSolveAppBar.value
+
+    var deleteSolves: ()->Unit = {}
+    fun setSolvesDelete(func: () -> Unit) { deleteSolves = func }
+
+    fun hideEverything(hide: Boolean) { _everythingHidden.value = hide }
+    fun changeAppBar() { _deleteSolveAppBar.value = !_deleteSolveAppBar.value }
+    fun changeSettingsVisibility() { _settingsScreenOpen.value = !_settingsScreenOpen.value }
+
+    init {
+        Log.d("SharedVM", "Created")
     }
 
-    fun hideEverything(hide: Boolean) {
-        _everythingHidden.value = hide
-    }
+
 }
 

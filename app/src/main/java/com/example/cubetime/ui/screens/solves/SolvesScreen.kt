@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,11 +18,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,18 +42,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.data.model.Solve
 import com.example.cubetime.ui.screens.solves.dialogs.SolveBottomSheet
@@ -63,7 +72,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SolvesScreen(
-
+    sharedViewModel: SharedViewModel,
     solvesViewModel: SolvesViewModel
 ) {
     var chosenSolve = solvesViewModel.chosenSolve
@@ -74,7 +83,23 @@ fun SolvesScreen(
         skipPartiallyExpanded = true
     )
 
+    LaunchedEffect(Unit) {
+        sharedViewModel.setSolvesDelete { solvesViewModel.deleteSelectedSolves() }
+    }
+
+    var scrollPosition by rememberSaveable { solvesViewModel.scrollPosition }
+    val listState = rememberLazyGridState(
+        initialFirstVisibleItemIndex = scrollPosition
+    )
+    LaunchedEffect(listState.isScrollInProgress) {
+        if (!listState.isScrollInProgress) {
+            scrollPosition = listState.firstVisibleItemIndex
+        }
+    }
+
     val scope = rememberCoroutineScope()
+    val haptic = LocalHapticFeedback.current
+
 
     if (chosenSolve != null) {
         SolveBottomSheet(
@@ -100,9 +125,10 @@ fun SolvesScreen(
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             modifier = Modifier.fillMaxWidth(),
+            state = listState
         )
         {
-            items(solveList) { solve ->
+            items(solveList, key = {it.id}, contentType = {"solve"}) { solve ->
                 val isSelected = solvesViewModel.selectedSolveIds.contains(solve.id)
 
                 ElevatedCard(
@@ -112,16 +138,19 @@ fun SolvesScreen(
                         .clip(RoundedCornerShape(12.dp))
                         .combinedClickable(
                             onClick = {
-                                if (solvesViewModel.longPressMode) {
+                                if (sharedViewModel.deleteSolveAppBar) {
                                     solvesViewModel.enableDeleteMode(solve.id)
-
                                 } else {
                                     solvesViewModel.chooseSolveById(solve.id)
                                 }
                             },
                             onLongClick = {
                                 solvesViewModel.enableDeleteMode(solve.id)
-
+                                if (!sharedViewModel.deleteSolveAppBar) {
+                                    sharedViewModel.changeAppBar()
+                                }
+                                // вибрация при выборе сборки
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                         )
                         .border(
@@ -147,3 +176,4 @@ fun SolvesScreen(
     }
 
 }
+
