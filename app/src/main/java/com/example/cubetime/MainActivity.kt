@@ -43,8 +43,8 @@ import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationBa
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationItem
 import com.example.cubetime.ui.screens.solves.SolvesViewModel
 import com.example.cubetime.ui.screens.solves.TopBar
-import com.example.cubetime.ui.settings.SettingsDataManager
-import com.example.cubetime.ui.settings.TimerSettings
+import com.example.cubetime.ui.screens.settings.SettingsDataManager
+import com.example.cubetime.ui.screens.settings.TimerSettings
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.ui.theme.CubeTimeTheme
 import com.example.cubetime.utils.ChangeLanguage
@@ -73,7 +73,8 @@ class MainActivity : ComponentActivity() {
             ChangeLanguage(this, language)
 
             val timerSettings by settingsDataManager.getTimerSettings().collectAsState(
-                    initial = TimerSettings(false, false, false))
+                    initial = TimerSettings(false, false, false)
+            )
 
             val navController = rememberNavController()
 

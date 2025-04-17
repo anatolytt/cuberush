@@ -77,10 +77,12 @@ fun Timer(hideEverything: (Boolean) -> Unit,
                             try {
                                 awaitRelease()
                                 isPressed = false
-                                if (!isLongPress) {
-                                    timer.shortPressAction()
-                                } else {
-                                    timer.longPressAction()
+                                if (!timer.delayAfterStopOn) {
+                                    if (!isLongPress) {
+                                        timer.shortPressAction()
+                                    } else {
+                                        timer.longPressAction()
+                                    }
                                 }
                                 pressJob.cancel()
                                 isLongPress = false

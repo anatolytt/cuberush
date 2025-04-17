@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,12 +24,13 @@ import okhttp3.internal.cookieToString
 
 class ScramblesRepository {
     val coroutineScope = CoroutineScope(Dispatchers.Default)
-    private val mutex = Mutex()
     val KEEP_GENERATED = 5  // количество скрамблов, которые должны всегда быть наготове
 
     private val nextScrambles = MutableStateFlow<List<String>>(emptyList())
     val currentScramble = mutableStateOf<String>("")
     var scrambleIsGenerated : Boolean = false
+    val currentEvent = mutableStateOf<Events>(Events.CUBE333)
+    val currentImage = mutableStateOf<String?>("")
 
     var job: Job? = null
 
@@ -37,10 +39,11 @@ class ScramblesRepository {
         nextScrambles.update { list -> list + scramble }
     }
 
-    private fun keepScramblesGenerated(event: Events) {
+    private fun keepScramblesGenerated() {
         job = coroutineScope.launch {
             while (nextScrambles.value.size < KEEP_GENERATED) {
-                val scramble = Scrambler().generateScramble(event)
+                val scramble = Scrambler().generateScramble(currentEvent.value)
+                ensureActive()
                 addScramble(scramble)
             }
         }
@@ -52,24 +55,35 @@ class ScramblesRepository {
         nextScrambles.update { emptyList() }
     }
 
-    suspend fun updateNextScramble(event: Events) {
-        Log.d("Scrams", "Вызвано")
-        job?.cancel()
-        keepScramblesGenerated(event)
-        coroutineScope.launch {
-            currentScramble.value = "Generating..."
-            if (nextScrambles.value.isNotEmpty()) {
-                currentScramble.value = nextScrambles.value[0]
-                Log.d("Solves", nextScrambles.value.toString())
-                nextScrambles.update { list -> list.drop(1) }
-                scrambleIsGenerated = false
-            } else {
-                currentScramble.value = Scrambler().generateScramble(event)
-            }
-
+    fun updateImage() {
+        coroutineScope.launch(Dispatchers.Default) {
+            val pictureString = Scrambler().createScramblePicture(
+                currentScramble.value,
+                currentEvent.value
+            )
+            currentImage.value = pictureString
         }
+    }
 
+    suspend fun updateNextScramble(event: Events) {
+        Log.d("ScramblesRepository", event.toString())
+        job?.cancel()
+        if (currentEvent.value != event) {
+            clearScrambles()
+            currentEvent.value = event
+        }
+        keepScramblesGenerated()
 
+        currentScramble.value = "Generating..."
+        if (nextScrambles.value.isNotEmpty()) {
+            currentScramble.value = nextScrambles.value[0]
+            Log.d("Solves", nextScrambles.value.toString())
+            nextScrambles.update { list -> list.drop(1) }
+            scrambleIsGenerated = false
+        } else {
+            currentScramble.value = Scrambler().generateScramble(event)
+        }
+        updateImage()
     }
     companion object {
         private var INSTANCE: ScramblesRepository? = null

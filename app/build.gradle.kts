@@ -67,12 +67,9 @@ dependencies {
     implementation(libs.lib.scrambles)
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("io.coil-kt:coil-svg:2.4.0")
-
     val room_version = "2.4.2"
 
     implementation ("androidx.room:room-runtime:$room_version")
     kapt ("androidx.room:room-compiler:$room_version")
-
-    // optional - Kotlin Extensions and Coroutines support for Room
     implementation ("androidx.room:room-ktx:$room_version")
 }

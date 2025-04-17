@@ -6,17 +6,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.data.model.Solve
-import com.example.cubetime.ui.settings.SettingsDataManager
-import com.example.cubetime.ui.settings.TimerSettings
+import com.example.cubetime.ui.screens.settings.SettingsDataManager
+import com.example.cubetime.ui.screens.settings.TimerSettings
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.util.concurrent.locks.LockSupport
 
 class TimerController(
     val generateScr: () -> Unit,
@@ -44,6 +46,9 @@ class TimerController(
     private val _isFirstSolve = mutableStateOf(true)
     val isFirstSolve get() = _isFirstSolve.value
 
+    private val _delayAfterStopOn = mutableStateOf(false)
+    val delayAfterStopOn get() = _delayAfterStopOn.value
+
     var timerJob: Job? = null
 
     fun startInspection() {
@@ -53,7 +58,8 @@ class TimerController(
         _penaltyState.value = Penalties.NONE
         timerJob = coroutineScope.launch {
             while (timerState == TimerState.INSPECTION) {
-                delay(1000)
+                measureTime(1000)
+                ensureActive()
                 _currentTime.value -= 1000
                 if (currentTime == 0) {
                     _penaltyState.value = Penalties.PLUS2
@@ -76,7 +82,7 @@ class TimerController(
         _penaltyState.value = Penalties.NONE
         timerJob = coroutineScope.launch () {
             while (timerState == TimerState.GOING) {
-                delay(10)
+                measureTime(10)
                 _currentTime.value += 10
             }
         }
@@ -84,11 +90,20 @@ class TimerController(
 
     fun stopTimer() {
         timerJob?.cancel()
+
+        // Задержка после остановки таймера
+        coroutineScope.launch {
+            _delayAfterStopOn.value = true
+            measureTime(1000)
+            _delayAfterStopOn.value = false
+        }
+
         _timerState.value = TimerState.INACTIVE
         _isFirstSolve.value = false
         hideEverything(false)
         addSolve(currentTime, penaltyState)
         generateScr()
+
 
     }
 
@@ -198,8 +213,8 @@ class TimerController(
         }
     }
 
-
-
-
+    private fun measureTime(timeMillis: Int) {
+        LockSupport.parkNanos((timeMillis*1000000).toLong())
+    }
 
 }

@@ -42,15 +42,20 @@ interface SolvesDao {
     @Query("DELETE FROM Solve WHERE id = :id")
     fun deleteById(id: Int) : Int
 
-
     // Sessions
     @Query("SELECT * FROM Session")
     fun getAllSessions() : Flow<List<Session>>
 
-    @Query("SELECT * FROM Session WHERE name = :name")
-    fun getSessionByName(name: String) : Session
+    @Query("SELECT * FROM Session WHERE id = :id")
+    fun getSessionById(id: Int) : Session
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertSession(session: Session) : Unit
+    fun insertSession(session: Session) : Long
+
+    @Query("DELETE FROM Session WHERE id = :id")
+    fun deleteSessionById(id: Int) : Int
+
+    @Query("UPDATE Session SET name = :newName WHERE id = :id")
+    fun updateSessionName(id: Int, newName:String)
 
 }

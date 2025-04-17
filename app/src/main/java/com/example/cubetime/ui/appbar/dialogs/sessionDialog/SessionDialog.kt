@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -68,7 +69,7 @@ fun SessionDialog(
         DeleteSessionDialog(
             onDismiss = {showSessionDialog = false},
             action = {
-                appBarViewModel.deleteSession(sessionToDelete!!)
+                appBarViewModel.deleteSession(sessionToDelete!!.id)
                 sessionToDelete = null
             }
         )
@@ -79,7 +80,7 @@ fun SessionDialog(
         EditSessionDialog(
             onDismiss = { showEditSessionDialog = false },
             action = { newName ->
-                appBarViewModel.renameSession(sessionToEdit!!, sessionToEditId!!, newName)
+                appBarViewModel.renameSession(sessionToEditId!!, newName)
                 sessionToEdit = null
                 sessionToEditId = null
             }
@@ -144,9 +145,7 @@ fun SessionDialog(
                         .fillMaxWidth()
                         .weight(1f)
                 ) {
-                    itemsIndexed(
-                        items = sessionsList.value,
-                        key = {index, session -> session.name}) {index, session  ->
+                    items(sessionsList.value) {session  ->
                         SwipeSessionItem(
                             deleteAction = {
                                 if (sessionsList.value.size == 1) {
@@ -159,22 +158,21 @@ fun SessionDialog(
                                 } else {
                                     sessionToDelete = session
                                     showSessionDialog = true
-                                }
-                                           },
+                                } },
                             editAction = {
                                 sessionToEdit = session
-                                sessionToEditId = index
+                                sessionToEditId = session.id
                                 showEditSessionDialog = true
                             },
-                            onExpanded = { sessionIdWithMenuOpen = index },
-                            isShown = (sessionIdWithMenuOpen == index),
+                            onExpanded = { sessionIdWithMenuOpen = session.id },
+                            isShown = (sessionIdWithMenuOpen == session.id),
                             onCollapsed = { sessionIdWithMenuOpen = null}
                         ) {
                             Column () {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .clickable { appBarViewModel.switchSessions(session.name) }
+                                        .clickable { appBarViewModel.switchSessions(session.id) }
                                         .padding(vertical = 10.dp, horizontal = 22.dp),
                                     verticalAlignment = Alignment.CenterVertically,
 
