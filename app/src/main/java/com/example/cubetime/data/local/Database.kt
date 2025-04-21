@@ -9,7 +9,7 @@ import com.example.cubetime.data.model.Session
 import com.example.cubetime.data.model.Solve
 import com.example.cubetime.utils.Converters
 
-@Database(entities = [Solve::class, Session::class], version = 2)
+@Database(entities = [Solve::class, Session::class], version = 7)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun SolvesDao() : SolvesDao

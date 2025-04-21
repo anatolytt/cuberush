@@ -71,10 +71,27 @@
     <string name="cube555bf">5x5x5 BLD</string>
     <string name="multibld">MBLD</string>
 
+    <string name="main333Session" translatable="false">Main</string>
 
-    //events dialog
     <string name="maxlength">Max length: 15</string>
     <string name="edittext">Sessian name</string>
+
+
+    // Stats
+    <string name="single">single</string>
+    <string name="solves_amount">Solves</string>
+    <string name="mean">Mean</string>
+    <string name="pb" translatable="false">PB</string>
+    <string name="current" translatable="false">Current</string>
+    <string name="mo3"  translatable="false">Mo3</string>
+    <string name="ao5"  translatable="false">ao5</string>
+    <string name="ao12"  translatable="false">ao12</string>
+    <string name="ao25" translatable="false">ao25</string>
+    <string name="ao50" translatable="false">ao50</string>
+    <string name="ao100" translatable="false">ao100</string>
+    <string name="ao1000" translatable="false">ao1000</string>
+
+
 
 
 </resources>

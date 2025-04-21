@@ -39,16 +39,20 @@ class SharedViewModel : ViewModel() {
     private val _deleteSolveAppBar = mutableStateOf(false)
     val deleteSolveAppBar get() = _deleteSolveAppBar.value
 
+    private val _scrambleIsGenerating = mutableStateOf(false)
+    val scrambleIsGenerating get() = _scrambleIsGenerating.value
+
     var deleteSolves: ()->Unit = {}
     fun setSolvesDelete(func: () -> Unit) { deleteSolves = func }
 
     fun hideEverything(hide: Boolean) { _everythingHidden.value = hide }
     fun changeAppBar() { _deleteSolveAppBar.value = !_deleteSolveAppBar.value }
     fun changeSettingsVisibility() { _settingsScreenOpen.value = !_settingsScreenOpen.value }
-
-    init {
-        Log.d("SharedVM", "Created")
+    fun setGeneratingState(state: Boolean) {
+        _scrambleIsGenerating.value = state
+        Log.d("SharedVM", scrambleIsGenerating.toString())
     }
+
 
 
 }

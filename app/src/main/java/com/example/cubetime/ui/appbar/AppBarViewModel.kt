@@ -9,6 +9,7 @@ import com.example.cubetime.data.local.AppDatabase
 import com.example.cubetime.data.local.SolvesRepository
 import com.example.cubetime.data.model.Events
 import com.example.cubetime.data.model.Session
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -27,7 +28,7 @@ class AppBarViewModel : ViewModel() {
 
 
     private fun clearScrambles() {
-        viewModelScope.launch {
+        viewModelScope.launch (Dispatchers.IO) {
             scramblesRepository.clearScrambles()
         }
     }
@@ -47,8 +48,8 @@ class AppBarViewModel : ViewModel() {
 
     fun switchSessions(sessionId: Int) {
         clearScrambles()
-        repository.updateCurrentSessionById(sessionId)
-        viewModelScope.launch {
+        viewModelScope.launch (Dispatchers.IO) {
+            repository.updateCurrentSessionById(sessionId)
             scramblesRepository.updateNextScramble(repository.currentSession.value.event)
         }
     }

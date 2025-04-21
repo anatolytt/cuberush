@@ -17,6 +17,7 @@ import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.utils.Scrambler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,9 +35,13 @@ class TimerViewModel : ViewModel() {
     val currentImage get() = _currentImage.value
     private var timerSettings = mutableStateOf(TimerSettings(false, false, false))
     var hideEverything: (Boolean) -> Unit = {}
+    var setGeneratingState: (Boolean) -> Unit = {}
 
 
-    fun init (hideEverything: (Boolean) -> Unit) {
+    fun init (
+        hideEverything: (Boolean) -> Unit,
+        setGeneratingState: (Boolean) -> Unit) {
+
         val db = AppDatabase.getInstance()
         val dao = db.SolvesDao()
         solvesRepository = SolvesRepository.getInstance(dao)
@@ -46,6 +51,7 @@ class TimerViewModel : ViewModel() {
         _currentScramble = scramblesRepository.currentScramble
         _currentImage = scramblesRepository.currentImage
         this.hideEverything = {hide -> hideEverything(hide)}
+        this.setGeneratingState = {state -> setGeneratingState(state)}
         updateCurrentScramble()
     }
 
@@ -69,14 +75,16 @@ class TimerViewModel : ViewModel() {
 
 
     fun inputScramble(scramble: String) {
-        scramblesRepository.addScramble(scramble)
+        scramblesRepository.addCustomScramble(scramble)
     }
 
 
     fun updateCurrentScramble() {
-        viewModelScope.launch {
-            Log.d("TimerViewModel", currentSession.value.event.toString())
+        viewModelScope.launch (Dispatchers.IO) {
+            setGeneratingState(true)
             scramblesRepository.updateNextScramble(currentSession.value.event)
+            Log.d("TimerVM","updated")
+            setGeneratingState(false)
         }
     }
 
@@ -89,7 +97,7 @@ class TimerViewModel : ViewModel() {
         solvesRepository.addSolve(
             Solve(
                 id = 0,
-                sessionName = currentSession.value.name,
+                sessionId = currentSession.value.id,
                 result = time,
                 event = currentSession.value.event,
                 penalties = penalty,

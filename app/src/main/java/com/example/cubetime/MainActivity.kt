@@ -46,6 +46,7 @@ import com.example.cubetime.ui.screens.solves.SolvesViewModel
 
 import com.example.cubetime.ui.screens.settings.SettingsDataManager
 import com.example.cubetime.ui.screens.settings.TimerSettings
+import com.example.cubetime.ui.screens.statistics.StatisticsViewModel
 import com.example.cubetime.ui.screens.timer.TimerViewModel
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.ui.theme.CubeTimeTheme
@@ -65,8 +66,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val viewModel: SharedViewModel by viewModels()
         val timerViewModel : TimerViewModel by viewModels()
-            //timerViewModel.init { hide -> viewModel.hideEverything(hide) }
         val solvesViewModel : SolvesViewModel by viewModels()
+        val statisticsViewModel : StatisticsViewModel by viewModels()
         AppDatabase.init(this)
         enableEdgeToEdge()
         setContent {
@@ -130,6 +131,7 @@ class MainActivity : ComponentActivity() {
                         modifierNavHost = Modifier.padding(padding),
                         timerViewModel = timerViewModel,
                         solvesViewModel = solvesViewModel,
+                        statisticsViewModel = statisticsViewModel,
                         settingsDataManager = settingsDataManager
                     )
                 }

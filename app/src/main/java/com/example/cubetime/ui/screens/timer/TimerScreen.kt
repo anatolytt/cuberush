@@ -2,6 +2,7 @@ package com.example.cubetime.ui.screens.timer
 
 
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.viewModels
 import androidx.compose.animation.core.animateDpAsState
@@ -19,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.cubetime.ui.shared.SharedViewModel
 import androidx.compose.foundation.layout.*
+
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
@@ -51,11 +53,14 @@ fun TimerScreen(
     timerViewModel: TimerViewModel,
     settingsDataManager: SettingsDataManager) {
     val timerSettings by settingsDataManager.getTimerSettings().collectAsState(
-        initial = TimerSettings(true, true, false)
+        initial = TimerSettings(false, false, false)
     )
 
     LaunchedEffect(Unit) {
-        timerViewModel.init({hide -> viewModel.hideEverything(hide)})
+        timerViewModel.init(
+            {hide -> viewModel.hideEverything(hide)},
+            {state -> viewModel.setGeneratingState(state)}
+        )
     }
     val timer = timerViewModel.timer
     timerViewModel.updateTimerSettings(timerSettings)
@@ -91,6 +96,7 @@ fun TimerScreen(
         closeDialog = {currentDialog = DialogTypes.NONE},
         timerViewModel = timerViewModel
     )
+    Log.d("TimerScreen", viewModel.scrambleIsGenerating.toString())
 
     // Скрамбл и кнопки для управления скрамблом
     Box(modifier = Modifier
@@ -103,6 +109,7 @@ fun TimerScreen(
             modifier = Modifier.fillMaxSize().zIndex(5F),
             contentAlignment = Alignment.TopCenter
         ) {
+            if (!viewModel.scrambleIsGenerating) {
             Column(
                 modifier = Modifier
                     .alpha(hideAnimation),
@@ -116,45 +123,58 @@ fun TimerScreen(
                     modifier = Modifier
                         .padding(bottom = 5.dp)
                 )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 5.dp),
+                        horizontalArrangement = Arrangement.Start
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 5.dp),
-                    horizontalArrangement = Arrangement.Start
-
-                ) {
-                    Row {
-                        //карандаш
+                    ) {
+                        Row {
+                            //карандаш
+                            IconButton(onClick = {
+                                currentDialog = DialogTypes.CUSTOM_SCRAMBLE
+                            }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.pencil),
+                                    contentDescription = "Custom scramble"
+                                )
+                            }
+                            //ввод времени
+                            IconButton(onClick = {
+                                currentDialog = DialogTypes.ADD_TIME
+                            }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.dnf),
+                                    contentDescription = "Input time"
+                                )
+                            }
+                        }
+                        //веертушка для срамбла
                         IconButton(onClick = {
-                            currentDialog = DialogTypes.CUSTOM_SCRAMBLE
+                            timerViewModel.updateCurrentScramble()
                         }) {
                             Icon(
-                                painter = painterResource(id = R.drawable.pencil),
-                                contentDescription = "Custom scramble"
+                                painter = painterResource(id = R.drawable.arrowreload),
+                                contentDescription = "Generate new scramble"
                             )
                         }
-                        //ввод времени
-                        IconButton(onClick = {
-                            currentDialog = DialogTypes.ADD_TIME
-                        }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.dnf),
-                                contentDescription = "Input time"
-                            )
-                        }
+
                     }
-                    //веертушка для срамбла
-                    IconButton(onClick = {
-                        timerViewModel.updateCurrentScramble()
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrowreload),
-                            contentDescription = "Generate new scramble"
+                    }
+                } else {
+                    Column {
+                        Text(
+                            text = "Scramble is generating",
+                            textAlign = TextAlign.Center,
+                            fontSize = 16.sp,
+
+                            modifier = Modifier
+                                .padding(bottom = 5.dp)
                         )
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
 
-                }
             }
         }
 
@@ -224,21 +244,27 @@ fun TimerScreen(
         })
 
         // Картинка скрамбла
-        Box(modifier = Modifier
-            .wrapContentSize()
-            .alpha(hideAnimation)
-            .zIndex(10F)
-            .pointerInput (Unit) {
-                if (!scrambleIsBig) {
-                    detectTapGestures { scrambleIsBig = true }
+        if (!viewModel.scrambleIsGenerating) {
+            Box(modifier = Modifier
+                .wrapContentSize()
+                .alpha(hideAnimation)
+                .zIndex(10F)
+                .pointerInput(Unit) {
+                    if (!scrambleIsBig) {
+                        detectTapGestures { scrambleIsBig = true }
+                    }
                 }
+                .offset(y = scrambleMoveAnimation),
+                contentAlignment = Alignment.BottomCenter) {
+                ScrambleImage(
+                    svgString = timerViewModel.currentImage,
+                    sizeDp = scrambleSizeAnimation.dp
+                )
             }
-            .offset(y=scrambleMoveAnimation),
-            contentAlignment = Alignment.BottomCenter) {
-            ScrambleImage(
-                svgString = timerViewModel.currentImage,
-                sizeDp = scrambleSizeAnimation.dp
-            )
+        } else {
+            Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+                CircularProgressIndicator()
+            }
         }
 
 
@@ -268,7 +294,7 @@ fun TimerScreen(
                     //кнопка для dnf
                     IconButton(onClick = {
                         timer.changePenalty(Penalties.DNF)
-                        timerViewModel.updatePenalty(id=0, Penalties.DNF)
+                        timerViewModel.updatePenalty(id=0, timer.penaltyState)
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.dnf),
@@ -279,7 +305,7 @@ fun TimerScreen(
                     //кнопка добавление +2 ко времени
                     IconButton(onClick = {
                         timer.changePenalty(Penalties.PLUS2)
-                        timerViewModel.updatePenalty(id=0, Penalties.PLUS2)
+                        timerViewModel.updatePenalty(id=0, timer.penaltyState)
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.plustwo),

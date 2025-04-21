@@ -14,13 +14,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SolvesDao {
     // Solves
-    @Query("SELECT * FROM Solve WHERE sessionName = :sessionName")
-    fun getAllSessionSolves(sessionName: String) : Flow<List<Solve>>
+    @Query("SELECT * FROM Solve WHERE sessionId = :sessionId")
+    fun getAllSessionSolves(sessionId: Int) : Flow<List<Solve>>
 
     @Query("SELECT id, result, penalties, date " +
-            "FROM Solve WHERE sessionName = :sessionName " +
+            "FROM Solve WHERE sessionId = :sessionId " +
             "ORDER BY id DESC")
-    fun getAllShortSessionSolves(sessionName: String) : Flow<List<ShortSolve>>
+    fun getAllShortSessionSolves(sessionId: Int) : Flow<List<ShortSolve>>
 
     @Query("SELECT * FROM Solve WHERE id = :id")
     fun getSolveById(id: Int) : Solve
@@ -55,7 +55,19 @@ interface SolvesDao {
     @Query("DELETE FROM Session WHERE id = :id")
     fun deleteSessionById(id: Int) : Int
 
+    @Query("DELETE FROM Solve WHERE sessionId = :id")
+    fun deleteSessionSolves(id: Int)
+
     @Query("UPDATE Session SET name = :newName WHERE id = :id")
     fun updateSessionName(id: Int, newName:String)
+
+    @Query("SELECT id FROM session ORDER BY id DESC LIMIT 1")
+    fun getLastAddedSessionId(): Int
+
+    @Query("SELECT COUNT(*) FROM session")
+    fun getSessionCount(): Int
+
+    @Query("SELECT id FROM session WHERE name = :name")
+    fun getSessionId(name: String): Int
 
 }

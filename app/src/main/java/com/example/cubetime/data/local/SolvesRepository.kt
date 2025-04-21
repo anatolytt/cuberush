@@ -2,6 +2,8 @@ package com.example.cubetime.data.local
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.res.stringResource
+import androidx.core.content.ContextCompat.getString
 import com.example.cubetime.data.ScramblesRepository
 import com.example.cubetime.data.model.Events
 import com.example.cubetime.data.model.Penalties
@@ -15,6 +17,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -28,11 +31,17 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
     val sessions : Flow<List<Session>> = solvesDao.getAllSessions()
     var currentSession =  MutableStateFlow<Session>(Session(0, "", Events.CUBE333, ""))
     val shortSolves: Flow<List<ShortSolve>> = currentSession.flatMapLatest { session ->
-        solvesDao.getAllShortSessionSolves(session.name)
+        solvesDao.getAllShortSessionSolves(session.id)
     }
 
     init {
-        addSession(Session(0, "Main", Events.CUBE333, ""))
+        coroutineScope.launch {
+            if (solvesDao.getSessionCount() == 0) {
+                addSession(Session(0, "Main", Events.CUBE333, ""))
+            } else {
+                updateCurrentSessionById(solvesDao.getSessionId("Main"))
+            }
+        }
     }
 
     fun addSolve(solve: Solve) {
@@ -45,6 +54,10 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
 
     fun getSolveById(id: Int): Solve {
         return solvesDao.getSolveById(id)
+    }
+
+    fun calculateStatistics() {
+
     }
 
     fun updateComment(id: Int=0, new: String, lastSolve: Boolean) {
@@ -67,33 +80,6 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
         }
     }
 
-    fun addSession(session: Session) {
-        coroutineScope.launch (Dispatchers.IO) {
-            val id: Int  = solvesDao.insertSession(session).toInt()
-            updateCurrentSessionById(id)
-        }
-    }
-
-    fun deleteSession(id: Int) {
-        coroutineScope.launch (Dispatchers.IO) {
-            solvesDao.deleteSessionById(id)
-        }
-    }
-    fun updateSessionName(id: Int, newName: String) {
-        coroutineScope.launch (Dispatchers.IO) {
-            solvesDao.updateSessionName(id, newName)
-        }
-    }
-
-    fun updateCurrentSessionById(id: Int) {
-        Log.d("Solves", "вызвано")
-        coroutineScope.launch (Dispatchers.IO) {
-            ScramblesRepository.getInstance().clearScrambles()
-            currentSession.value = solvesDao.getSessionById(id)
-            ScramblesRepository.getInstance().updateNextScramble(currentSession.value.event)
-        }
-    }
-
     fun deleteLastSolve() {
         coroutineScope.launch (Dispatchers.IO) {
             Log.d("SolvesRepository", lastSolveId.value.toString())
@@ -106,6 +92,38 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
             solvesDao.deleteById(id)
         }
     }
+
+
+
+    fun addSession(session: Session) {
+        coroutineScope.launch (Dispatchers.IO) {
+            val id: Int  = solvesDao.insertSession(session).toInt()
+            updateCurrentSessionById(id)
+        }
+    }
+
+    fun deleteSession(id: Int) {
+        coroutineScope.launch (Dispatchers.IO) {
+            solvesDao.deleteSessionById(id)
+            solvesDao.deleteSessionSolves(id)
+            updateCurrentSessionById(solvesDao.getLastAddedSessionId())
+        }
+    }
+
+    fun updateSessionName(id: Int, newName: String) {
+        coroutineScope.launch (Dispatchers.IO) {
+            solvesDao.updateSessionName(id, newName)
+            updateCurrentSessionById(id)
+        }
+    }
+
+    suspend fun updateCurrentSessionById(id: Int) {
+        ScramblesRepository.getInstance().clearScrambles()
+        currentSession.value = solvesDao.getSessionById(id)
+        ScramblesRepository.getInstance().updateNextScramble(currentSession.value.event)
+
+    }
+
 
     companion object {
         private var INSTANCE: SolvesRepository? = null

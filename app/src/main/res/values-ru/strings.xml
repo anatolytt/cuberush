@@ -71,6 +71,11 @@
     <string name="edittext">Название сессии</string>
     <string name="maxlength">Максимальная длина: 15</string>
 
+    <string name="single">сингл</string>
+    <string name="current" translatable="false">Текущие</string>
+    <string name="solves_amount">Всего</string>
+    <string name="mean">Среднее</string>
+
 
 
 

@@ -147,14 +147,11 @@ fun EventDialog(
                         onClick = {
                             if (!(text.value.length == 16) && (text.value.length > 0)) {
                                 val sessionName = text.value.trim()
-                                if (selectEvents != null) {
-                                    appBarViewModel.addSession(sessionName, selectEvents)
-                                }
-                                appBarViewModel.switchSessions(
+                                appBarViewModel.addSession(sessionName, selectEvents)
+                                appBarViewModel.switchSessions (
                                     sessionsList.value[sessionsList.value.size-1].id
                                 )
                                 onDismiss()
-
                             }
                         }
                     ) {

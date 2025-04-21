@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class Solve(
     @PrimaryKey(autoGenerate = true)
     var id:Int,
-    val sessionName : String,
+    val sessionId : Int,
     val result: Int,
     val event: Events,
     val penalties: Penalties,

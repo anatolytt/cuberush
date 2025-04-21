@@ -17,6 +17,7 @@ import com.example.cubetime.ui.screens.settings.SettingsDataManager
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.ui.screens.settings.SettingsScreen
 import com.example.cubetime.ui.screens.solves.SolvesViewModel
+import com.example.cubetime.ui.screens.statistics.StatisticsViewModel
 import com.example.cubetime.ui.screens.timer.TimerViewModel
 
 
@@ -26,6 +27,7 @@ fun Navigation(
     viewModel: SharedViewModel,
     timerViewModel: TimerViewModel,
     solvesViewModel: SolvesViewModel,
+    statisticsViewModel: StatisticsViewModel,
     modifierNavHost: Modifier,
     settingsDataManager: SettingsDataManager
 
@@ -44,7 +46,7 @@ fun Navigation(
             SolvesScreen(viewModel, solvesViewModel)
         }
         composable("statistics") {
-            StatisticsScreen(viewModel)
+            StatisticsScreen(viewModel, statisticsViewModel)
         }
         composable("settings") {
             SettingsScreen(settingsDataManager, viewModel, navController)

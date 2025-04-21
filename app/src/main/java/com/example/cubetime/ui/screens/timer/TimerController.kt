@@ -83,6 +83,7 @@ class TimerController(
         timerJob = coroutineScope.launch () {
             while (timerState == TimerState.GOING) {
                 measureTime(10)
+                ensureActive()
                 _currentTime.value += 10
             }
         }
@@ -90,6 +91,11 @@ class TimerController(
 
     fun stopTimer() {
         timerJob?.cancel()
+        _timerState.value = TimerState.INACTIVE
+        _isFirstSolve.value = false
+        hideEverything(false)
+        addSolve(currentTime, penaltyState)
+        generateScr()
 
         // Задержка после остановки таймера
         coroutineScope.launch {
@@ -98,19 +104,18 @@ class TimerController(
             _delayAfterStopOn.value = false
         }
 
-        _timerState.value = TimerState.INACTIVE
-        _isFirstSolve.value = false
-        hideEverything(false)
-        addSolve(currentTime, penaltyState)
-        generateScr()
-
 
     }
 
     fun stopAndDelete() {
         timerJob?.cancel()
-        clear()
         _timerState.value = TimerState.INACTIVE
+        clear()
+        Log.d("stop", _currentTime.value.toString() + " " + timeToShow())
+        coroutineScope.launch {  delay(100)
+            Log.d("stop", _currentTime.value.toString() + " " + timeToShow())
+        }
+
         hideEverything(false)
     }
 

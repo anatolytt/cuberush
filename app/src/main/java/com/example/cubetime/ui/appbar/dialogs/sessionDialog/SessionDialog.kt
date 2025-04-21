@@ -172,7 +172,10 @@ fun SessionDialog(
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .clickable { appBarViewModel.switchSessions(session.id) }
+                                        .clickable {
+                                            appBarViewModel.switchSessions(session.id)
+                                            onDismiss()
+                                        }
                                         .padding(vertical = 10.dp, horizontal = 22.dp),
                                     verticalAlignment = Alignment.CenterVertically,
 

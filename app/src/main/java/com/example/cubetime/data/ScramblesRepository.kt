@@ -39,6 +39,13 @@ class ScramblesRepository {
         nextScrambles.update { list -> list + scramble }
     }
 
+    fun addCustomScramble(scramble: String) {
+        addScramble(scramble)
+        coroutineScope.launch {
+            updateNextScramble(currentEvent.value)
+        }
+    }
+
     private fun keepScramblesGenerated() {
         job = coroutineScope.launch {
             while (nextScrambles.value.size < KEEP_GENERATED) {
@@ -65,7 +72,7 @@ class ScramblesRepository {
         }
     }
 
-    suspend fun updateNextScramble(event: Events) {
+    suspend fun updateNextScramble(event: Events): Boolean {
         Log.d("ScramblesRepository", event.toString())
         job?.cancel()
         if (currentEvent.value != event) {
@@ -76,15 +83,18 @@ class ScramblesRepository {
 
         currentScramble.value = "Generating..."
         if (nextScrambles.value.isNotEmpty()) {
-            currentScramble.value = nextScrambles.value[0]
+            currentScramble.value = nextScrambles.value[nextScrambles.value.size-1]
             Log.d("Solves", nextScrambles.value.toString())
-            nextScrambles.update { list -> list.drop(1) }
+            nextScrambles.update { list -> list.dropLast(1) }
             scrambleIsGenerated = false
         } else {
             currentScramble.value = Scrambler().generateScramble(event)
         }
         updateImage()
+        return true
     }
+
+
     companion object {
         private var INSTANCE: ScramblesRepository? = null
 
