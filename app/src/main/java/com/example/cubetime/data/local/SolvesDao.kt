@@ -70,4 +70,42 @@ interface SolvesDao {
     @Query("SELECT id FROM session WHERE name = :name")
     fun getSessionId(name: String): Int
 
+
+
+    @Query("UPDATE Best_averages SET mo3 = :newValue WHERE sessionId=:sessionId AND mo3 < :newValue")
+    fun updateMo3(newValue: Int, sessionId: Int)
+
+    @Query("UPDATE Best_averages SET ao5 = :newValue WHERE sessionId=:sessionId AND ao5 < :newValue")
+    fun updateAo5(newValue: Int, sessionId: Int)
+
+    @Query("UPDATE Best_averages SET ao12 = :newValue WHERE sessionId=:sessionId AND ao12 < :newValue")
+    fun updateAo12(newValue: Int, sessionId: Int)
+
+    @Query("UPDATE Best_averages SET ao25 = :newValue WHERE sessionId=:sessionId AND ao25 < :newValue")
+    fun updateAo25(newValue: Int, sessionId: Int)
+
+    @Query("UPDATE Best_averages SET ao50 = :newValue WHERE sessionId=:sessionId AND ao50 < :newValue")
+    fun updateAo50(newValue: Int, sessionId: Int)
+
+    @Query("UPDATE Best_averages SET ao100 = :newValue WHERE sessionId=:sessionId AND ao100 < :newValue")
+    fun updateAo100(newValue: Int, sessionId: Int)
+
+    @Query("SELECT mo3 FROM Best_averages WHERE sessionId = :sessionId")
+    fun getMo3(sessionId: Int): Int
+
+    @Query("SELECT ao5 FROM Best_averages WHERE sessionId = :sessionId")
+    fun getAo5(sessionId: Int): Int
+
+    @Query("SELECT ao12 FROM Best_averages WHERE sessionId = :sessionId")
+    fun getAo12(sessionId: Int): Int
+
+    @Query("SELECT ao25 FROM Best_averages WHERE sessionId = :sessionId")
+    fun getAo25(sessionId: Int): Int
+
+    @Query("SELECT ao50 FROM Best_averages WHERE sessionId = :sessionId")
+    fun getAo50(sessionId: Int): Int
+
+    @Query("SELECT ao100 FROM Best_averages WHERE sessionId = :sessionId")
+    fun getAo100(sessionId: Int) : Int
+
 }

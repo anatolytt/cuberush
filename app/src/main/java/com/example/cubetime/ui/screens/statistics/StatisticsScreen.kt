@@ -33,7 +33,8 @@ fun StatisticsScreen(
     viewModel: SharedViewModel,
     statisticsViewModel: StatisticsViewModel
 ) {
-    val ao5Test = 1
+    val averages : Map<Int, String> = statisticsViewModel.averages
+    val bestAverages: Map<Int, String> = statisticsViewModel.bestAverages
 
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -100,7 +101,7 @@ fun StatisticsScreen(
                         stringResource(R.string.pb) +
                                 " " + stringResource(R.string.ao5),
                         type = StatCardType.BIG,
-                        result = TimeFormat.millisToString(ao5Test, Penalties.NONE),
+                        result = averages.get(5)!!,
                         cardModifier = Modifier.height(70.dp).width(170.dp)
                     )
                     Spacer(modifier = Modifier.width(14.dp))
