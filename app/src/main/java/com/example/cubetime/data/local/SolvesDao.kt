@@ -17,10 +17,28 @@ interface SolvesDao {
     @Query("SELECT * FROM Solve WHERE sessionId = :sessionId")
     fun getAllSessionSolves(sessionId: Int) : Flow<List<Solve>>
 
+//    @Query("SELECT id, result, penalties, date " +
+//            "FROM Solve WHERE sessionId = :sessionId " +
+//            "ORDER BY id DESC")
+//    fun getAllShortSessionSolves(sessionId: Int) : Flow<List<ShortSolve>>
+    //Поиск
     @Query("SELECT id, result, penalties, date " +
-            "FROM Solve WHERE sessionId = :sessionId " +
+            "FROM Solve " +
+            "WHERE sessionId = :sessionId AND result>= :min AND result<:max " +
             "ORDER BY id DESC")
-    fun getAllShortSessionSolves(sessionId: Int) : Flow<List<ShortSolve>>
+    fun getAllShortSessionSolves(min:Int,max:Int,sessionId: Int) : Flow<List<ShortSolve>>
+
+
+    //Отсортировынный по убыванию список сборок
+    @Query(" SELECT id,result,penalties,date" + " FROM Solve WHERE sessionId = :sessionId"+
+            " ORDER BY result DESC")
+    fun getSortedShortSolveEnd(sessionId: Int): Flow<List<ShortSolve>>
+    //Отсортировынный по возрастанию список сборок
+    @Query(" SELECT id,result,penalties,date" + " FROM Solve WHERE sessionId = :sessionId"+
+            " ORDER BY result")
+    fun getSortedShortSolveStart(sessionId: Int): Flow<List<ShortSolve>>
+
+
 
     @Query("SELECT * FROM Solve WHERE id = :id")
     fun getSolveById(id: Int) : Solve
@@ -69,5 +87,7 @@ interface SolvesDao {
 
     @Query("SELECT id FROM session WHERE name = :name")
     fun getSessionId(name: String): Int
+
+
 
 }
