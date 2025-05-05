@@ -34,26 +34,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.cubetime.R
 import com.example.cubetime.data.model.Events
-import com.example.cubetime.data.model.EventDialog
 import com.example.cubetime.ui.appbar.AppBarViewModel
 import com.example.cubetime.ui.appbar.dialogs.sessionDialog.SessionTextField
 import com.example.cubetime.ui.shared.SharedViewModel
-import kotlinx.coroutines.coroutineScope
+
 
 @Composable
 fun EventDialog(

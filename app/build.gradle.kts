@@ -56,7 +56,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.benchmark.macro)
     implementation(libs.androidx.room.common.jvm)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -69,7 +68,7 @@ dependencies {
     implementation(libs.lib.scrambles)
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("io.coil-kt:coil-svg:2.4.0")
-    val room_version = "2.4.2"
+    val room_version = "2.7.1"
 
     implementation ("androidx.room:room-runtime:$room_version")
     kapt ("androidx.room:room-compiler:$room_version")

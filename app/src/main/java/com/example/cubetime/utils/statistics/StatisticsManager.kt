@@ -1,13 +1,8 @@
 package com.example.cubetime.utils.statistics
 
-import android.util.Log
 import com.example.cubetime.data.model.ShortSolve
 import com.example.cubetime.data.model.StatType
-import com.example.cubetime.data.model.solvesAverages
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import com.example.cubetime.data.model.entities.solvesAverages
 
 class StatisticsManager () {
     val AVERAGES_LIST = listOf(StatType.MEAN, StatType.MO3, StatType.AO5, StatType.AO12, StatType.AO25, StatType.AO50, StatType.AO100)
@@ -41,12 +36,14 @@ class StatisticsManager () {
 //                        )
 //                    }
 //                }
-                result.add(solvesAverages(
+                result.add(
+                    solvesAverages(
                             solveId = initSolves.first().id,
                             sessionId = sessionId,
                             avgType = statType,
                             result = calculated
-                        ))
+                        )
+                )
             }
 
         }
@@ -69,12 +66,14 @@ class StatisticsManager () {
 //                }
 //
 //            }
-            result.add(solvesAverages(
+            result.add(
+                solvesAverages(
                 solveId = solve.id,
                 sessionId = sessionId,
                 avgType = statType,
                 result = calculators[avgType]!!.addSolve(solve)
-            ))
+            )
+            )
         }
         return result
     }

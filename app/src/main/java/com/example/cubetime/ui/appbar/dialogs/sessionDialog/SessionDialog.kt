@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.FilledTonalButton
@@ -38,10 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.cubetime.R
-import com.example.cubetime.data.model.Session
+import com.example.cubetime.data.model.entities.Session
 import com.example.cubetime.ui.appbar.AppBarViewModel
 import com.example.cubetime.ui.shared.SharedViewModel
-import kotlin.coroutines.CoroutineContext
 
 
 @Composable

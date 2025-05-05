@@ -1,16 +1,10 @@
 package com.example.cubetime.ui.screens.statistics
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cubetime.data.local.AppDatabase
-import com.example.cubetime.data.SolvesRepository
-import com.example.cubetime.data.model.Events
-import com.example.cubetime.data.model.Penalties
-import com.example.cubetime.data.model.Solve
-import com.example.cubetime.data.model.Stat
+import com.example.cubetime.data.local.SolvesRepository
+import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.data.model.StatType
 import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.Dispatchers

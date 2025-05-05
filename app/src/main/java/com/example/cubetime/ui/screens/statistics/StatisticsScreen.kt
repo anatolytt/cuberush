@@ -1,6 +1,5 @@
 package com.example.cubetime.ui.screens.statistics
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,8 +16,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 
 
@@ -27,12 +24,10 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.cubetime.R
-import com.example.cubetime.data.model.Solve
 import com.example.cubetime.data.model.StatType
 import com.example.cubetime.shared.AppStrings
 import com.example.cubetime.ui.screens.statistics.dialogs.StatBottomSheet
 import com.example.cubetime.ui.shared.SharedViewModel
-import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.launch
 
 

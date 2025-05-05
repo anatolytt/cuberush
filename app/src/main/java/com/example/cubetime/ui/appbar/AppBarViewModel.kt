@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cubetime.data.ScramblesRepository
 import com.example.cubetime.data.local.AppDatabase
-import com.example.cubetime.data.SolvesRepository
+import com.example.cubetime.data.local.SolvesRepository
 import com.example.cubetime.data.model.Events
-import com.example.cubetime.data.model.Session
+import com.example.cubetime.data.model.entities.Session
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

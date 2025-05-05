@@ -1,9 +1,9 @@
-package com.example.cubetime.data.model
+package com.example.cubetime.data.model.entities
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.cubetime.data.model.Events
 
 @Entity(indices = [Index(value = ["name"], unique = true)])
 data class Session(

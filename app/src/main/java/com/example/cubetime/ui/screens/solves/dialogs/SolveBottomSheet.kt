@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cubetime.R
 import com.example.cubetime.data.model.Penalties
-import com.example.cubetime.data.model.Solve
+import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.ui.screens.solves.SolvesViewModel
 import com.example.cubetime.ui.screens.timer.dialogs.CommentDialog
 import com.example.cubetime.ui.shared.ScrambleImage

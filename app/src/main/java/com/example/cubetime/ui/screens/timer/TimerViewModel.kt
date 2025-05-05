@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cubetime.data.ScramblesRepository
 import com.example.cubetime.data.local.AppDatabase
-import com.example.cubetime.data.SolvesRepository
+import com.example.cubetime.data.local.SolvesRepository
 import com.example.cubetime.data.model.Penalties
-import com.example.cubetime.data.model.Session
-import com.example.cubetime.data.model.Solve
+import com.example.cubetime.data.model.entities.Session
+import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.ui.screens.settings.Settings
 import com.example.cubetime.ui.screens.statistics.CurrentStatsUI
 import com.example.cubetime.utils.DateUtils

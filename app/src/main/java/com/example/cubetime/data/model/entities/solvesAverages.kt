@@ -1,7 +1,7 @@
-package com.example.cubetime.data.model
+package com.example.cubetime.data.model.entities
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.example.cubetime.data.model.StatType
 
 @Entity(primaryKeys = ["solveId", "avgType"])
 data class solvesAverages(

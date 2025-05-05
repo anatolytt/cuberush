@@ -1,14 +1,18 @@
 package com.example.cubetime.data.local
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Upsert
+import com.example.cubetime.data.model.AverageResult
 import com.example.cubetime.data.model.Penalties
-import com.example.cubetime.data.model.Session
+import com.example.cubetime.data.model.entities.Session
 import com.example.cubetime.data.model.ShortSolve
-import com.example.cubetime.data.model.Solve
+import com.example.cubetime.data.model.entities.Solve
+import com.example.cubetime.data.model.StatType
+import com.example.cubetime.data.model.entities.solvesAverages
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -76,7 +80,6 @@ interface SolvesDao {
         ids.forEach { id ->
             deleteByIdFromSolves(id)
             deleteByIdFromAverages(id)
-            Log.d("SOLVE DELETED", id.toString())
         }
 
     }
@@ -120,10 +123,6 @@ interface SolvesDao {
 
     @Query("SELECT COUNT(*) FROM Solve WHERE sessionId = :sessionId")
     fun countSolves(sessionId: Int): Flow<Int>
-
-
-    @Query("SELECT * FROM Stat WHERE (sessionId = :sessionId) ")
-    fun getAllStats(sessionId: Int): Flow<List<Stat>>
 
 
     @Upsert()

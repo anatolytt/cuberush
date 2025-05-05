@@ -4,8 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import androidx.core.content.ContextCompat.getSystemService
-import com.example.cubetime.data.model.Solve
+import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.data.model.StatType
 
 class ShareAndCopy() {

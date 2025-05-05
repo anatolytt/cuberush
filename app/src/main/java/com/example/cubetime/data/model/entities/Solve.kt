@@ -1,8 +1,9 @@
-package com.example.cubetime.data.model
+package com.example.cubetime.data.model.entities
 
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.example.cubetime.data.model.Events
+import com.example.cubetime.data.model.Penalties
 
 @Entity
 data class Solve (

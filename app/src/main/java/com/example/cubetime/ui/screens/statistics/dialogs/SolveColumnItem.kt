@@ -1,6 +1,5 @@
 package com.example.cubetime.ui.screens.statistics.dialogs
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,8 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.cubetime.data.model.Solve
-import com.example.cubetime.utils.TimeFormat
+import com.example.cubetime.data.model.entities.Solve
 
 @Composable
 fun SolveColumnItem(
