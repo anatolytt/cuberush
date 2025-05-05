@@ -20,23 +20,12 @@ import com.example.cubetime.data.model.Events.PYRA
 import com.example.cubetime.data.model.Events.SKEWB
 import com.example.cubetime.data.model.Events.SQ1
 import com.example.cubetime.data.model.Penalties
+import com.example.cubetime.data.model.StatType
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 class Converters {
-    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-
-    @TypeConverter
-    fun dateFromString(value: String): Date? {
-        return dateFormatter.parse(value)
-    }
-
-    @TypeConverter
-    fun dateToString(date: Date): String? {
-        return dateFormatter.format(date)
-    }
-
     @TypeConverter
     fun eventToString(event: Events) : String? {
         return event.toString()
@@ -83,6 +72,34 @@ class Converters {
             1 -> Penalties.PLUS2
             -1 -> Penalties.DNF
             else -> Penalties.NONE
+        }
+    }
+
+    @TypeConverter
+    fun statTypeToInt(statType: StatType) : Int {
+        return when (statType) {
+            StatType.MEAN -> 0
+            StatType.SINGLE -> 1
+            StatType.MO3 -> 3
+            StatType.AO5 -> 5
+            StatType.AO12 -> 12
+            StatType.AO25 -> 25
+            StatType.AO50 -> 50
+            StatType.AO100 -> 100
+        }
+    }
+
+    @TypeConverter
+    fun intToStatType(int: Int) : StatType {
+        return when (int) {
+            0 -> StatType.MEAN
+            1 -> StatType.SINGLE
+            3 -> StatType.MO3
+            5 -> StatType.AO5
+            12 -> StatType.AO12
+            25 -> StatType.AO25
+            50 -> StatType.AO50
+            else -> StatType.MO3
         }
     }
 }

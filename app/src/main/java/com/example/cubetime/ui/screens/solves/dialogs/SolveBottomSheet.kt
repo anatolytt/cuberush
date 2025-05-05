@@ -1,7 +1,5 @@
 package com.example.cubetime.ui.screens.solves.dialogs
 
-import android.widget.TextView
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,26 +11,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
@@ -40,13 +28,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,21 +39,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -77,13 +53,10 @@ import com.example.cubetime.R
 import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.data.model.Solve
 import com.example.cubetime.ui.screens.solves.SolvesViewModel
-import com.example.cubetime.ui.screens.timer.TimerScreen
 import com.example.cubetime.ui.screens.timer.dialogs.CommentDialog
 import com.example.cubetime.ui.shared.ScrambleImage
-import com.example.cubetime.ui.shared.SharedViewModel
-import com.example.cubetime.ui.theme.outlineDark
 import com.example.cubetime.utils.Scrambler
-import com.example.cubetime.utils.Sharing
+import com.example.cubetime.utils.ShareAndCopy
 import com.example.cubetime.utils.TimeFormat
 
 
@@ -93,7 +66,8 @@ fun SolveBottomSheet(
     onDismiss: () -> Unit,
     sheetState: SheetState,
     solve: Solve,
-    solvesViewModel: SolvesViewModel
+    solvesViewModel: SolvesViewModel,
+    includeScramble: Boolean
 ) {
     var scrambleImageString by remember { mutableStateOf<String?>("") }
     LaunchedEffect (Unit) {
@@ -118,15 +92,12 @@ fun SolveBottomSheet(
             initialComment = commentState.value
         )
     }
-    val sharer = Sharing()
+    val sharer = ShareAndCopy()
     val context = LocalContext.current
-
-    val focusManager = LocalFocusManager.current
 
     ModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismiss
-
     ) {
         Box (
             modifier = Modifier
@@ -278,7 +249,11 @@ fun SolveBottomSheet(
 
                     FilledTonalButton(
                         onClick = {
-                            sharer.shareSolve(solve, context)
+                            sharer.shareSolve(
+                                solve = solve,
+                                context = context,
+                                includeScrambles = includeScramble
+                            )
                         },
                         modifier = Modifier.padding(start=6.dp)
                     ) {

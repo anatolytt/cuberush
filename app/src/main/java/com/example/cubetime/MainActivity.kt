@@ -1,11 +1,9 @@
 package com.example.cubetime
 
 
+import android.content.ClipboardManager
 import android.content.Context
-
-
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,42 +19,28 @@ import androidx.compose.material.icons.sharp.Home
 import androidx.compose.material.icons.sharp.Search
 import androidx.compose.material3.Scaffold
 
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.cubetime.data.local.AppDatabase
-import com.example.cubetime.data.local.SolvesRepository
-import com.example.cubetime.data.model.Events
 import com.example.cubetime.ui.appbar.AppBar
 import com.example.cubetime.ui.navigation.Navigation
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationBar
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationItem
+import com.example.cubetime.ui.screens.settings.Settings
 import com.example.cubetime.ui.screens.solves.SolvesViewModel
 
 import com.example.cubetime.ui.screens.settings.SettingsDataManager
-import com.example.cubetime.ui.screens.settings.TimerSettings
 import com.example.cubetime.ui.screens.statistics.StatisticsViewModel
 import com.example.cubetime.ui.screens.timer.TimerViewModel
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.ui.theme.CubeTimeTheme
 import com.example.cubetime.utils.ChangeLanguage
-import com.example.cubetime.utils.TimeFormat
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.util.prefs.Preferences
-
-
 
 
 class MainActivity : ComponentActivity() {
@@ -64,17 +48,20 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val viewModel: SharedViewModel by viewModels()
+        val settingsDataManager = SettingsDataManager(this)
+        viewModel.setSettingsDataManager(settingsDataManager)
+
         val timerViewModel : TimerViewModel by viewModels()
         val solvesViewModel : SolvesViewModel by viewModels()
         val statisticsViewModel : StatisticsViewModel by viewModels()
         AppDatabase.init(this)
         enableEdgeToEdge()
         setContent {
-            val context = LocalContext.current
-            val settingsDataManager = SettingsDataManager(context)
             val language by settingsDataManager.getLanguage().collectAsState(initial = "ru")
             val theme by settingsDataManager.getTheme().collectAsState(initial = false)
+
             ChangeLanguage(this, language)
             val navController = rememberNavController()
 
@@ -131,8 +118,7 @@ class MainActivity : ComponentActivity() {
                         modifierNavHost = Modifier.padding(padding),
                         timerViewModel = timerViewModel,
                         solvesViewModel = solvesViewModel,
-                        statisticsViewModel = statisticsViewModel,
-                        settingsDataManager = settingsDataManager
+                        statisticsViewModel = statisticsViewModel
                     )
                 }
             }

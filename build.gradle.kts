@@ -5,3 +5,4 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     kotlin("kapt") version ("2.1.10")
 }
+

@@ -2,35 +2,29 @@ package com.example.cubetime.ui.screens.timer
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import com.example.cubetime.data.model.Penalties
-import com.example.cubetime.data.model.Solve
-import com.example.cubetime.ui.screens.settings.SettingsDataManager
-import com.example.cubetime.ui.screens.settings.TimerSettings
-import com.example.cubetime.ui.shared.SharedViewModel
+import com.example.cubetime.ui.screens.settings.Settings
 import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.concurrent.locks.LockSupport
 
 class TimerController(
     val generateScr: () -> Unit,
     val hideEverything: (Boolean) -> Unit,
-    val settings: MutableState<TimerSettings>,
+    val settings: MutableState<Settings>,
     val addSolve: (Int, Penalties) -> Unit
 ) {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-    val TIME_HIDDEN get() = settings.value.timehidden
-    val INSPECTION_ON get() = settings.value.isInspectionEnabled
-    val DELAY_ON get() = settings.value.delay
+    val TIME_HIDDEN get() = settings.value.timerHideTime
+    val INSPECTION_ON get() = settings.value.timerInspection
+    val DELAY_ON get() = settings.value.timerDelay
 
     private val _currentTime = mutableStateOf<Int>(0)
     val currentTime: Int get() = _currentTime.value

@@ -100,7 +100,9 @@ fun SolvesScreen(
     val scope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
 
-
+    val includeScrambles by sharedViewModel.settingsManager.getPrintScrambles().collectAsState(
+        true
+    )
     if (chosenSolve != null) {
         SolveBottomSheet(
             onDismiss = {
@@ -111,6 +113,7 @@ fun SolvesScreen(
             },
             sheetState = sheetState,
             solve = chosenSolve!!,
+            includeScramble = includeScrambles,
             solvesViewModel = solvesViewModel
         )
     }

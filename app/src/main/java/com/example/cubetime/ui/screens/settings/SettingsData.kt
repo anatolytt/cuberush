@@ -1,8 +1,9 @@
 package com.example.cubetime.ui.screens.settings
 
 
-data class TimerSettings(
-    val isInspectionEnabled:Boolean = false,
-    val timehidden: Boolean = false,
-    val delay: Boolean = false
+data class Settings(
+    val timerInspection:Boolean = false,
+    val timerHideTime: Boolean = false,
+    val timerDelay: Boolean = false,
+    val printScrambles: Boolean = true
 )

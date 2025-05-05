@@ -26,6 +26,7 @@
     <string name="settinstimer">Settings Timer</string>
     <string name="TIMEEVENT">Hide time</string>
     <string name="creat">Create</string>
+    <string name="print_scrambles">Print scrambles in statistics</string>
 
 
 
@@ -82,7 +83,7 @@
     <string name="solves_amount">Solves</string>
     <string name="mean">Mean</string>
     <string name="pb" translatable="false">PB</string>
-    <string name="current" translatable="false">Current</string>
+    <string name="current">Current</string>
     <string name="mo3"  translatable="false">Mo3</string>
     <string name="ao5"  translatable="false">ao5</string>
     <string name="ao12"  translatable="false">ao12</string>
@@ -90,6 +91,8 @@
     <string name="ao50" translatable="false">ao50</string>
     <string name="ao100" translatable="false">ao100</string>
     <string name="ao1000" translatable="false">ao1000</string>
+
+    <string name="copied">is copied</string>
 
 
 

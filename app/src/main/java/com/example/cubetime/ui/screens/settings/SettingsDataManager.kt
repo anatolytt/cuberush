@@ -1,18 +1,14 @@
 package com.example.cubetime.ui.screens.settings
 
 import android.content.Context
-import androidx.compose.ui.graphics.Color
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.sql.Time
 
 private val Context.dataStore:DataStore<Preferences> by preferencesDataStore("datastore")
 
@@ -23,6 +19,7 @@ class SettingsDataManager(val context: Context) {
     private val inspectionKey = booleanPreferencesKey("inspection_enabled")
     private val timehiddenKey = booleanPreferencesKey("time_hidden") // скрывать / не скрывать время
     private val delayKey = booleanPreferencesKey("delay") //задержка перед стартом
+    private val printScramblesKey = booleanPreferencesKey("print_scrambles")
 
     suspend fun  <T> saveSetting(key: Preferences.Key<T>, newValue: T){
         context.dataStore.edit { pref ->
@@ -50,7 +47,9 @@ class SettingsDataManager(val context: Context) {
         saveSetting(delayKey, value)
     }
 
-
+    suspend fun setPrintScrambles(value: Boolean) {
+        saveSetting(printScramblesKey, value)
+    }
 
 
     fun getTheme(): Flow<Boolean> {
@@ -79,12 +78,19 @@ class SettingsDataManager(val context: Context) {
         }
     }
 
-    fun getTimerSettings() : Flow<TimerSettings> {
+    fun getPrintScrambles() : Flow<Boolean> {
         return context.dataStore.data.map { preferences ->
-            TimerSettings(
-                  isInspectionEnabled = preferences[inspectionKey] ?: true,
-                  timehidden = preferences[timehiddenKey] ?: true,
-                  delay = preferences[delayKey] ?: true,
+            preferences[printScramblesKey] ?: false
+        }
+    }
+
+    fun getTimerSettings() : Flow<Settings> {
+        return context.dataStore.data.map { preferences ->
+            Settings(
+                  timerInspection = preferences[inspectionKey] ?: true,
+                  timerHideTime = preferences[timehiddenKey] ?: true,
+                  timerDelay = preferences[delayKey] ?: true,
+                  printScrambles = preferences[printScramblesKey] ?: true
             )
 
         }

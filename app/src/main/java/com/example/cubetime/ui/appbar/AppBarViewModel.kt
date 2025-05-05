@@ -1,20 +1,21 @@
 package com.example.cubetime.ui.appbar
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cubetime.data.ScramblesRepository
 import com.example.cubetime.data.local.AppDatabase
-import com.example.cubetime.data.local.SolvesRepository
+import com.example.cubetime.data.SolvesRepository
 import com.example.cubetime.data.model.Events
 import com.example.cubetime.data.model.Session
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class AppBarViewModel : ViewModel() {
-    lateinit var sessionsList: Flow<List<Session>>
+    private var _sessionsList =  MutableStateFlow<List<Session>>(emptyList())
+    var sessionsList = _sessionsList.asStateFlow()
     lateinit var repository : SolvesRepository
     lateinit var scramblesRepository: ScramblesRepository
 
@@ -22,7 +23,12 @@ class AppBarViewModel : ViewModel() {
         val db = AppDatabase.getInstance()
         val dao = db.SolvesDao()
         repository = SolvesRepository.getInstance(dao)
-        sessionsList = repository.sessions
+        viewModelScope.launch {
+            repository.sessions.collect { list ->
+                _sessionsList.value = list
+            }
+        }
+
         scramblesRepository = ScramblesRepository.getInstance()
     }
 
@@ -34,8 +40,12 @@ class AppBarViewModel : ViewModel() {
     }
 
     fun addSession(name: String, events: Events) {
-        val newSession = Session(0, name, events, "")
-        repository.addSession(newSession)
+        viewModelScope.launch {
+            val newSession = Session(0, name, events, "")
+            repository.addSession(newSession)
+            _sessionsList.first{it.last().name == name}
+            switchSessions(_sessionsList.value.last().id)
+        }
     }
 
     fun deleteSession(id: Int) {
@@ -50,12 +60,7 @@ class AppBarViewModel : ViewModel() {
         clearScrambles()
         viewModelScope.launch (Dispatchers.IO) {
             repository.updateCurrentSessionById(sessionId)
-            scramblesRepository.updateNextScramble(repository.currentSession.value.event)
         }
     }
 
-    fun renameSession(session: Session, index: Int, newName: String) {
-//        val newSession = session.copy(name = newName)
-//        _sessions[index] = newSession
-    }
 }

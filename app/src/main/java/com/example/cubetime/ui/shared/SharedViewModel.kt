@@ -1,33 +1,9 @@
 package com.example.cubetime.ui.shared
 
-import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.cubetime.data.local.AppDatabase
-import com.example.cubetime.data.local.SolvesRepository
-import com.example.cubetime.data.model.Events
-import com.example.cubetime.data.model.Penalties
-import com.example.cubetime.data.model.Session
-import com.example.cubetime.data.model.Solve
 import com.example.cubetime.ui.screens.settings.SettingsDataManager
-import com.example.cubetime.ui.screens.timer.TimerController
-import com.example.cubetime.ui.screens.settings.TimerSettings
-import com.example.cubetime.utils.Scrambler
-import com.example.cubetime.utils.TimeFormat
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SharedViewModel : ViewModel() {
     val _settingsScreenOpen = mutableStateOf(false)
@@ -42,6 +18,8 @@ class SharedViewModel : ViewModel() {
     private val _scrambleIsGenerating = mutableStateOf(false)
     val scrambleIsGenerating get() = _scrambleIsGenerating.value
 
+    lateinit var settingsManager: SettingsDataManager
+
     var deleteSolves: ()->Unit = {}
     fun setSolvesDelete(func: () -> Unit) { deleteSolves = func }
 
@@ -51,6 +29,10 @@ class SharedViewModel : ViewModel() {
     fun setGeneratingState(state: Boolean) {
         _scrambleIsGenerating.value = state
         Log.d("SharedVM", scrambleIsGenerating.toString())
+    }
+
+    fun setSettingsDataManager(settings: SettingsDataManager) {
+        settingsManager = settings
     }
 
 

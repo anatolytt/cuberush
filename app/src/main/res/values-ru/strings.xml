@@ -23,6 +23,7 @@
     <string name="settinstimer">Настройки таймера</string>
     <string name="TIMEEVENT">Прятать время</string>
     <string name="creat">Создать</string>
+    <string name="print_scrambles">Печатать скрамблы в статистику</string>
 
 
 
@@ -72,9 +73,11 @@
     <string name="maxlength">Максимальная длина: 15</string>
 
     <string name="single">сингл</string>
-    <string name="current" translatable="false">Текущие</string>
+    <string name="current">Текущее</string>
     <string name="solves_amount">Всего</string>
     <string name="mean">Среднее</string>
+
+    <string name="copied">cкопировано</string>
 
 
 

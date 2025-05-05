@@ -5,7 +5,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity
-data class Solve(
+data class Solve (
     @PrimaryKey(autoGenerate = true)
     var id:Int,
     val sessionId : Int,

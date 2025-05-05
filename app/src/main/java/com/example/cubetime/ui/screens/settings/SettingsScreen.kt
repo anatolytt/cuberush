@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,15 +26,12 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,25 +40,26 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.dataStore
 import androidx.navigation.NavController
 import com.example.cubetime.R
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.utils.ChangeLanguage
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    settingsDataManager: SettingsDataManager,
     viewModel: SharedViewModel,
     navController: NavController
 ) {
+
+    val settingsDataManager = viewModel.settingsManager
+
     val isDarkMode by settingsDataManager.getTheme().collectAsState(initial = false)
     val isInspection by settingsDataManager.getInspection().collectAsState(initial = false)
     val timehidden by settingsDataManager.getTimeHidden().collectAsState(initial = false)
     val delayEnabled by settingsDataManager.getDelay().collectAsState(initial = false)
+    val printScrambles by settingsDataManager.getPrintScrambles().collectAsState(initial = true)
 
     var showLanguageSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -139,7 +135,7 @@ fun SettingsScreen(
                 // Иконка
                 Icon(
                     painter = painterResource(id = R.drawable.globealt),
-                    contentDescription = "Generate scramble",
+                    contentDescription = "",
                     modifier = Modifier.padding(start = 10.dp, end = 20.dp).size(20.dp)
                 )
 
@@ -182,7 +178,7 @@ fun SettingsScreen(
                 // Иконка
                 Icon(
                     painter = painterResource(id = R.drawable.switchthemes),
-                    contentDescription = "Generate scramble",
+                    contentDescription = "",
                     modifier = Modifier.padding(start = 10.dp, end = 20.dp).size(20.dp)
                 )
 
@@ -235,7 +231,7 @@ fun SettingsScreen(
                 // Иконка
                 Icon(
                     painter = painterResource(id = R.drawable.inspection),
-                    contentDescription = "Generate scramble",
+                    contentDescription = "",
                     modifier = Modifier.padding(start = 10.dp, end = 20.dp).size(20.dp)
                 )
 
@@ -278,7 +274,7 @@ fun SettingsScreen(
                 // Иконка
                 Icon(
                     painter = painterResource(id = R.drawable.hand),
-                    contentDescription = "Generate scramble",
+                    contentDescription = "",
                     modifier = Modifier.padding(start = 10.dp, end = 20.dp).size(20.dp)
                 )
 
@@ -321,7 +317,7 @@ fun SettingsScreen(
                 // Иконка
                 Icon(
                     painter = painterResource(id = R.drawable.hide),
-                    contentDescription = "Generate scramble",
+                    contentDescription = "",
                     modifier = Modifier.padding(start = 10.dp, end = 20.dp).size(20.dp)
                 )
 
@@ -342,6 +338,48 @@ fun SettingsScreen(
                     onCheckedChange = { isChecked ->
                         coroutine.launch {
                             settingsDataManager.setTimeIsHidden(isChecked)
+                        }
+                    }
+                )
+            }
+
+
+        }
+
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, start = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                // Иконка
+                Icon(
+                    painter = painterResource(id = R.drawable.hide),
+                    contentDescription = "",
+                    modifier = Modifier.padding(start = 10.dp, end = 20.dp).size(20.dp)
+                )
+
+                // Текст
+                Text(
+                    text = stringResource(R.string.print_scrambles),
+                    fontSize = 25.sp
+                )
+            }
+            //кнопка
+            Row(verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 20.dp, top = 13.dp)) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Switch(
+                    checked = printScrambles,
+                    onCheckedChange = { isChecked ->
+                        coroutine.launch {
+                            settingsDataManager.setPrintScrambles(isChecked)
                         }
                     }
                 )

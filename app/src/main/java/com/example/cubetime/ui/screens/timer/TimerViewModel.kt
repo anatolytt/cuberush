@@ -1,28 +1,25 @@
 package com.example.cubetime.ui.screens.timer
 
-import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cubetime.data.ScramblesRepository
 import com.example.cubetime.data.local.AppDatabase
-import com.example.cubetime.data.local.SolvesRepository
+import com.example.cubetime.data.SolvesRepository
 import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.data.model.Session
 import com.example.cubetime.data.model.Solve
-import com.example.cubetime.ui.screens.settings.TimerSettings
-import com.example.cubetime.ui.shared.SharedViewModel
-import com.example.cubetime.utils.Scrambler
+import com.example.cubetime.ui.screens.settings.Settings
+import com.example.cubetime.ui.screens.statistics.CurrentStatsUI
+import com.example.cubetime.utils.DateUtils
+import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class TimerViewModel : ViewModel() {
     lateinit private var sessionsList: Flow<List<Session>>
@@ -33,9 +30,20 @@ class TimerViewModel : ViewModel() {
     val currentScramble get() = _currentScramble.value
     var _currentImage = mutableStateOf<String?> ("")
     val currentImage get() = _currentImage.value
-    private var timerSettings = mutableStateOf(TimerSettings(false, false, false))
+    private var settings = mutableStateOf(Settings(false, false, false))
     var hideEverything: (Boolean) -> Unit = {}
     var setGeneratingState: (Boolean) -> Unit = {}
+
+    val _averages = MutableStateFlow<CurrentStatsUI>(CurrentStatsUI())
+    val averages = _averages.asStateFlow()
+
+    val _PBs = MutableStateFlow<CurrentStatsUI>(CurrentStatsUI())
+    val PBs = _PBs.asStateFlow()
+
+
+    val _solvesCounter = MutableStateFlow<Int>(0)
+    val solvesCounter = _solvesCounter.asStateFlow()
+
 
 
     fun init (
@@ -53,21 +61,39 @@ class TimerViewModel : ViewModel() {
         this.hideEverything = {hide -> hideEverything(hide)}
         this.setGeneratingState = {state -> setGeneratingState(state)}
         updateCurrentScramble()
+
+        viewModelScope.launch (Dispatchers.Default) {
+            solvesRepository.currentAverages.collect { newAverages ->
+                _averages.update { TimeFormat.mapToUIStats(newAverages) }
+            }
+        }
+
+        viewModelScope.launch (Dispatchers.Default) {
+            solvesRepository.bestAverages.collect { newAverages ->
+                _PBs.update { TimeFormat.mapToUIStats(newAverages) }
+            }
+        }
+
+        viewModelScope.launch (Dispatchers.Default) {
+            solvesRepository.solvesCounter.collect { newCounter ->
+                _solvesCounter.update { newCounter }
+            }
+        }
     }
 
     init {
         Log.d("TimerVM", "created")
     }
 
-    fun updateTimerSettings(settings: TimerSettings) {
-        timerSettings.value = settings
+    fun updateTimerSettings(settings: Settings) {
+        this.settings.value = settings
     }
 
     private val _timer = mutableStateOf(
         TimerController(
             generateScr = { updateCurrentScramble() },
             addSolve = { time, penalty -> addSolve(time, penalty) },
-            settings = timerSettings,
+            settings = settings,
             hideEverything = {hide -> hideEverything(hide)}
         )
     )
@@ -101,7 +127,7 @@ class TimerViewModel : ViewModel() {
                 result = time,
                 event = currentSession.value.event,
                 penalties = penalty,
-                date = "",
+                date = DateUtils.getCurrentDate(),
                 scramble = currentScramble,
                 comment = "",
                 reconstruction = "",

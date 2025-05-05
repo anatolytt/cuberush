@@ -1,30 +1,20 @@
 package com.example.cubetime.data
 
 import android.util.Log
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.viewModelScope
-import com.example.cubetime.data.local.SolvesDao
-import com.example.cubetime.data.local.SolvesRepository
 import com.example.cubetime.data.model.Events
 import com.example.cubetime.utils.Scrambler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
-import okhttp3.internal.cookieToString
 
 class ScramblesRepository {
     val coroutineScope = CoroutineScope(Dispatchers.Default)
-    val KEEP_GENERATED = 5  // количество скрамблов, которые должны всегда быть наготове
+    val KEEP_GENERATED = 10  // количество скрамблов, которые должны всегда быть наготове
 
     private val nextScrambles = MutableStateFlow<List<String>>(emptyList())
     val currentScramble = mutableStateOf<String>("")
@@ -79,9 +69,9 @@ class ScramblesRepository {
             clearScrambles()
             currentEvent.value = event
         }
+
         keepScramblesGenerated()
 
-        currentScramble.value = "Generating..."
         if (nextScrambles.value.isNotEmpty()) {
             currentScramble.value = nextScrambles.value[nextScrambles.value.size-1]
             Log.d("Solves", nextScrambles.value.toString())

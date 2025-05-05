@@ -4,7 +4,6 @@ package com.example.cubetime.ui.screens.timer
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.activity.viewModels
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
@@ -28,32 +27,32 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cubetime.R
 
 import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.ui.screens.timer.dialogs.DialogTypes
 import com.example.cubetime.ui.screens.timer.dialogs.TimerScreenDialogs
-import com.example.cubetime.ui.screens.settings.SettingsDataManager
-import com.example.cubetime.ui.screens.settings.TimerSettings
+import com.example.cubetime.ui.screens.settings.Settings
+import com.example.cubetime.ui.screens.statistics.CurrentStatsUI
 import com.example.cubetime.ui.shared.ScrambleImage
 
 
 @Composable
 fun TimerScreen(
     viewModel: SharedViewModel,
-    timerViewModel: TimerViewModel,
-    settingsDataManager: SettingsDataManager) {
-    val timerSettings by settingsDataManager.getTimerSettings().collectAsState(
-        initial = TimerSettings(false, false, false)
+    timerViewModel: TimerViewModel) {
+    val settings by viewModel.settingsManager.getTimerSettings().collectAsState(
+        initial = Settings()
     )
 
     LaunchedEffect(Unit) {
@@ -63,7 +62,7 @@ fun TimerScreen(
         )
     }
     val timer = timerViewModel.timer
-    timerViewModel.updateTimerSettings(timerSettings)
+    timerViewModel.updateTimerSettings(settings)
 
 
     val configuration = LocalConfiguration.current
@@ -88,6 +87,10 @@ fun TimerScreen(
     if (timer.timerState != TimerState.INACTIVE) {
         BackHandler { timer.stopAndDelete() }
     }
+
+    val averages by timerViewModel.averages.collectAsState(initial = CurrentStatsUI())
+    val bestAverages by timerViewModel.PBs.collectAsState(initial = CurrentStatsUI())
+    val solvesCounter by timerViewModel.solvesCounter.collectAsState(initial = 0)
 
 
     TimerScreenDialogs(
@@ -203,27 +206,88 @@ fun TimerScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Card(
+                ElevatedCard(
                     modifier = Modifier.padding(bottom = 5.dp, end = 10.dp, start = 10.dp),
-                    elevation = CardDefaults.elevatedCardElevation(2.dp),
-                    shape = CardDefaults.shape
-                ) {
-                    Text(
-                        text = "Разброс:8.77\nСреднее:12 \nЛучшее:12\nК-во:21",
-                        fontSize = 10.sp,
-                        modifier = Modifier.padding(7.dp)
+                    colors = CardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        disabledContainerColor = Color.White,
+                        disabledContentColor = Color.White
                     )
+
+                ) {
+                    Column(modifier = Modifier.padding(5.dp)) {
+                        Text(
+                            text = "PB: " + bestAverages.single,
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(1.dp),
+                            fontWeight = FontWeight.Bold,
+
+                        )
+                        Text(
+                            text = "PB Ao5: " + bestAverages.ao5,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(1.dp)
+                        )
+                        Text(
+                            text = "PB Ao12 " + bestAverages.ao12,
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(1.dp),
+                            fontWeight = FontWeight.Bold,
+
+                        )
+                        Text(
+                            text = stringResource(R.string.solves_amount) + ": " + solvesCounter,
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(1.dp),
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            text = "Mean: " + averages.mean,
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(1.dp),
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                 }
-                Card(
+                ElevatedCard(
                     modifier = Modifier.padding(bottom = 5.dp, end = 10.dp, start = 10.dp),
-                    shape = CardDefaults.shape,
-                    elevation = CardDefaults.elevatedCardElevation(2.dp)
-                ) {
-                    Text(
-                        text = "Ao5: 2.37\nAo12: 19.32\nAo50: 2.37\nAo100: 1:22.12",
-                        fontSize = 10.sp,
-                        modifier = Modifier.padding(7.dp)
+                    colors = CardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        disabledContainerColor = Color.White,
+                        disabledContentColor = Color.White
                     )
+
+                ) {
+                    Column(modifier = Modifier.padding(5.dp)) {
+                        Text(
+                            text = "Ao5: " + averages.ao5,
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(1.dp)
+                        )
+                        Text(
+                            text = "Ao12: " + averages.ao12,
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(1.dp)
+                        )
+                        Text(
+                            text = "Ao25: " + averages.ao25,
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(1.dp)
+                        )
+                        Text(
+                            text = "Ao50: " + averages.ao50,
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(1.dp)
+                        )
+                        Text(
+                            text = "Ao100: " + averages.ao100,
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(3.dp)
+                        )
+                    }
                 }
             }
         }

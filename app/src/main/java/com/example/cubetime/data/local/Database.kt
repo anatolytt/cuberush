@@ -5,12 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.cubetime.data.model.Best_averages
+import com.example.cubetime.data.model.Stat
 import com.example.cubetime.data.model.Session
 import com.example.cubetime.data.model.Solve
+import com.example.cubetime.data.model.solvesAverages
 import com.example.cubetime.utils.Converters
 
-@Database(entities = [Solve::class, Session::class, Best_averages::class], version = 10)
+@Database(entities = [Solve::class, Session::class, Stat::class, solvesAverages::class], version = 24)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun SolvesDao() : SolvesDao

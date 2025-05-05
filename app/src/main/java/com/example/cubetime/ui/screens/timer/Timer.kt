@@ -55,7 +55,7 @@ fun Timer(hideEverything: (Boolean) -> Unit,
     )
 
     val delaySizeAnimation: Int by animateIntAsState(
-        if (isLongPress || timer.timerState != TimerState.INACTIVE) 95 else 70
+        if (isLongPress || timer.timerState != TimerState.INACTIVE) 75 else 65
     )
     val haptic = LocalHapticFeedback.current
 

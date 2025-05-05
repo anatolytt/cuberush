@@ -28,8 +28,7 @@ fun Navigation(
     timerViewModel: TimerViewModel,
     solvesViewModel: SolvesViewModel,
     statisticsViewModel: StatisticsViewModel,
-    modifierNavHost: Modifier,
-    settingsDataManager: SettingsDataManager
+    modifierNavHost: Modifier
 
     ) {
 
@@ -40,7 +39,7 @@ fun Navigation(
 
     ) {
         composable("timer") {
-            TimerScreen(viewModel, timerViewModel, settingsDataManager)
+            TimerScreen(viewModel, timerViewModel)
         }
         composable("solves") {
             SolvesScreen(viewModel, solvesViewModel)
@@ -49,7 +48,7 @@ fun Navigation(
             StatisticsScreen(viewModel, statisticsViewModel)
         }
         composable("settings") {
-            SettingsScreen(settingsDataManager, viewModel, navController)
+            SettingsScreen(viewModel, navController)
         }
 
     }
