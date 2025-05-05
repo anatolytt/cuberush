@@ -1,28 +1,21 @@
 package com.example.cubetime.data.local
 
-import android.util.Log
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Update
-import androidx.room.Upsert
-import com.example.cubetime.data.model.AverageResult
-import com.example.cubetime.data.model.Stat
 import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.data.model.Session
 import com.example.cubetime.data.model.ShortSolve
 import com.example.cubetime.data.model.Solve
-import com.example.cubetime.data.model.StatType
-import com.example.cubetime.data.model.solvesAverages
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SolvesDao {
     // Solves
     @Query("SELECT * FROM Solve WHERE sessionId = :sessionId")
-    fun getAllSessionSolves(sessionId: Int): Flow<List<Solve>>
+    fun getAllSessionSolves(sessionId: Int) : Flow<List<Solve>>
 
 
     @Query(
@@ -31,26 +24,44 @@ interface SolvesDao {
                 "ORDER BY id DESC"
     )
     fun getAllShortSessionSolves(sessionId: Int): Flow<List<ShortSolve>>
+//    @Query("SELECT id, result, penalties, date " +
+//            "FROM Solve WHERE sessionId = :sessionId " +
+//            "ORDER BY id DESC")
+//    fun getAllShortSessionSolves(sessionId: Int) : Flow<List<ShortSolve>>
+    //Поиск
+    @Query("SELECT id, result, penalties, date " +
+            "FROM Solve " +
+            "WHERE sessionId = :sessionId AND result>= :min AND result<:max " +
+            "ORDER BY id DESC")
+    fun getAllShortSessionSolves(min:Int,max:Int,sessionId: Int) : Flow<List<ShortSolve>>
+
+
+    //Отсортировынный по убыванию список сборок
+    @Query(" SELECT id,result,penalties,date" + " FROM Solve WHERE sessionId = :sessionId"+
+            " ORDER BY result DESC")
+    fun getSortedShortSolveEnd(sessionId: Int): Flow<List<ShortSolve>>
+    //Отсортировынный по возрастанию список сборок
+    @Query(" SELECT id,result,penalties,date" + " FROM Solve WHERE sessionId = :sessionId"+
+            " ORDER BY result")
+    fun getSortedShortSolveStart(sessionId: Int): Flow<List<ShortSolve>>
+
 
 
     @Query("SELECT * FROM Solve WHERE id = :id")
-    fun getSolveById(id: Int): Solve
-
+    fun getSolveById(id: Int) : Solve
 
     @Query("UPDATE Solve SET penalties = :newValue WHERE id = :id")
     fun updatePenalty(id: Int, newValue: Penalties)
 
-
     @Query("UPDATE Solve SET comment = :newValue WHERE id = :id")
-    fun updateComment(id: Int, newValue: String): Int
-
+    fun updateComment(id: Int, newValue: String) : Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertSolve(solve: Solve): Unit
-
+    fun insertSolve(solve: Solve) : Unit
 
     @Query("SELECT id FROM Solve ORDER BY id DESC")
-    fun getLastSolveId(): Int
+    fun getLastSolveId() : Int
+
 
 
     @Query("DELETE FROM Solve WHERE id = :id")
@@ -220,48 +231,3 @@ interface SolvesDao {
         return result
     }
 }
-
-
-
-//    @Query("UPDATE Stat SET result = :result WHERE (sessionId=:sessionId) AND (isBestStat = false) AND (statType = :statType)")
-//    fun updateStat(statType: Int, sessionId: Int, result: Int)
-//
-//    @Query("UPDATE Stat SET result = :result WHERE (sessionId=:sessionId) AND (:result < result OR result = -3) AND (isBestStat = true) AND (statType = :statType)")
-//    fun updateBestStat(statType: Int, sessionId: Int, result: Int)
-//
-//    @Query("UPDATE Stat SET result = :result WHERE (sessionId=:sessionId) AND (isBestStat = true) AND (statType = :statType)")
-//    fun strictUpdateBestStat(statType: Int, sessionId: Int, result: Int)
-//
-
-//
-//    @Insert(onConflict = OnConflictStrategy.IGNORE)
-//    fun insertSessionStatsOrIgnore(newStats: List<Stat>)
-//
-//    @Transaction
-//    fun updateCurrentStats(newStats: List<Stat>, sessionId: Int){
-//        insertSessionStatsOrIgnore(newStats)
-//        newStats.forEach { stat ->
-//            updateStat(stat.statType, stat.sessionId, stat.result)
-//        }
-//    }
-//
-//    @Transaction
-//    fun updateBestStats(newStats: List<Stat>, sessionId: Int){
-//        insertSessionStatsOrIgnore(newStats)
-//        newStats.forEach { stat ->
-//            updateBestStat(stat.statType, stat.sessionId, stat.result)
-//        }
-//    }
-//
-//    @Transaction
-//    fun strictUpdateBest(newStats: List<Stat>, sessionId: Int){
-//        insertSessionStatsOrIgnore(newStats)
-//        newStats.forEach { stat ->
-//            strictUpdateBestStat(stat.statType, stat.sessionId, stat.result)
-//        }
-//    }
-//
-
-
-
-
