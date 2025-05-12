@@ -46,6 +46,7 @@ fun StatisticsScreen(
     val solvesToShow by statisticsViewModel.solvesToShow.collectAsState()
     val chosenAvgType by statisticsViewModel.chosenAvgType.collectAsState()
     val chosenAvgResult by statisticsViewModel.chosenAvgResult.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     val includeScrambles by viewModel.settingsManager.getPrintScrambles().collectAsState(true)
 
@@ -60,7 +61,8 @@ fun StatisticsScreen(
             solvesList = solvesToShow!!,
             statType = chosenAvgType!!,
             avgResult = chosenAvgResult!!,
-            includeScrambles = includeScrambles
+            includeScrambles = includeScrambles,
+            getLink = {solves -> viewModel.uploadSolves(solves)}
         )
     }
 

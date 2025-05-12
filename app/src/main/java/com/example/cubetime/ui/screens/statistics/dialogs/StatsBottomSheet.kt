@@ -1,5 +1,6 @@
 package com.example.cubetime.ui.screens.statistics.dialogs
 
+import ShareDialog
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,10 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
@@ -32,6 +37,7 @@ import com.example.cubetime.R
 import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.data.model.StatType
 import com.example.cubetime.ui.screens.solves.dialogs.MyDivider
+import com.example.cubetime.ui.screens.timer.dialogs.CommentDialog
 import com.example.cubetime.utils.ShareAndCopy
 import com.example.cubetime.utils.TimeFormat
 
@@ -39,6 +45,7 @@ import com.example.cubetime.utils.TimeFormat
 @Composable
 fun StatBottomSheet(
     onDismiss: () -> Unit,
+    getLink: suspend (List<Solve>) -> String?,
     sheetState: SheetState,
     solvesList: List<Solve>,
     statType: StatType,
@@ -48,6 +55,19 @@ fun StatBottomSheet(
 
     val shareAndCopy = ShareAndCopy()
     val context = LocalContext.current
+
+    var showShareDialog by remember { mutableStateOf(false) }
+
+    if (showShareDialog) {
+        ShareDialog(
+            onDismiss = { showShareDialog = false },
+            getLink = { getLink(solvesList) },
+            solves = solvesList,
+            statType = StatType.SINGLE,
+            result = avgResult,
+            includeScrambles = includeScrambles
+        )
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -70,15 +90,7 @@ fun StatBottomSheet(
                     Icon(
                         imageVector = Icons.Default.Share,
                         contentDescription = null,
-                        modifier = Modifier.size(35.dp).clickable {
-                            shareAndCopy.shareAverage(
-                                solves = solvesList,
-                                includeScrambles = includeScrambles,
-                                context = context,
-                                statType = statType,
-                                avgResult = avgResult
-                            )
-                        }
+                        modifier = Modifier.size(35.dp).clickable { showShareDialog = true }
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Icon(

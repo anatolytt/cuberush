@@ -3,7 +3,12 @@ package com.example.cubetime.ui.shared
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.cubetime.data.model.DTOs.SolveDTO
+import com.example.cubetime.data.model.entities.Solve
+import com.example.cubetime.data.remote.SolvesAPI
 import com.example.cubetime.ui.screens.settings.SettingsDataManager
+import kotlinx.coroutines.launch
 
 class SharedViewModel : ViewModel() {
     val _settingsScreenOpen = mutableStateOf(false)
@@ -20,6 +25,10 @@ class SharedViewModel : ViewModel() {
 
     lateinit var settingsManager: SettingsDataManager
 
+    val solvesAPI: SolvesAPI = SolvesAPI.create()
+
+
+
     var deleteSolves: ()->Unit = {}
     fun setSolvesDelete(func: () -> Unit) { deleteSolves = func }
 
@@ -34,6 +43,20 @@ class SharedViewModel : ViewModel() {
     fun setSettingsDataManager(settings: SettingsDataManager) {
         settingsManager = settings
     }
+
+    suspend fun uploadSolves(solves: List<Solve>): String? {
+        return solvesAPI.uploadSolves(solves.map {
+            SolveDTO(
+                result = it.result,
+                scramble = it.scramble,
+                penalty = 0,
+                comment = it.comment,
+                date = it.date
+            )
+        })
+    }
+    suspend fun getSolves(token: String): List<Solve>? = solvesAPI.getSolves(token)
+
 
 
 

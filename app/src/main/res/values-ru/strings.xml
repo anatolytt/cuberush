@@ -78,6 +78,7 @@
     <string name="mean">Среднее</string>
 
     <string name="copied">cкопировано</string>
+    <string name="copy_link">Скопировать ссылку</string>
 
 
     <string name="searchTime">Поиск времени</string>

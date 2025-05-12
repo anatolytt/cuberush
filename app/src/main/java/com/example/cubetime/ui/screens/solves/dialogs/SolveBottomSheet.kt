@@ -1,5 +1,6 @@
 package com.example.cubetime.ui.screens.solves.dialogs
 
+import ShareDialog
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,8 +52,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cubetime.R
 import com.example.cubetime.data.model.Penalties
+import com.example.cubetime.data.model.StatType
 import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.ui.screens.solves.SolvesViewModel
+import com.example.cubetime.ui.screens.statistics.StatCard
 import com.example.cubetime.ui.screens.timer.dialogs.CommentDialog
 import com.example.cubetime.ui.shared.ScrambleImage
 import com.example.cubetime.utils.Scrambler
@@ -81,6 +84,7 @@ fun SolveBottomSheet(
     val commentState = remember { mutableStateOf(solve.comment) }
 
     var showCommentDialog by remember { mutableStateOf(false) }
+    var showShareDialog by remember { mutableStateOf(false) }
 
     if (showCommentDialog) {
         CommentDialog(
@@ -92,6 +96,20 @@ fun SolveBottomSheet(
             initialComment = commentState.value
         )
     }
+
+    if (showShareDialog) {
+        ShareDialog(
+            onDismiss = { showShareDialog = false },
+            solves = listOf(solve),
+            statType = StatType.SINGLE,
+            result = TimeFormat.millisToString(
+                millis = solve.result,
+                penalty = solve.penalties
+            ),
+            includeScrambles = includeScramble
+        )
+    }
+
     val sharer = ShareAndCopy()
     val context = LocalContext.current
 
@@ -248,13 +266,7 @@ fun SolveBottomSheet(
                     }
 
                     FilledTonalButton(
-                        onClick = {
-                            sharer.shareSolve(
-                                solve = solve,
-                                context = context,
-                                includeScrambles = includeScramble
-                            )
-                        },
+                        onClick = { showShareDialog = true },
                         modifier = Modifier.padding(start=6.dp)
                     ) {
                         Text(

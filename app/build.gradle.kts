@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlinx-serialization")
     kotlin("kapt") version ("2.1.10")
 }
 
@@ -73,4 +74,11 @@ dependencies {
     implementation ("androidx.room:room-runtime:$room_version")
     kapt ("androidx.room:room-compiler:$room_version")
     implementation ("androidx.room:room-ktx:$room_version")
+
+    implementation(platform("io.ktor:ktor-bom:3.1.3"))
+    implementation("io.ktor:ktor-client-android")
+    implementation("io.ktor:ktor-client-serialization")
+    implementation("io.ktor:ktor-client-logging")
+    implementation("io.ktor:ktor-client-content-negotiation")
+    implementation("io.ktor:ktor-serialization-kotlinx-json")
 }

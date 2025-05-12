@@ -93,9 +93,11 @@
     <string name="ao1000" translatable="false">ao1000</string>
 
     <string name="copied">is copied</string>
+    <string name="copy_link">Copy link</string>
 
 
     <string name="searchTime">Search time</string>
+
 
 
 </resources>
