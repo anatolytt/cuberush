@@ -57,7 +57,9 @@ class SharedViewModel : ViewModel() {
     }
     suspend fun getSolves(token: String): List<Solve>? = solvesAPI.getSolves(token)
 
-
+    val _versusOpen = mutableStateOf(false)
+    val versusOpen get() = _versusOpen.value
+    fun changeVersusVisibility() { _versusOpen.value = !_versusOpen.value }
 
 
 }
