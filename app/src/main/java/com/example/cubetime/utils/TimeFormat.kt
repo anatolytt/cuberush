@@ -147,7 +147,7 @@ object TimeFormat {
             else if ((searchTextField.contains(":") &&
                         searchTextField.contains(".") && searchTextField.length > 8)
             ) {
-                Log.d("MyTag2", "тут я")
+
                 return Pair(0, 0)
             }
             //случай 22:22.22
@@ -159,7 +159,7 @@ object TimeFormat {
                 val min = colon * 60 * 1000
                 val max = (colon + 1) * 60 * 1000 - 1
 
-                Log.d("MyTag3", "min = $min, max = $max")
+
                 return Pair(min, max)
             }
             //22:1
@@ -171,7 +171,7 @@ object TimeFormat {
 
                 val min = first * 60 * 1000 + (second) * 10000
                 val max = first * 60 * 1000 + (second + 1) * 10000 - 1
-                Log.d("MyTag4", "min = $min, max = $max")
+
                 return Pair(min, max)
             }
             //22:10(good)
@@ -184,7 +184,7 @@ object TimeFormat {
                 val min = first * 60 * 1000 + (second) * 1000
                 val max = first * 60 * 1000 + (second + 1) * 1000 - 1
 
-                Log.d("MyTag5", "min = $min, max = $max")
+
 
                 return Pair(min, max)
             }
@@ -200,7 +200,7 @@ object TimeFormat {
 
                 val min = first * 60 * 1000 + (second) * 1000
                 val max = first * 60 * 1000 + (second + 1) * 1000 - 1
-                Log.d("MyTag6", "min = $min, max = $max")
+
                 return Pair(min, max)
 
             }
@@ -221,7 +221,7 @@ object TimeFormat {
                 val min = minutes * 60 * 1000 + sec * 1000 + ml * 100
                 val max = minutes * 60 * 1000 + sec * 1000 + (ml + 1) * 100 - 1
 
-                Log.d("MyTag7", "min = $min, max = $max")
+
                 return Pair(min, max)
 
             }
@@ -242,7 +242,7 @@ object TimeFormat {
                 val min = minutes * 60 * 1000 + sec * 1000 + ml * 10
                 val max = minutes * 60 * 1000 + sec * 1000 + (ml + 1) * 10 - 1
 
-                Log.d("MyTag8", "min = $min, max = $max")
+
 
                 return Pair(min, max)
             }
@@ -252,7 +252,7 @@ object TimeFormat {
             else if (searchTextField.endsWith(":")) {
 
                 val colon = searchTextField.dropLast(1).toInt()
-                Log.d("MyTag9", "Тут я")
+
                 return Pair(colon * 60 * 1000, (colon + 1) * 60 * 1000 - 1)
 
             }
@@ -267,7 +267,7 @@ object TimeFormat {
 
                 val min = first * 60 * 1000 + (second) * 10000
                 val max = first * 60 * 1000 + (second + 1) * 10000 - 1
-                Log.d("MyTag10", "min = $min, max = $max")
+
                 return Pair(min, max)
 
             }
@@ -284,7 +284,7 @@ object TimeFormat {
                 val min = first * 60 * 1000 + second * 1000
                 val max = first * 60 * 1000 + (second + 1) * 1000 - 1
 
-                Log.d("MyTag11", "min = $min, max = $max")
+
 
                 return Pair(min, max)
 
@@ -300,7 +300,7 @@ object TimeFormat {
 
                 val min = first * 60 * 1000 + second * 1000
                 val max = first * 60 * 1000 + (second + 1) * 1000 - 1
-                Log.d("MyTag12", "min = $min, max = $max")
+
                 return Pair(min, max)
             }
             //1:05.2
@@ -322,7 +322,7 @@ object TimeFormat {
 
                 val min = minutes * 60 * 1000 + sec * 1000 + ml * 100
                 val max = minutes * 60 * 1000 + sec * 1000 + (ml + 1) * 100 - 1
-                Log.d("MyTag13", "min = $min, max = $max")
+
                 return Pair(min, max)
             }
             //1:05.24
@@ -344,7 +344,7 @@ object TimeFormat {
 
                 val min = minutes * 60 * 1000 + sec * 1000 + ml * 10
                 val max = minutes * 60 * 1000 + sec * 1000 + (ml + 1) * 10
-                Log.d("MyTag14", "min = $min, max = $max")
+
                 return Pair(min, max)
             }
             //2.
@@ -353,7 +353,7 @@ object TimeFormat {
 
                 val min = dot * 1000
                 val max = (dot + 1) * 1000 - 1
-                Log.d("MyTag15", "min = $min, max = $max")
+
                 return Pair(min, max)
             }
             //22.
@@ -362,7 +362,7 @@ object TimeFormat {
 
                 val min = dot * 1000
                 val max = (dot + 1) * 1000 - 1
-                Log.d("MyTag16", "min = $min, max = $max")
+
                 return Pair(min, max)
             }
             //22.2
@@ -374,7 +374,7 @@ object TimeFormat {
 
                 val min = first * 1000 + second * 100
                 val max = first * 1000 + (second + 1) * 100 - 1
-                Log.d("MyTag17", "min = $min, max = $max")
+
                 return Pair(min, max)
             } else if (searchTextField.contains(".") && searchTextField.length == 3) {
                 val dot = searchTextField.split(".")
@@ -384,16 +384,16 @@ object TimeFormat {
 
                 val min = first * 1000 + second * 100
                 val max = first * 1000 + (second + 1) * 100 - 1
-                Log.d("MyTag18", "min = $min, max = $max")
+
                 return Pair(min, max)
 
             } else if (searchTextField.contains(".")) {
                 val timeInMs = (searchTextField.toDouble() * 1000).toInt()
-                Log.d("MyTag19", "тут я")
+
                 return Pair(timeInMs - 1, timeInMs + 1)
             } else {
                 val seconds = searchTextField.toInt()
-                Log.d("MyTag21", "тут я")
+
                 return Pair(seconds * 1000, (seconds + 1) * 1000 - 1)
             }
         } catch (e: Exception) {

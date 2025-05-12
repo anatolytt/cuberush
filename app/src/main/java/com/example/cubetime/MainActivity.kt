@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
                         AnimatedVisibility(
-                            visible = !viewModel.settingsScreenOpen,
+                            visible = (!viewModel.settingsScreenOpen && !viewModel.versusOpen),
                             exit = fadeOut() + slideOutVertically { it }) {
                             BottomNavigationBar(
                                 items = listOf(
@@ -105,7 +105,7 @@ class MainActivity : ComponentActivity() {
                     },
                     topBar = {
                         AnimatedVisibility(
-                            visible = !viewModel.settingsScreenOpen,
+                            visible = !viewModel.settingsScreenOpen && !viewModel.versusOpen,
                             exit = fadeOut() + slideOutVertically { it }
                         ) {
                             AppBar(viewModel, navController)
