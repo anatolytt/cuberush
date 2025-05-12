@@ -20,6 +20,7 @@ class SharedViewModel : ViewModel() {
 
     lateinit var settingsManager: SettingsDataManager
 
+
     var deleteSolves: ()->Unit = {}
     fun setSolvesDelete(func: () -> Unit) { deleteSolves = func }
 
@@ -35,7 +36,8 @@ class SharedViewModel : ViewModel() {
         settingsManager = settings
     }
 
-
-
+    val _versusOpen = mutableStateOf(false)
+    val versusOpen get() = _versusOpen.value
+    fun changeVersusVisibility() { _versusOpen.value = !_versusOpen.value }
 }
 

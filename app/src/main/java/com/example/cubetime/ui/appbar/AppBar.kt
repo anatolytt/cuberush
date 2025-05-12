@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.cubetime.R
 import com.example.cubetime.data.model.Events
 import com.example.cubetime.ui.appbar.dialogs.AppBarDialogNavigation
 import com.example.cubetime.ui.appbar.dialogs.DialogsState
@@ -94,6 +95,7 @@ fun AppBar(viewModel: SharedViewModel,
                 IconButton(onClick = {
                     navController.navigate("settings")
                     viewModel.changeSettingsVisibility()
+
                 })
                 {
                     Icon(
@@ -103,9 +105,13 @@ fun AppBar(viewModel: SharedViewModel,
                 }
             },
             actions = {
-                IconButton(onClick = {}) {
+                //кнопка для сражения
+                IconButton(onClick = {
+                    navController.navigate("versus")
+                    viewModel.changeVersusVisibility()
+                }) {
                     Icon(
-                        imageVector = Icons.Default.Menu,
+                        painter = painterResource(R.drawable.verticalcenter),
                         tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = "Change session dialog"
                     )
@@ -134,6 +140,7 @@ fun AppBar(viewModel: SharedViewModel,
             navigationIcon = {
                 IconButton(onClick = {
                     viewModel.changeAppBar()
+
                 }
                 ) {
                     Icon(

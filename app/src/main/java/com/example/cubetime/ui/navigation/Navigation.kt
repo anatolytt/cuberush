@@ -19,6 +19,7 @@ import com.example.cubetime.ui.screens.settings.SettingsScreen
 import com.example.cubetime.ui.screens.solves.SolvesViewModel
 import com.example.cubetime.ui.screens.statistics.StatisticsViewModel
 import com.example.cubetime.ui.screens.timer.TimerViewModel
+import com.example.cubetime.ui.screens.versus.VersusScreen
 
 
 @Composable
@@ -49,6 +50,9 @@ fun Navigation(
         }
         composable("settings") {
             SettingsScreen(viewModel, navController)
+        }
+        composable("versus"){
+            VersusScreen(viewModel,navController,timerViewModel)
         }
 
     }

@@ -60,15 +60,6 @@ class SolvesViewModel : ViewModel() {
             }
         }
     }
-    fun chetotam()
-    {
-        viewModelScope.launch {
-            repository.shortSolves.collect { newList ->
-                solvesListCLean.value = newList
-            }
-        }
-    }
-
     fun saveMode() {
         when {
             (isStateSorted.value == sortState.SORTEDSTART) -> {
