@@ -18,19 +18,44 @@ class SolvesApiImpl (
     override suspend fun getSolves(token: String): List<Solve>? {
 
         return try {
-            client.get { url(HttpRoutes.GET_SOLVES) }.body()
+            val solvesDTO: List<SolveDTO> = client.get {
+                url(HttpRoutes.GET_SOLVES + token)
+            }.body()
+            return solvesDTO.map { solve ->
+                Solve(
+                    id = 0,
+                    sessionId = 0,
+                    result = solve.result,
+                    event = solve.event,
+                    penalties = solve.penalty,
+                    date = solve.date,
+                    scramble = solve.scramble,
+                    comment = solve.scramble,
+                    reconstruction = "",
+                    isCustomScramble = false
+                )
+            }
         } catch (e: Exception) {
             Log.d("SolvesApiImpl", e.message.toString())
             null
         }
     }
 
-    override suspend fun uploadSolves(solves: List<SolveDTO>): String? {
+    override suspend fun uploadSolves(solves: List<Solve>): String? {
         return try {
              val token: String? = client.post {
                  url (HttpRoutes.ADD_SOLVES)
                  contentType(ContentType.Application.Json)
-                 setBody(solves)
+                 setBody(solves.map {
+                     SolveDTO(
+                         result = it.result,
+                         scramble = it.scramble,
+                         penalty = it.penalties,
+                         comment = it.comment,
+                         date = it.date,
+                         event = it.event
+                     )
+                 })
             }.body()
             HttpRoutes.GET_SOLVES + token
         } catch (e: Exception) {

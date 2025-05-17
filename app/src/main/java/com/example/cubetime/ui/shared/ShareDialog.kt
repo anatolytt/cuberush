@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Space
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -34,9 +35,9 @@ fun ShareDialog(
     includeScrambles: Boolean = true
 ) {
     val context = LocalContext.current
-    var showCopiedMessage by remember { mutableStateOf(false) }
     val sharer = ShareAndCopy()
     val coroutineScope = rememberCoroutineScope()
+    val copied = stringResource(R.string.link_copied)
 
     Dialog(onDismissRequest = onDismiss) {
         ElevatedCard(
@@ -62,6 +63,12 @@ fun ShareDialog(
                                     context,
                                     getLink() ?: "abc"
                                 )
+
+                                Toast.makeText(
+                                    context,
+                                    copied,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
 
                         },

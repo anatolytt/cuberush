@@ -1,4 +1,4 @@
-package com.example.cubetime.ui.appbar.dialogs.sessionDialog
+package com.example.cubetime.ui.session_dialogs
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.cubetime.R
+import com.example.cubetime.data.model.Events
 import com.example.cubetime.data.model.entities.Session
 import com.example.cubetime.ui.appbar.AppBarViewModel
 import com.example.cubetime.ui.shared.SharedViewModel
@@ -46,12 +47,14 @@ import com.example.cubetime.ui.shared.SharedViewModel
 fun SessionDialog(
     onDismiss : () -> Unit,
     onNext: () -> Unit,
-    viewModel: SharedViewModel,
-    appBarViewModel: AppBarViewModel) {
+    sessionDialogsViewModel: SessionDialogsViewModel,
+    event: Events? = null,
+    sessionOnCLick: (Session) -> Unit
+) {
 
     val context = LocalContext.current
 
-    val sessionsList = appBarViewModel.sessionsList.collectAsState(initial = emptyList())
+    val sessionsList = sessionDialogsViewModel.sessionsList.collectAsState(initial = emptyList())
 
     var showSessionDialog by remember { mutableStateOf(false) }
     var sessionToDelete by remember { mutableStateOf<Session?>(null) }
@@ -67,7 +70,7 @@ fun SessionDialog(
         DeleteSessionDialog(
             onDismiss = {showSessionDialog = false},
             action = {
-                appBarViewModel.deleteSession(sessionToDelete!!.id)
+                sessionDialogsViewModel.deleteSession(sessionToDelete!!.id)
                 sessionToDelete = null
             }
         )
@@ -78,7 +81,7 @@ fun SessionDialog(
         EditSessionDialog(
             onDismiss = { showEditSessionDialog = false },
             action = { newName ->
-                appBarViewModel.renameSession(sessionToEditId!!, newName)
+                sessionDialogsViewModel.renameSession(sessionToEditId!!, newName)
                 sessionToEdit = null
                 sessionToEditId = null
             }
@@ -144,53 +147,56 @@ fun SessionDialog(
                         .weight(1f)
                 ) {
                     items(sessionsList.value) {session  ->
-                        SwipeSessionItem(
-                            deleteAction = {
-                                if (sessionsList.value.size == 1) {
-                                    sessionIdWithMenuOpen = null
-                                    Toast.makeText(
-                                        context,
-                                        context.getString(R.string.last_session_delete_toast),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else {
-                                    sessionToDelete = session
-                                    showSessionDialog = true
-                                } },
-                            editAction = {
-                                sessionToEdit = session
-                                sessionToEditId = session.id
-                                showEditSessionDialog = true
-                            },
-                            onExpanded = { sessionIdWithMenuOpen = session.id },
-                            isShown = (sessionIdWithMenuOpen == session.id),
-                            onCollapsed = { sessionIdWithMenuOpen = null}
-                        ) {
-                            Column () {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            appBarViewModel.switchSessions(session.id)
-                                            onDismiss()
-                                        }
-                                        .padding(vertical = 10.dp, horizontal = 22.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-
-                                    ) {
-                                    Icon(
-                                        painter = painterResource(session.event.getIconDrawableId()),
-                                        contentDescription = "sessionEventIcon",
-                                        modifier = Modifier
-                                            .width(20.dp)
-                                            .height(20.dp)
-                                    )
-                                    Text(
-                                        text = session.name,
+                        if (session.event == event || event == null) {
+                            SwipeSessionItem(
+                                deleteAction = {
+                                    if (sessionsList.value.size == 1) {
+                                        sessionIdWithMenuOpen = null
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.last_session_delete_toast),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        sessionToDelete = session
+                                        showSessionDialog = true
+                                    }
+                                },
+                                editAction = {
+                                    sessionToEdit = session
+                                    sessionToEditId = session.id
+                                    showEditSessionDialog = true
+                                },
+                                onExpanded = { sessionIdWithMenuOpen = session.id },
+                                isShown = (sessionIdWithMenuOpen == session.id),
+                                onCollapsed = { sessionIdWithMenuOpen = null }
+                            ) {
+                                Column() {
+                                    Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(horizontal = 35.dp)
-                                    )
+                                            .clickable {
+                                                sessionOnCLick(session)
+                                                onDismiss()
+                                            }
+                                            .padding(vertical = 10.dp, horizontal = 22.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+
+                                        ) {
+                                        Icon(
+                                            painter = painterResource(session.event.getIconDrawableId()),
+                                            contentDescription = "sessionEventIcon",
+                                            modifier = Modifier
+                                                .width(20.dp)
+                                                .height(20.dp)
+                                        )
+                                        Text(
+                                            text = session.name,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 35.dp)
+                                        )
+                                    }
                                 }
                             }
                         }

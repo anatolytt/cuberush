@@ -7,6 +7,7 @@ import com.example.cubetime.data.local.AppDatabase
 import com.example.cubetime.data.local.SolvesRepository
 import com.example.cubetime.data.model.Events
 import com.example.cubetime.data.model.entities.Session
+import com.example.cubetime.ui.screens.statistics.CurrentStatsUI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,52 +15,19 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class AppBarViewModel : ViewModel() {
-    private var _sessionsList =  MutableStateFlow<List<Session>>(emptyList())
-    var sessionsList = _sessionsList.asStateFlow()
-    lateinit var repository : SolvesRepository
-    lateinit var scramblesRepository: ScramblesRepository
+    private val _currentSession = MutableStateFlow<Session>(
+        Session(id=0, name="Main", event = Events.CUBE333)
+    )
+    val currentSession = _currentSession.asStateFlow()
 
     init {
         val db = AppDatabase.getInstance()
         val dao = db.SolvesDao()
-        repository = SolvesRepository.getInstance(dao)
+        val repository = SolvesRepository.getInstance(dao)
         viewModelScope.launch {
-            repository.sessions.collect { list ->
-                _sessionsList.value = list
+            repository.currentSession.collect { session ->
+                _currentSession.value = session
             }
-        }
-
-        scramblesRepository = ScramblesRepository.getInstance()
-    }
-
-
-    private fun clearScrambles() {
-        viewModelScope.launch (Dispatchers.IO) {
-            scramblesRepository.clearScrambles()
-        }
-    }
-
-    fun addSession(name: String, events: Events) {
-        viewModelScope.launch {
-            val newSession = Session(0, name, events, "")
-            repository.addSession(newSession)
-            _sessionsList.first{it.last().name == name}
-            switchSessions(_sessionsList.value.last().id)
-        }
-    }
-
-    fun deleteSession(id: Int) {
-        repository.deleteSession(id)
-    }
-
-    fun renameSession(id: Int, newName: String) {
-        repository.updateSessionName(id, newName)
-    }
-
-    fun switchSessions(sessionId: Int) {
-        clearScrambles()
-        viewModelScope.launch (Dispatchers.IO) {
-            repository.updateCurrentSessionById(sessionId)
         }
     }
 

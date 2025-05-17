@@ -91,7 +91,7 @@ object TimeFormat {
 
     fun solveListToStringAverageList(
         solves: List<Solve>,
-        statType: StatType
+        statType: StatType = StatType.MEAN
     ): List<Pair<Solve, String>> {
         if (statType == StatType.MEAN || statType == StatType.MO3) {
             return solves.map { Pair(it, millisToString(it.result, it.penalties)) }

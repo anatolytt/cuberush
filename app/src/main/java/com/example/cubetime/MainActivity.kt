@@ -29,6 +29,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.cubetime.data.local.AppDatabase
 import com.example.cubetime.ui.appbar.AppBar
+import com.example.cubetime.ui.appbar.AppBarViewModel
 import com.example.cubetime.ui.navigation.Navigation
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationBar
 import com.example.cubetime.ui.navigation.bottomNavigationBar.BottomNavigationItem
@@ -36,8 +37,11 @@ import com.example.cubetime.ui.screens.settings.Settings
 import com.example.cubetime.ui.screens.solves.SolvesViewModel
 
 import com.example.cubetime.ui.screens.settings.SettingsDataManager
+import com.example.cubetime.ui.screens.shared_solves.SharedSolvesViewModel
 import com.example.cubetime.ui.screens.statistics.StatisticsViewModel
 import com.example.cubetime.ui.screens.timer.TimerViewModel
+import com.example.cubetime.ui.screens.versus.VersusViewModel
+import com.example.cubetime.ui.session_dialogs.SessionDialogsViewModel
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.ui.theme.CubeTimeTheme
 import com.example.cubetime.utils.ChangeLanguage
@@ -56,7 +60,13 @@ class MainActivity : ComponentActivity() {
         val timerViewModel : TimerViewModel by viewModels()
         val solvesViewModel : SolvesViewModel by viewModels()
         val statisticsViewModel : StatisticsViewModel by viewModels()
+        val appBarViewModel: AppBarViewModel by viewModels()
+        val sessionDialogsViewModel: SessionDialogsViewModel by viewModels()
+        val sharedSolvesViewModel: SharedSolvesViewModel by viewModels()
+        val versusViewModel: VersusViewModel by viewModels()
+
         AppDatabase.init(this)
+
         enableEdgeToEdge()
         setContent {
             val language by settingsDataManager.getLanguage().collectAsState(initial = "ru")
@@ -73,7 +83,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
                         AnimatedVisibility(
-                            visible = (!viewModel.settingsScreenOpen && !viewModel.versusOpen),
+                            visible = (viewModel.showTopBottom),
                             exit = fadeOut() + slideOutVertically { it }) {
                             BottomNavigationBar(
                                 items = listOf(
@@ -105,10 +115,15 @@ class MainActivity : ComponentActivity() {
                     },
                     topBar = {
                         AnimatedVisibility(
-                            visible = !viewModel.settingsScreenOpen && !viewModel.versusOpen,
+                            visible = viewModel.showTopBottom,
                             exit = fadeOut() + slideOutVertically { it }
                         ) {
-                            AppBar(viewModel, navController)
+                            AppBar(
+                                viewModel = viewModel,
+                                appBarViewModel = appBarViewModel,
+                                sessionDialogsViewModel = sessionDialogsViewModel,
+                                navController = navController
+                            )
                         }
                     }
                 ) { padding ->
@@ -118,7 +133,10 @@ class MainActivity : ComponentActivity() {
                         modifierNavHost = Modifier.padding(padding),
                         timerViewModel = timerViewModel,
                         solvesViewModel = solvesViewModel,
-                        statisticsViewModel = statisticsViewModel
+                        statisticsViewModel = statisticsViewModel,
+                        sharedSolvesViewModel = sharedSolvesViewModel,
+                        sessionDialogsViewModel = sessionDialogsViewModel,
+                        versusViewModel = versusViewModel
                     )
                 }
             }

@@ -29,20 +29,39 @@ import androidx.navigation.NavController
 import com.example.cubetime.ui.screens.timer.TimerViewModel
 import com.example.cubetime.ui.screens.versus.Dialogs.ModalTopSheet
 import com.example.cubetime.ui.screens.versus.Dialogs.PenaltyVersus
+import com.example.cubetime.ui.screens.versus.Dialogs.createVersusDialog
 import com.example.cubetime.ui.screens.versus.Timers.TimerBottom
 import com.example.cubetime.ui.screens.versus.Timers.TimerTop
+import com.example.cubetime.ui.session_dialogs.SessionDialogsViewModel
 import com.example.cubetime.ui.shared.SharedViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VersusScreen(
-    viewModel: SharedViewModel, navController: NavController, timerViewModel: TimerViewModel
+    viewModel: SharedViewModel,
+    navController: NavController,
+    versusViewModel: VersusViewModel,
+    sessionDialogsViewModel: SessionDialogsViewModel
 ) {
 
     val openDialog = remember { mutableStateOf(false) }
 
     val sheetState = rememberModalBottomSheetState()
     var showSheetTop = remember { mutableStateOf(false) }
+
+
+    var versusDialogState = remember { mutableStateOf(true) }
+    if (versusDialogState.value) {
+        createVersusDialog(
+            navController = navController,
+            createMatch = {session1, session2 ->
+                versusDialogState.value = false
+                versusViewModel.setSessions(session1!!, session2!!)
+            },
+            sessionDialogsViewModel = sessionDialogsViewModel
+        )
+    }
+
 
     Column(
         modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween
@@ -58,7 +77,7 @@ fun VersusScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TimerTop(Modifier.padding(100.dp), timerViewModel)
+            TimerTop(Modifier.padding(100.dp), versusViewModel.timer1)
         }
 
 
@@ -68,7 +87,7 @@ fun VersusScreen(
                     rotationX = 180f
                     rotationY = 180f
                 }) {
-                if(timerViewModel.currentScramble.length >= 60)
+                if(versusViewModel.currentScramble.value.length >= 60)
                 {
                     Button(
                         onClick = {
@@ -79,7 +98,7 @@ fun VersusScreen(
                     }
                 }
                 else{
-                    Text(text = timerViewModel.currentScramble)
+                    Text(text = versusViewModel.currentScramble.value)
                 }
             }
             Text("0:0", modifier = Modifier.padding(8.dp))
@@ -96,7 +115,6 @@ fun VersusScreen(
                 }
                 Button(onClick = {
                     navController.popBackStack()
-                    viewModel.changeVersusVisibility()
                 }) {
                     Text("Назад")
                 }
@@ -108,7 +126,7 @@ fun VersusScreen(
                 }
             }
             Text("0:0", modifier = Modifier.padding(8.dp))
-            if(timerViewModel.currentScramble.length >= 60)
+            if(versusViewModel.currentScramble.value.length >= 60)
             {
                 Button(
                     onClick = {}, modifier = Modifier.padding(8.dp)
@@ -119,7 +137,7 @@ fun VersusScreen(
             }
             else
             {
-                Text(text = timerViewModel.currentScramble)
+                Text(text = versusViewModel.currentScramble.value)
             }
 
         }
@@ -131,7 +149,7 @@ fun VersusScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TimerBottom(Modifier.padding(100.dp), timerViewModel)
+            TimerBottom(Modifier.padding(100.dp), versusViewModel.timer2)
         }
     }
     if(openDialog.value)

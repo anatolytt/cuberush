@@ -11,8 +11,6 @@ import com.example.cubetime.ui.screens.settings.SettingsDataManager
 import kotlinx.coroutines.launch
 
 class SharedViewModel : ViewModel() {
-    val _settingsScreenOpen = mutableStateOf(false)
-    val settingsScreenOpen get() = _settingsScreenOpen.value
 
     private val _everythingHidden = mutableStateOf(false)
     val everythingHidden get() = _everythingHidden.value
@@ -23,9 +21,13 @@ class SharedViewModel : ViewModel() {
     private val _scrambleIsGenerating = mutableStateOf(false)
     val scrambleIsGenerating get() = _scrambleIsGenerating.value
 
+    private val _showTopBottom = mutableStateOf(false)
+    val showTopBottom get() = _showTopBottom.value
+
     lateinit var settingsManager: SettingsDataManager
 
     val solvesAPI: SolvesAPI = SolvesAPI.create()
+
 
 
 
@@ -34,7 +36,8 @@ class SharedViewModel : ViewModel() {
 
     fun hideEverything(hide: Boolean) { _everythingHidden.value = hide }
     fun changeAppBar() { _deleteSolveAppBar.value = !_deleteSolveAppBar.value }
-    fun changeSettingsVisibility() { _settingsScreenOpen.value = !_settingsScreenOpen.value }
+    fun changeTopBottomVisibility(new: Boolean) { _showTopBottom.value = new }
+
     fun setGeneratingState(state: Boolean) {
         _scrambleIsGenerating.value = state
         Log.d("SharedVM", scrambleIsGenerating.toString())
@@ -45,21 +48,9 @@ class SharedViewModel : ViewModel() {
     }
 
     suspend fun uploadSolves(solves: List<Solve>): String? {
-        return solvesAPI.uploadSolves(solves.map {
-            SolveDTO(
-                result = it.result,
-                scramble = it.scramble,
-                penalty = 0,
-                comment = it.comment,
-                date = it.date
-            )
-        })
+        return solvesAPI.uploadSolves(solves)
     }
-    suspend fun getSolves(token: String): List<Solve>? = solvesAPI.getSolves(token)
 
-    val _versusOpen = mutableStateOf(false)
-    val versusOpen get() = _versusOpen.value
-    fun changeVersusVisibility() { _versusOpen.value = !_versusOpen.value }
 
 
 }

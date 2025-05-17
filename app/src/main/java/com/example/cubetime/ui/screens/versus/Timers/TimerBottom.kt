@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.cubetime.ui.screens.timer.TimerController
 import com.example.cubetime.ui.screens.timer.TimerState
 import com.example.cubetime.ui.screens.timer.TimerViewModel
 import kotlinx.coroutines.delay
@@ -35,10 +36,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun TimerBottom(
           modifier: Modifier,
-          timerViewModel: TimerViewModel
-) 
-{
-    val timer = timerViewModel.timer2
+          timer: TimerController
+) {
     var isLongPress by remember { mutableStateOf(false) }
     var isPressed by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()

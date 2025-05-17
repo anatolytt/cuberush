@@ -94,6 +94,15 @@
 
     <string name="copied">is copied</string>
     <string name="copy_link">Copy link</string>
+    <string name="link_copied">Link is copied</string>
+    <string name="error_occured">An error has occured</string>
+    <string name="try_again">Try again</string>
+
+    <string name="player" translatable="false">Player</string>
+    <string name="no_session">No session</string>
+    <string name="change_session">Change session</string>
+    <string name="change_event">Change event</string>
+    <string name="create_battle">Create battle</string>
 
 
     <string name="searchTime">Search time</string>

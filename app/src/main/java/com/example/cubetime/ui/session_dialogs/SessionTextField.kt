@@ -1,4 +1,4 @@
-package com.example.cubetime.ui.appbar.dialogs.sessionDialog
+package com.example.cubetime.ui.session_dialogs
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

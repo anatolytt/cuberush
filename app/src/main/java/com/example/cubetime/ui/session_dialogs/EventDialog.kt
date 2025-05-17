@@ -1,4 +1,4 @@
-package com.example.cubetime.ui.appbar.dialogs
+package com.example.cubetime.ui.session_dialogs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -6,27 +6,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,7 +35,6 @@ import androidx.compose.ui.window.Dialog
 import com.example.cubetime.R
 import com.example.cubetime.data.model.Events
 import com.example.cubetime.ui.appbar.AppBarViewModel
-import com.example.cubetime.ui.appbar.dialogs.sessionDialog.SessionTextField
 import com.example.cubetime.ui.shared.SharedViewModel
 
 
@@ -51,12 +42,10 @@ import com.example.cubetime.ui.shared.SharedViewModel
 fun EventDialog(
     onDismiss: () -> Unit,
     onBack: () -> Unit,
-    viewModel: SharedViewModel,
-    appBarViewModel: AppBarViewModel
+    sessionDialogsViewModel: SessionDialogsViewModel
 ) {
     var text = remember { mutableStateOf("") }
     var selectEvents by remember { mutableStateOf(Events.CUBE333) }
-    val sessionsList = appBarViewModel.sessionsList.collectAsState(initial = emptyList())
 
     Dialog(
         onDismissRequest = { onDismiss() }
@@ -139,7 +128,7 @@ fun EventDialog(
                         onClick = {
                             if (!(text.value.length == 16) && (text.value.length > 0)) {
                                 val sessionName = text.value.trim()
-                                appBarViewModel.addSession(sessionName, selectEvents)
+                                sessionDialogsViewModel.addSession(sessionName, selectEvents)
                                 onDismiss()
                             }
                         }

@@ -1,25 +1,31 @@
 package com.example.cubetime.ui.navigation
 
+import android.content.Intent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
+import com.example.cubetime.data.remote.HttpRoutes
+import com.example.cubetime.data.remote.SolvesAPI
+import com.example.cubetime.ui.appbar.AppBarViewModel
 import com.example.cubetime.ui.screens.solves.SolvesScreen
 
 import com.example.cubetime.ui.screens.statistics.StatisticsScreen
 import com.example.cubetime.ui.screens.timer.TimerScreen
-import com.example.cubetime.ui.screens.settings.SettingsDataManager
 import com.example.cubetime.ui.shared.SharedViewModel
 import com.example.cubetime.ui.screens.settings.SettingsScreen
+import com.example.cubetime.ui.screens.shared_solves.SharedSolvesScreen
+import com.example.cubetime.ui.screens.shared_solves.SharedSolvesViewModel
 import com.example.cubetime.ui.screens.solves.SolvesViewModel
 import com.example.cubetime.ui.screens.statistics.StatisticsViewModel
 import com.example.cubetime.ui.screens.timer.TimerViewModel
 import com.example.cubetime.ui.screens.versus.VersusScreen
+import com.example.cubetime.ui.screens.versus.VersusViewModel
+import com.example.cubetime.ui.session_dialogs.SessionDialogsViewModel
 
 
 @Composable
@@ -29,6 +35,9 @@ fun Navigation(
     timerViewModel: TimerViewModel,
     solvesViewModel: SolvesViewModel,
     statisticsViewModel: StatisticsViewModel,
+    sharedSolvesViewModel: SharedSolvesViewModel,
+    sessionDialogsViewModel: SessionDialogsViewModel,
+    versusViewModel: VersusViewModel,
     modifierNavHost: Modifier
 
     ) {
@@ -40,19 +49,52 @@ fun Navigation(
 
     ) {
         composable("timer") {
+            viewModel.changeTopBottomVisibility(true)
             TimerScreen(viewModel, timerViewModel)
         }
         composable("solves") {
+            viewModel.changeTopBottomVisibility(true)
             SolvesScreen(viewModel, solvesViewModel)
         }
         composable("statistics") {
+            viewModel.changeTopBottomVisibility(true)
             StatisticsScreen(viewModel, statisticsViewModel)
         }
         composable("settings") {
+            viewModel.changeTopBottomVisibility(false)
             SettingsScreen(viewModel, navController)
         }
         composable("versus"){
-            VersusScreen(viewModel,navController,timerViewModel)
+            viewModel.changeTopBottomVisibility(false)
+            VersusScreen(
+                viewModel,
+                navController,
+                versusViewModel,
+                sessionDialogsViewModel)
+        }
+
+        composable(
+            route = "sharedSolves" ,
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "192.168.0.103/{token}"
+                    action = Intent.ACTION_VIEW
+                }
+            ),
+            arguments = listOf(
+                navArgument("token") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
+            )
+        ) { entry ->
+            viewModel.changeTopBottomVisibility(false)
+            SharedSolvesScreen(
+                sharedViewModel = viewModel,
+                sharedSolvesViewModel = sharedSolvesViewModel,
+                navController = navController,
+                solvesToken = entry.arguments?.getString("token") ?: ""
+            )
         }
 
     }

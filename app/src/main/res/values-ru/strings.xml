@@ -79,6 +79,14 @@
 
     <string name="copied">cкопировано</string>
     <string name="copy_link">Скопировать ссылку</string>
+    <string name="link_copied">Ссылка скопирована</string>
+    <string name="error_occured">Произошла ошибка</string>
+    <string name="try_again">Попробовать снова</string>
+
+    <string name="no_session">Без сессии</string>
+    <string name="change_session">Поменять сессию</string>
+    <string name="change_event">Поменять дисциплину</string>
+    <string name="create_battle">Создать матч</string>
 
 
     <string name="searchTime">Поиск времени</string>

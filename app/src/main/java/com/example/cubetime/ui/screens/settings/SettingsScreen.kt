@@ -67,7 +67,6 @@ fun SettingsScreen(
 
 
     BackHandler {
-        viewModel.changeSettingsVisibility()
         navController.popBackStack()
     }
 
@@ -86,7 +85,6 @@ fun SettingsScreen(
 
             IconButton(onClick = {
                 navController.popBackStack()
-                viewModel.changeSettingsVisibility()
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.arrowback),

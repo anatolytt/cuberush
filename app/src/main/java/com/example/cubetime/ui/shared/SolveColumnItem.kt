@@ -1,4 +1,4 @@
-package com.example.cubetime.ui.screens.statistics.dialogs
+package com.example.cubetime.ui.shared
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

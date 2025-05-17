@@ -37,7 +37,7 @@ import com.example.cubetime.R
 import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.data.model.StatType
 import com.example.cubetime.ui.screens.solves.dialogs.MyDivider
-import com.example.cubetime.ui.screens.timer.dialogs.CommentDialog
+import com.example.cubetime.ui.shared.SolveColumnItem
 import com.example.cubetime.utils.ShareAndCopy
 import com.example.cubetime.utils.TimeFormat
 
