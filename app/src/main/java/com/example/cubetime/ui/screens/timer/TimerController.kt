@@ -45,6 +45,8 @@ class TimerController(
 
     var timerJob: Job? = null
 
+
+
     fun startInspection() {
         timerJob?.cancel()
         _currentTime.value = 15000

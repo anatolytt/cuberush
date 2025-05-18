@@ -99,25 +99,7 @@ class TimerViewModel : ViewModel() {
     )
     val timer get() = _timer.value
 
-    private val _timer1 = mutableStateOf(
-        TimerController(
-            generateScr = { updateCurrentScramble() },
-            addSolve = { time, penalty -> addSolve(time, penalty) },
-            settings = settings,
-            hideEverything = {hide -> hideEverything(hide)}
-        )
-    )
-    val timer1 get() = _timer1.value
 
-    private val _timer2 = mutableStateOf(
-        TimerController(
-            generateScr = { updateCurrentScramble() },
-            addSolve = { time, penalty -> addSolve(time, penalty) },
-            settings = settings,
-            hideEverything = {hide -> hideEverything(hide)}
-        )
-    )
-    val timer2 get() = _timer2.value
 
 
 

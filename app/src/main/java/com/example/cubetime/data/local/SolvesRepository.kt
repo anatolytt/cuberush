@@ -35,7 +35,7 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
     val minState = mutableStateOf(0)
     val maxState = mutableStateOf(Int.MAX_VALUE)
 
-    private val lastSolveId = MutableStateFlow<Int>(0)
+    val lastSolveId = MutableStateFlow<Int>(0)
     val sessions : Flow<List<Session>> = solvesDao.getAllSessions()
     var currentSession = MutableStateFlow<Session>(Session(0, "", Events.CUBE333, ""))
     var shortSolves: Flow<List<ShortSolve>> = currentSession.flatMapLatest { session ->

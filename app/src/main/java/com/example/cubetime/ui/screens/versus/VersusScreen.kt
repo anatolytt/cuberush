@@ -18,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,14 +27,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.ui.screens.timer.TimerViewModel
-import com.example.cubetime.ui.screens.versus.Dialogs.ModalTopSheet
 import com.example.cubetime.ui.screens.versus.Dialogs.PenaltyVersus
+import com.example.cubetime.ui.screens.versus.Dialogs.ScrambleVersus
 import com.example.cubetime.ui.screens.versus.Dialogs.createVersusDialog
 import com.example.cubetime.ui.screens.versus.Timers.TimerBottom
 import com.example.cubetime.ui.screens.versus.Timers.TimerTop
 import com.example.cubetime.ui.session_dialogs.SessionDialogsViewModel
 import com.example.cubetime.ui.shared.SharedViewModel
+import kotlin.concurrent.timer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,20 +44,30 @@ fun VersusScreen(
     viewModel: SharedViewModel,
     navController: NavController,
     versusViewModel: VersusViewModel,
-    sessionDialogsViewModel: SessionDialogsViewModel
+    sessionDialogsViewModel: SessionDialogsViewModel,
 ) {
 
     val openDialog = remember { mutableStateOf(false) }
+    val openDialogScramble = remember { mutableStateOf(false) }
 
-    val sheetState = rememberModalBottomSheetState()
-    var showSheetTop = remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        versusViewModel.init()
+        versusViewModel.zeroScore()
+        versusViewModel.timer1.clear()
+        versusViewModel.timer2.clear()
+    }
+
+
+
+
+
 
 
     var versusDialogState = remember { mutableStateOf(true) }
     if (versusDialogState.value) {
         createVersusDialog(
             navController = navController,
-            createMatch = {session1, session2 ->
+            createMatch = { session1, session2 ->
                 versusDialogState.value = false
                 versusViewModel.setSessions(session1!!, session2!!)
             },
@@ -77,31 +90,37 @@ fun VersusScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TimerTop(Modifier.padding(100.dp), versusViewModel.timer1)
+
+            TimerTop(Modifier.padding(100.dp), versusViewModel.timer1, versusViewModel)
         }
 
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
             Box(modifier = Modifier.graphicsLayer {
-                    rotationX = 180f
-                    rotationY = 180f
-                }) {
-                if(versusViewModel.currentScramble.value.length >= 60)
-                {
+                rotationX = 180f
+                rotationY = 180f
+            }) {
+                if (versusViewModel.currentScramble.length >= 100) {
                     Button(
                         onClick = {
-                            showSheetTop.value = true
+                            openDialogScramble.value = true
                         }, modifier = Modifier.padding(8.dp)
                     ) {
                         Text("Показать скрамбл")
                     }
-                }
-                else{
-                    Text(text = versusViewModel.currentScramble.value)
+                } else {
+                    Text(text = versusViewModel.currentScramble)
                 }
             }
-            Text("0:0", modifier = Modifier.padding(8.dp))
+            Text(
+                versusViewModel.scoreTop.toString() + ":" + versusViewModel.scoreBottom.toString(),
+                modifier = Modifier.padding(8.dp)
+                    .graphicsLayer {
+                        rotationX = 180f
+                        rotationY = 180f
+                    }
+            )
 
             Row(
                 modifier = Modifier
@@ -119,25 +138,27 @@ fun VersusScreen(
                     Text("Назад")
                 }
                 Button(onClick = {
-                        openDialog.value = true
-
+                    openDialog.value = true
                 }) {
                     Text("Штраф")
                 }
             }
-            Text("0:0", modifier = Modifier.padding(8.dp))
-            if(versusViewModel.currentScramble.value.length >= 60)
-            {
+            Text(
+                versusViewModel.scoreBottom.toString() + ":" + versusViewModel.scoreTop.toString(),
+                modifier = Modifier.padding(8.dp)
+            )
+
+            if (versusViewModel.currentScramble.length >= 100) {
                 Button(
-                    onClick = {}, modifier = Modifier.padding(8.dp)
+                    onClick = {
+                        openDialogScramble.value = true
+                    }, modifier = Modifier.padding(8.dp)
                 ) {
-                    //при нажатии на кнопку будет открывать шитс панель
+
                     Text("Показать скрамбл")
                 }
-            }
-            else
-            {
-                Text(text = versusViewModel.currentScramble.value)
+            } else {
+                Text(text = versusViewModel.currentScramble)
             }
 
         }
@@ -149,18 +170,14 @@ fun VersusScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TimerBottom(Modifier.padding(100.dp), versusViewModel.timer2)
+            TimerBottom(Modifier.padding(100.dp), versusViewModel.timer2, versusViewModel)
         }
     }
-    if(openDialog.value)
-    {
-        PenaltyVersus (onDismissRequest = {openDialog.value = false})
+    if (openDialog.value) {
+        PenaltyVersus(onDismissRequest = { openDialog.value = false },versusViewModel)
     }
-    if (showSheetTop.value)
-    {
-        ModalTopSheet(
-            sheetState = sheetState,
-            onDismiss = { showSheetTop.value = false }
-        )
+    if (openDialogScramble.value) {
+        ScrambleVersus(onDismissRequest = { openDialogScramble.value = false })
     }
+
 }
