@@ -2,6 +2,7 @@ package com.example.cubetime.ui.screens.versus
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.cubetime.data.local.AppDatabase
 import com.example.cubetime.data.local.SolvesRepository
 import com.example.cubetime.data.model.Penalties
@@ -9,6 +10,8 @@ import com.example.cubetime.data.model.entities.Session
 import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.ui.screens.settings.Settings
 import com.example.cubetime.ui.screens.timer.TimerController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class VersusViewModel: ViewModel() {
     lateinit var repository1: SolvesRepository
@@ -53,8 +56,10 @@ class VersusViewModel: ViewModel() {
     }
 
     fun setSessions(session1: Session, session2: Session) {
-        repository1.updateCurrentSessionById(session1.id)
-        repository2.updateCurrentSessionById(session2.id)
+        viewModelScope.launch (Dispatchers.IO) {
+            repository1.updateCurrentSessionById(session1.id)
+            repository2.updateCurrentSessionById(session2.id)
+        }
     }
 
     fun addSolves() {

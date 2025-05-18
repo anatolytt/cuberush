@@ -6,9 +6,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cubetime.data.local.AppDatabase
 import com.example.cubetime.data.local.SolvesRepository
+import com.example.cubetime.data.model.entities.Session
 import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.data.remote.SolvesAPI
 import com.example.cubetime.shared.AppStrings
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -49,5 +51,12 @@ class SharedSolvesViewModel: ViewModel() {
             _solves.value = result
         }
         _isLoading.value = false
+    }
+
+    fun addSolves(session: Session) {
+        viewModelScope.launch (Dispatchers.IO) {
+            repository.updateCurrentSessionById(session.id)
+            repository.addSolves(solves.value)
+        }
     }
 }

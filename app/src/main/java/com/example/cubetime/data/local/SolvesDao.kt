@@ -1,5 +1,6 @@
 package com.example.cubetime.data.local
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -60,12 +61,14 @@ interface SolvesDao {
     @Query("UPDATE Solve SET comment = :newValue WHERE id = :id")
     fun updateComment(id: Int, newValue: String) : Int
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertSolve(solve: Solve) : Unit
-
     @Query("SELECT id FROM Solve ORDER BY id DESC")
     fun getLastSolveId() : Int
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertSolve(solve: Solve)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertSolves(solves: List<Solve>)
 
 
     @Query("DELETE FROM Solve WHERE id = :id")

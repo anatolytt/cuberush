@@ -1,6 +1,7 @@
 package com.example.cubetime.ui.navigation
 
 import android.content.Intent
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -70,14 +71,15 @@ fun Navigation(
                 viewModel,
                 navController,
                 versusViewModel,
-                sessionDialogsViewModel)
+                sessionDialogsViewModel
+            )
         }
 
         composable(
             route = "sharedSolves" ,
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = "192.168.0.103/{token}"
+                    uriPattern = "https://cuberush.up.railway.app/solves/{token}"
                     action = Intent.ACTION_VIEW
                 }
             ),
@@ -89,11 +91,14 @@ fun Navigation(
             )
         ) { entry ->
             viewModel.changeTopBottomVisibility(false)
+            val token = entry.arguments?.getString("token") ?: ""
+            Log.d("TOKEN", token)
             SharedSolvesScreen(
                 sharedViewModel = viewModel,
                 sharedSolvesViewModel = sharedSolvesViewModel,
+                sessionDialogsViewModel = sessionDialogsViewModel,
                 navController = navController,
-                solvesToken = entry.arguments?.getString("token") ?: ""
+                solvesToken = token
             )
         }
 

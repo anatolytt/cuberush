@@ -87,6 +87,9 @@
     <string name="change_session">Поменять сессию</string>
     <string name="change_event">Поменять дисциплину</string>
     <string name="create_battle">Создать матч</string>
+    <string name="save_to_session">Сохранить в сессию</string>
+    <string name="event">Дисциплина</string>
+    <string name="cuber">Кубер</string>
 
 
     <string name="searchTime">Поиск времени</string>

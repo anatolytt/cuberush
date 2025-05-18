@@ -30,7 +30,7 @@ fun ShareDialog(
     onDismiss: () -> Unit = {},
     solves: List<Solve> = emptyList(),
     statType: StatType = StatType.MEAN,
-    getLink: suspend () -> String? = {"abc"},
+    getLink: suspend () -> String? = {null},
     result: String = "",
     includeScrambles: Boolean = true
 ) {
@@ -38,6 +38,7 @@ fun ShareDialog(
     val sharer = ShareAndCopy()
     val coroutineScope = rememberCoroutineScope()
     val copied = stringResource(R.string.link_copied)
+    val error = stringResource(R.string.error_occured)
 
     Dialog(onDismissRequest = onDismiss) {
         ElevatedCard(
@@ -59,16 +60,25 @@ fun ShareDialog(
                     FilledTonalButton(
                         onClick = {
                             coroutineScope.launch {
-                                sharer.copyString(
-                                    context,
-                                    getLink() ?: "abc"
-                                )
+                                val link = getLink()
+                                if (link == null) {
+                                    Toast.makeText(
+                                        context,
+                                        error,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    sharer.copyString(
+                                        context,
+                                        link
+                                    )
 
-                                Toast.makeText(
-                                    context,
-                                    copied,
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                    Toast.makeText(
+                                        context,
+                                        copied,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
 
                         },

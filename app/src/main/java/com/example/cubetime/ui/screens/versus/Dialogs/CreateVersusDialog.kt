@@ -2,8 +2,10 @@ package com.example.cubetime.ui.screens.versus.Dialogs
 
 import android.widget.Button
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,10 +16,12 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -41,6 +45,7 @@ import androidx.navigation.NavController
 import com.example.cubetime.R
 import com.example.cubetime.data.model.Events
 import com.example.cubetime.data.model.entities.Session
+import com.example.cubetime.ui.screens.solves.dialogs.MyDivider
 import com.example.cubetime.ui.screens.versus.VersusViewModel
 import com.example.cubetime.ui.session_dialogs.DialogsState
 import com.example.cubetime.ui.session_dialogs.SessionDialogsNavigation
@@ -73,30 +78,35 @@ fun createVersusDialog(
 
             ) {
                 IconButton(
-                    onClick = {
-                        navController.popBackStack()
-                    },
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier.align(Alignment.Start)
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.arrowback),
                         contentDescription = ""
                     )
                 }
+                Spacer(modifier = Modifier.padding(5.dp))
 
                 ExposedDropdownMenuBox(
                     expanded = dropdownExpanded.value,
                     onExpandedChange = {dropdownExpanded.value = !dropdownExpanded.value},
-                    modifier = Modifier.width(200.dp)
                 ) {
                     TextField(
                         value = stringResource(chosenEvent.value.getEventStringId()),
                         onValueChange = {},
                         readOnly = true,
+                        singleLine = true,
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = dropdownExpanded.value)
+                        },
+                        label = { Text(stringResource(R.string.event)) },
                         modifier = Modifier.menuAnchor()
                     )
                     ExposedDropdownMenu(
                         expanded = dropdownExpanded.value,
-                        onDismissRequest = {dropdownExpanded.value = false}
+                        onDismissRequest = {dropdownExpanded.value = false},
+                        modifier = Modifier.height(350.dp)
                     ) {
                         Events.entries.forEach { event ->
                             val name = stringResource(event.getEventStringId())
@@ -106,8 +116,11 @@ fun createVersusDialog(
                                 },
                                 onClick = {
                                     chosenEvent.value = event
+                                    session1.value = null
+                                    session2.value = null
                                     dropdownExpanded.value = false
                                 },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                             )
                         }
                     }
@@ -122,7 +135,7 @@ fun createVersusDialog(
                     PlayerSessionBlock(
                         session = session1,
                         modifier = Modifier.weight(1F),
-                        headlineText = stringResource(R.string.player) + " 1",
+                        headlineText = stringResource(R.string.cuber) + " 1",
                         sessionDialogsViewModel = sessionDialogsViewModel,
                         event = chosenEvent.value
                     )
@@ -130,14 +143,17 @@ fun createVersusDialog(
                     PlayerSessionBlock(
                         session = session2,
                         modifier = Modifier.weight(1F),
-                        headlineText = stringResource(R.string.player) + " 2",
+                        headlineText = stringResource(R.string.cuber) + " 2",
                         sessionDialogsViewModel = sessionDialogsViewModel,
                         event = chosenEvent.value
                     )
 
                 }
-                Spacer(modifier = Modifier.height(15.dp))
-                Button(onClick = {createMatch(session1.value, session2.value)}) {
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(
+                    onClick = { createMatch(session1.value, session2.value )},
+                    modifier = Modifier.fillMaxWidth()
+                    ) {
                     Text(stringResource(R.string.create_battle))
                 }
             }
@@ -165,36 +181,49 @@ fun PlayerSessionBlock(
 
     val noSession = stringResource(R.string.no_session)
     val sessionText = remember { mutableStateOf<String>(noSession) }
+    if (session.value == null) {
+        sessionText.value = noSession
+    } else {
+        sessionText.value = session.value!!.name
+    }
+
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = headlineText,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.titleSmall,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(10.dp))
 
-        if (session.value == null) {
-            sessionText.value = noSession
-        } else {
-            sessionText.value = session.value!!.name
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            shape = MaterialTheme.shapes.small
+        ) {
+            Text(
+                text = sessionText.value,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
 
-        Text(
-            text = sessionText.value,
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-
         Spacer(modifier = Modifier.height(10.dp))
-        TextButton (
+        OutlinedButton(
             onClick = { sessionDialogToShow.value = DialogsState.SESSION }
         ) {
-            Text(stringResource(R.string.change_session))
+            Text(
+                text = stringResource(R.string.change_session),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
         }
     }
 

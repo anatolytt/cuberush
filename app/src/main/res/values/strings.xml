@@ -103,6 +103,9 @@
     <string name="change_session">Change session</string>
     <string name="change_event">Change event</string>
     <string name="create_battle">Create battle</string>
+    <string name="save_to_session">Save to session</string>
+    <string name="event">Event</string>
+    <string name="cuber">Cuber</string>
 
 
     <string name="searchTime">Search time</string>

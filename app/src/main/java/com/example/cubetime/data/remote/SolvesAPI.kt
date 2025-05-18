@@ -20,15 +20,14 @@ interface SolvesAPI {
             return SolvesApiImpl(
                 client = HttpClient(Android) {
                     install(HttpTimeout) {
-                        this.requestTimeoutMillis = 3000
+                        this.requestTimeoutMillis = 20000
                     }
                     install(ContentNegotiation) {
                         json()
                     }
-
-
                 }
             )
         }
     }
 }
+

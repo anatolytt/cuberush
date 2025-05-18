@@ -74,7 +74,7 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
     var currentAverages = MutableStateFlow<Map<StatType, AverageResult>>(mapOf())
 
     init {
-        coroutineScope.launch {
+        coroutineScope.launch (Dispatchers.IO) {
             if (solvesDao.getSessionCount() == 0) {
                 addSession(Session(0, "Main", Events.CUBE333, ""))
             }
@@ -96,6 +96,28 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
                 )
             ))
         }
+    }
+
+    fun addSolves(solves: List<Solve>){
+        coroutineScope.launch (Dispatchers.IO) {
+            val newSolves = solves.map {solve: Solve ->
+                solve.copy(sessionId = currentSession.value.id)
+            }
+            solvesDao.insertSolves(newSolves)
+            var stats: List<solvesAverages> = listOf()
+            newSolves.forEach { solve ->
+                stats = statisticsManager.addSolve(
+                ShortSolve(
+                    id = solve.id,
+                    result = solve.result,
+                    penalties = solve.penalties
+                )
+            )}
+            updateStats(stats)
+        }
+
+
+
     }
 
     private fun updateStats(stats: List<solvesAverages>) {
@@ -209,12 +231,10 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
         }
     }
 
-    fun updateCurrentSessionById(id: Int) = coroutineScope.launch(Dispatchers.IO) {
+    suspend fun updateCurrentSessionById(id: Int) {
         ScramblesRepository.getInstance().clearScrambles()
-        Log.d("вызвано!", currentSession.value.event.toString())
         try {
-            val deferred = async (Dispatchers.IO) { currentSession.value = solvesDao.getSessionById(id) }
-            deferred.await()
+            currentSession.value = solvesDao.getSessionById(id)
             updateStatManager()
             ScramblesRepository.getInstance().updateNextScramble(currentSession.value.event)
         } catch (e: Exception) {

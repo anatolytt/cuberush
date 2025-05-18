@@ -46,8 +46,6 @@ dependencies {
     //для настроек
     implementation("androidx.datastore:datastore-preferences:1.1.3")
 
-
-
     implementation("com.google.accompanist:accompanist-drawablepainter:0.30.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -67,6 +65,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation (libs.androidx.navigation.compose)
     implementation(libs.lib.scrambles)
+
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("io.coil-kt:coil-svg:2.4.0")
     val room_version = "2.7.1"
@@ -82,3 +81,6 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation")
     implementation("io.ktor:ktor-serialization-kotlinx-json")
 }
+
+
+

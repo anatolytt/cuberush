@@ -8,6 +8,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Text
@@ -73,7 +74,7 @@ fun TimerScreen(
     )
     var scrambleIsBig by remember { mutableStateOf(false) }
     val scrambleSizeAnimation by animateIntAsState(
-        targetValue = if (scrambleIsBig) 350 else 130,
+        targetValue = if (scrambleIsBig) 350 else 115,
         animationSpec = tween(durationMillis = 500)
     )
 
@@ -206,17 +207,23 @@ fun TimerScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ElevatedCard(
-                    modifier = Modifier.padding(bottom = 5.dp, end = 10.dp, start = 10.dp),
+                OutlinedCard(
+                    modifier = Modifier.padding(bottom = 5.dp, end = 7.dp, start = 7.dp),
                     colors = CardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
                         disabledContainerColor = Color.White,
                         disabledContentColor = Color.White
-                    )
-
+                    ),
+                    shape = MaterialTheme.shapes.medium,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                 ) {
-                    Column(modifier = Modifier.padding(5.dp)) {
+                    Column(
+                        modifier = Modifier
+                            .width(110.dp)
+                            .padding(9.dp),
+                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
                         Text(
                             text = "PB: " + bestAverages.single,
                             fontSize = 10.sp,
@@ -251,17 +258,23 @@ fun TimerScreen(
                         )
                     }
                 }
-                ElevatedCard(
-                    modifier = Modifier.padding(bottom = 5.dp, end = 10.dp, start = 10.dp),
+                OutlinedCard(
+                    modifier = Modifier.padding(bottom = 5.dp, end = 7.dp, start = 7.dp),
                     colors = CardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
                         disabledContainerColor = Color.White,
                         disabledContentColor = Color.White
-                    )
-
+                    ),
+                    shape = MaterialTheme.shapes.medium,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                 ) {
-                    Column(modifier = Modifier.padding(5.dp)) {
+                    Column(
+                        modifier = Modifier
+                            .width(110.dp)
+                            .padding(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
                         Text(
                             text = "Ao5: " + averages.ao5,
                             fontSize = 10.sp,
