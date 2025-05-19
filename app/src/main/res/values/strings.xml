@@ -110,6 +110,10 @@
 
     <string name="searchTime">Search time</string>
 
+    <string name="viewScrable">Show scramble</string>
+    <string name="session">Session</string>
+    <string name="penalty">Penalty</string>
+
 
 
 </resources>

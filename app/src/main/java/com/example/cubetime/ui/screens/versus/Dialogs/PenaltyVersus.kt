@@ -1,8 +1,10 @@
 package com.example.cubetime.ui.screens.versus.Dialogs
 
 import android.app.Dialog
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,16 +20,25 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.cubetime.R
+import com.example.cubetime.data.model.Penalties
+import com.example.cubetime.data.model.entities.Solve
+import com.example.cubetime.ui.screens.versus.VersusViewModel
 
 @Composable
 fun PenaltyVersus(
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    versusViewModel: VersusViewModel,
 ) {
+
+
     Dialog(
         onDismissRequest = {
             onDismissRequest()
@@ -36,7 +47,10 @@ fun PenaltyVersus(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .clickable { onDismissRequest() },
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { onDismissRequest() },
             verticalArrangement = Arrangement.SpaceAround
         ) {
             Card(
@@ -53,21 +67,51 @@ fun PenaltyVersus(
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     Button(
-                        onClick = {},
+                        onClick = {
+                            versusViewModel.timer1.changePenalty(Penalties.DNF)
+                            versusViewModel.updatePenaltyTop(
+                                versusViewModel.repository1.currentSession.value.id,
+                                Penalties.DNF
+                            )
+                            versusViewModel.chnageScorePenalty()
+
+
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Red,
                             contentColor = Color.Black
                         )
+                    )
+                    {
+                        Text(stringResource(R.string.dnf))
+                    }
+                    Button(
+                        onClick = {
+                            versusViewModel.timer1.changePenalty(Penalties.PLUS2)
+                            versusViewModel.updatePenaltyTop(
+                                versusViewModel.repository1.currentSession.value.id,
+                                Penalties.PLUS2
+                            )
+                            versusViewModel.chnageScorePenalty()
 
-                    ) { Text("DNF") }
-                    Button(onClick = {},
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Yellow,
                             contentColor = Color.Black
                         )
                     )
-                    { Text("+2") }
-                    Button(onClick = {}) { Text("OK") }
+                    { Text(stringResource(R.string.plus_two)) }
+                    Button(onClick = {
+                        versusViewModel.timer1.changePenalty(Penalties.NONE)
+                        versusViewModel.updatePenaltyTop(
+                            versusViewModel.repository1.currentSession.value.id,
+                            Penalties.NONE
+                        )
+                        versusViewModel.chnageScorePenalty()
+                        onDismissRequest()
+
+
+                    }) { Text(stringResource(R.string.ok)) }
 
                 }
             }
@@ -81,21 +125,48 @@ fun PenaltyVersus(
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     Button(
-                        onClick = {},
+                        onClick = {
+                            versusViewModel.timer2.changePenalty(Penalties.DNF)
+                            versusViewModel.updatePenaltyBottom(
+                                versusViewModel.repository2.currentSession.value.id,
+                                Penalties.DNF
+                            )
+                            versusViewModel.chnageScorePenalty()
+
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Red,
                             contentColor = Color.Black
                         )
 
-                    ) { Text("DNF") }
-                    Button(onClick = {},
+                    ) { Text(stringResource(R.string.dnf)) }
+                    Button(
+                        onClick = {
+                            versusViewModel.timer2.changePenalty(Penalties.PLUS2)
+                            versusViewModel.updatePenaltyBottom(
+                                versusViewModel.repository2.currentSession.value.id,
+                                Penalties.PLUS2
+                            )
+                            versusViewModel.chnageScorePenalty()
+
+
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Yellow,
                             contentColor = Color.Black
                         )
+                    )
+                    { Text(stringResource(R.string.plus_two)) }
+                    Button(onClick = {
+                        versusViewModel.timer2.changePenalty(Penalties.NONE)
+                        versusViewModel.updatePenaltyTop(
+                            versusViewModel.repository2.currentSession.value.id,
+                            Penalties.NONE
                         )
-                    { Text("+2") }
-                    Button(onClick = {}) { Text("OK") }
+                        versusViewModel.chnageScorePenalty()
+                        onDismissRequest()
+
+                    }) { Text(stringResource(R.string.ok)) }
 
                 }
             }

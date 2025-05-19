@@ -1,5 +1,7 @@
 package com.example.cubetime.ui.screens.versus.Timers
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -29,86 +31,115 @@ import androidx.compose.ui.unit.sp
 import com.example.cubetime.ui.screens.timer.TimerController
 import com.example.cubetime.ui.screens.timer.TimerState
 import com.example.cubetime.ui.screens.timer.TimerViewModel
+import com.example.cubetime.ui.screens.versus.VersusViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TimerBottom(
-          modifier: Modifier,
-          timer: TimerController
+    modifier: Modifier,
+    timer: TimerController,
+    versusViewModel: VersusViewModel
 ) {
     var isLongPress by remember { mutableStateOf(false) }
     var isPressed by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val delayColorAnimation: Color by animateColorAsState(
-        if (isLongPress && (timer.INSPECTION_ON == (timer.timerState == TimerState.INSPECTION)) && timer.timerState != TimerState.GOING)  {
+        if (isLongPress && (timer.INSPECTION_ON == (timer.timerState == TimerState.INSPECTION)) && timer.timerState != TimerState.GOING) {
             MaterialTheme.colorScheme.onSecondaryContainer
         } else {
             MaterialTheme.colorScheme.onBackground
         }
 
     )
-
     val delaySizeAnimation: Int by animateIntAsState(
-        if (isLongPress || timer.timerState != TimerState.INACTIVE) 75 else 65
+        if (isLongPress || timer.timerState != TimerState.INACTIVE) 65 else 50
     )
     val haptic = LocalHapticFeedback.current
+
+
+
 
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = {
-                        if (timer.timerState == TimerState.GOING) {
-                            timer.stopTimer()
-                        }
-                        else {
-                            isLongPress = false
-                            isPressed = false
-                            val pressJob = coroutineScope.launch {
-                                isPressed = true
-                                delay(500)
-                                isLongPress = true
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            }
-                            try {
-                                awaitRelease()
-                                isPressed = false
-                                if (!timer.delayAfterStopOn) {
-                                    if (!isLongPress) {
-                                        timer.shortPressAction()
-                                    } else {
-                                        timer.longPressAction()
-                                    }
-                                }
-                                pressJob.cancel()
+
+                    detectTapGestures(
+                        onPress = {
+                            if (versusViewModel.counterBottom ==2 && versusViewModel.counterTop == 2) versusViewModel.zeroCounter()
+                            if (versusViewModel.counterBottom ==2) return@detectTapGestures
+
+                            if (timer.timerState == TimerState.GOING) {
+
+                                timer.stopTimer()
+                                //когда таймер остановился i + 1
+                                versusViewModel.addCounterBottom()
+                                Log.d("versusCounter", versusViewModel.counterBottom.toString())
+
+                            } else {
+
                                 isLongPress = false
-                            } catch (_: GestureCancellationException) {
+                                isPressed = false
+                                val pressJob = coroutineScope.launch {
+                                    isPressed = true
+                                    delay(500)
+                                    isLongPress = true
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                }
+                                try {
+                                    awaitRelease()
+                                    isPressed = false
+                                    if (!timer.delayAfterStopOn) {
+                                        if (!isLongPress) {
+                                            timer.shortPressAction()
+                                            //добавляем при запуске таймера i + 1
+                                            versusViewModel.addCounterBottom()
+                                            Log.d(
+                                                "versusCounter",
+                                                versusViewModel.counterBottom.toString()
+                                            )
+                                        } else {
+                                            timer.longPressAction()
+                                            //добавляем при запуске таймера i + 1
+                                            versusViewModel.addCounterBottom()
+                                                Log.d(
+                                                    "versusCounter",
+                                                    versusViewModel.counterBottom.toString()
+                                                )
+                                        }
+                                    }
+                                    pressJob.cancel()
+                                    isLongPress = false
+                                } catch (_: GestureCancellationException) {
 
+                                }
                             }
-                        }
 
-                    }
-                )
+
+                        }
+                    )
+
+
             },
     ) {
 
-            Text(
-                text =
-                    if (isPressed && timer.timerState == TimerState.INACTIVE) {
-                        "0.00"
-                    } else {
-                        timer.currentTimeToShow
-                    }
-                ,
-                fontSize = delaySizeAnimation.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
-                color = delayColorAnimation)
+        Text(
+            text =
+            if (isPressed && timer.timerState == TimerState.INACTIVE) {
+                "0.00"
+            } else {
+                timer.currentTimeToShow
+            },
+            fontSize = delaySizeAnimation.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.Monospace,
+            color = delayColorAnimation
+        )
     }
+
 
 }
 

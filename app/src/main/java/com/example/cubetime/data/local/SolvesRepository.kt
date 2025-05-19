@@ -36,7 +36,7 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
     val minState = mutableStateOf(0)
     val maxState = mutableStateOf(Int.MAX_VALUE)
 
-    private val lastSolveId = MutableStateFlow<Int>(0)
+    val lastSolveId = MutableStateFlow<Int>(0)
     val sessions : Flow<List<Session>> = solvesDao.getAllSessions()
     var currentSession = MutableStateFlow<Session>(Session(0, "", Events.CUBE333, ""))
     var shortSolves: Flow<List<ShortSolve>> = currentSession.flatMapLatest { session ->
@@ -87,7 +87,7 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
     fun addSolve(solve: Solve) {
         coroutineScope.launch (Dispatchers.IO) {
             solvesDao.insertSolve(solve)
-            lastSolveId.update { solvesDao.getLastSolveId() }
+            lastSolveId.update { solvesDao.getLastSolveId(currentSession.value.id) }
             Log.d("Last solve:", solvesDao.getSolveById(lastSolveId.value).result.toString())
             updateStats(stats = statisticsManager.addSolve(
                 ShortSolve(

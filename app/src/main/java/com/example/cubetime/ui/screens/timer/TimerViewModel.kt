@@ -101,6 +101,8 @@ class TimerViewModel : ViewModel() {
 
 
 
+
+
     fun inputScramble(scramble: String) {
         scramblesRepository.addCustomScramble(scramble)
     }

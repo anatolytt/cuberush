@@ -61,11 +61,11 @@ interface SolvesDao {
     @Query("UPDATE Solve SET comment = :newValue WHERE id = :id")
     fun updateComment(id: Int, newValue: String) : Int
 
-    @Query("SELECT id FROM Solve ORDER BY id DESC")
-    fun getLastSolveId() : Int
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertSolve(solve: Solve)
+    fun insertSolve(solve: Solve) : Unit
+
+    @Query("SELECT id FROM Solve WHERE sessionId = :sessionId ORDER BY id DESC")
+    fun getLastSolveId(sessionId: Int) : Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSolves(solves: List<Solve>)
