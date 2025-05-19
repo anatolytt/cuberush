@@ -98,14 +98,14 @@ fun AppBar(
                     navController.navigate("versus")
                 }) {
                     Icon(
-                        painter = painterResource(R.drawable.verticalcenter),
+                        painter = painterResource(R.drawable.versus_icon),
                         tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = "Change session dialog"
                     )
                 }
                 IconButton(onClick = { dialogToShow.value = DialogsState.SESSION }) {
                     Icon(
-                        imageVector = Icons.Default.Face,
+                        painter = painterResource(R.drawable._square_svgrepo_com_1_),
                         tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = "Sessions dialog"
                     )

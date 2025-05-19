@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.cubetime.data.local.AppDatabase
@@ -90,17 +91,17 @@ class MainActivity : ComponentActivity() {
                                     BottomNavigationItem(
                                         name = "Timer",
                                         route = "timer",
-                                        icon = Icons.Default.Clear
+                                        icon = painterResource(R.drawable.clockalarm_1_)
                                     ),
                                     BottomNavigationItem(
                                         name = "Solves",
                                         route = "solves",
-                                        icon = Icons.Sharp.Home
+                                        icon = painterResource(R.drawable.appssolid_1_)
                                     ),
                                     BottomNavigationItem(
                                         name = "Statistics",
                                         route = "statistics",
-                                        icon = Icons.Sharp.Search
+                                        icon = painterResource(R.drawable.stats)
                                     ),
 
                                     ),

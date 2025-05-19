@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -94,7 +95,7 @@ fun StatBottomSheet(
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Icon(
-                        imageVector = Icons.Default.AccountBox,  // Copy icon
+                        painter = painterResource(R.drawable.copy_icon),  // Copy icon
                         contentDescription = null,
                         modifier = Modifier.size(35.dp).clickable {
                             shareAndCopy.copyAverage(

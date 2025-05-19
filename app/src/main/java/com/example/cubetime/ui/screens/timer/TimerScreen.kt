@@ -149,7 +149,7 @@ fun TimerScreen(
                                 currentDialog = DialogTypes.ADD_TIME
                             }) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.dnf),
+                                    painter = painterResource(id = R.drawable.timeradd),
                                     contentDescription = "Input time"
                                 )
                             }

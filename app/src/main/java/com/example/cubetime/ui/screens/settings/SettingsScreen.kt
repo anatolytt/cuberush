@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -87,7 +89,7 @@ fun SettingsScreen(
                 navController.popBackStack()
             }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.arrowback),
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back"
                 )
             }
@@ -175,7 +177,7 @@ fun SettingsScreen(
             ) {
                 // Иконка
                 Icon(
-                    painter = painterResource(id = R.drawable.switchthemes),
+                    painter = painterResource(id = R.drawable.paletteoutline),
                     contentDescription = "",
                     modifier = Modifier.padding(start = 10.dp, end = 20.dp).size(20.dp)
                 )
@@ -356,7 +358,7 @@ fun SettingsScreen(
             ) {
                 // Иконка
                 Icon(
-                    painter = painterResource(id = R.drawable.hide),
+                    painter = painterResource(id = R.drawable.printingpage),
                     contentDescription = "",
                     modifier = Modifier.padding(start = 10.dp, end = 20.dp).size(20.dp)
                 )
