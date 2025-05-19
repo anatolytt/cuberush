@@ -21,6 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -131,11 +132,10 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
     }
 
 
-
-
     private fun updateStatManager() {
          coroutineScope.launch {
-            shortSolves.collectLatest {solves ->
+            shortSolves.collectLatest() {solves ->
+                Log.d("New session solves", "${currentSession.value} ${solves.toString()}")
                 updateStats(stats = statisticsManager.init(solves, currentSession.value.id))
                 cancel()
             }
@@ -212,7 +212,7 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
 
     fun addSession(session: Session) {
         coroutineScope.launch (Dispatchers.IO) {
-            solvesDao.insertSession(session).toInt()
+            solvesDao.insertSession(session)
         }
     }
 

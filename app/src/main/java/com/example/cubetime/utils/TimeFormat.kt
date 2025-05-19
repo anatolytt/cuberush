@@ -6,6 +6,7 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import com.example.cubetime.data.model.AverageResult
 import com.example.cubetime.data.model.Penalties
+import com.example.cubetime.data.model.ShortSolve
 import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.data.model.StatType
 import com.example.cubetime.shared.AppStrings
@@ -45,6 +46,14 @@ object TimeFormat {
                 seconds = "0" + seconds
             }
             return ("${minutes}:${seconds}.${milliseconds}${plus}")
+        }
+    }
+
+    fun solveToResult(solve: ShortSolve): Int {
+        return when (solve.penalties) {
+            Penalties.NONE -> solve.result
+            Penalties.PLUS2 -> solve.result + 2000
+            Penalties.DNF -> Int.MAX_VALUE
         }
     }
 

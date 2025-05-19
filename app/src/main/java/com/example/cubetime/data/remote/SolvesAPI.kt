@@ -11,8 +11,6 @@ import kotlinx.serialization.json.Json
 
 interface SolvesAPI {
     suspend fun getSolves(token: String): List<Solve>?
-
-
     suspend fun uploadSolves(solves: List<Solve>) : String?
 
     companion object {

@@ -43,6 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.cubetime.R
 import com.example.cubetime.data.model.Events
+import com.example.cubetime.data.model.ShortSolve
 import com.example.cubetime.ui.screens.solves.dialogs.MyDivider
 import com.example.cubetime.ui.session_dialogs.DialogsState
 import com.example.cubetime.ui.session_dialogs.SessionDialogsNavigation
@@ -55,11 +56,10 @@ import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @Composable
 fun SharedSolvesScreen (
-    sharedViewModel: SharedViewModel,
     sharedSolvesViewModel: SharedSolvesViewModel,
     sessionDialogsViewModel: SessionDialogsViewModel,
     navController: NavController,
-    solvesToken: String = "21022a2b-26eb-4704-a436-c996f783bf16"
+    solvesToken: String
 ) {
 
     val isError by sharedSolvesViewModel.isError.collectAsState()

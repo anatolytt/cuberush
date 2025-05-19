@@ -151,7 +151,14 @@ fun createVersusDialog(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(
-                    onClick = { createMatch(session1.value, session2.value )},
+                    onClick = {
+                        if (
+                            session1.value != session2.value &&
+                            session1.value != null &&
+                            session2.value != null
+                            ) {
+                            createMatch(session1.value, session2.value)
+                        } },
                     modifier = Modifier.fillMaxWidth()
                     ) {
                     Text(stringResource(R.string.create_battle))
@@ -217,7 +224,9 @@ fun PlayerSessionBlock(
 
         Spacer(modifier = Modifier.height(10.dp))
         OutlinedButton(
-            onClick = { sessionDialogToShow.value = DialogsState.SESSION }
+            onClick = {
+                sessionDialogToShow.value = DialogsState.SESSION
+            }
         ) {
             Text(
                 text = stringResource(R.string.change_session),

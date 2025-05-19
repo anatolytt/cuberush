@@ -3,6 +3,7 @@ package com.example.cubetime.utils.statistics
 import android.util.Log
 import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.data.model.ShortSolve
+import com.example.cubetime.utils.TimeFormat
 import java.io.Serializable
 import kotlin.math.ceil
 
@@ -16,9 +17,8 @@ import kotlin.math.ceil
 class StatisticsCalculator (
     var solvesInput: List<ShortSolve>,
     var solvesInAvg: Int, // Всего сборок в среднем,
-)
-{
-/*
+) {
+    /*
     Храним и список со всеми сборками, и список с отсорированными сборкамиб чтобы не сортировать
     список с нуля при каждом добавлении сборки.
  */
@@ -30,44 +30,47 @@ class StatisticsCalculator (
 
     // Количествос сборок, не идущих в зачет с каждой стороны
     private var notCountingSolves: Int = 0
+
     // Количество сборок, идущих в зачет
     private var countingSolves: Int = 0
 
     // Количество днфов в зачет в текущем списке сборок
     private var DNFsCounter = 0
 
-    fun addSolve(solve: ShortSolve) : Int{
+    fun addSolve(solve: ShortSolve): Int {
         /*
         Если количество сборок пока недостаточно для подсчета среднего - просто добавляем сборку
         в список. Иначе вызываем метод для пересчета среднего.
          */
         if (solvesInAvg == 0) {
-            return recalculateMean(solveToResult(solve))
+            return recalculateMean(TimeFormat.solveToResult(solve))
         }
 
         if (solves.size < solvesInAvg) {
-            solves.add(solveToResult(solve))
+            solves.add(TimeFormat.solveToResult(solve))
             sortedSolves = solves
             if (solves.size == solvesInAvg) {
                 return calculate()
             }
         } else {
             return when (solvesInAvg) {
-                3 -> recalculateMo3(solveToResult(solve))
-                else -> recalculate(solveToResult(solve))
+                3 -> recalculateMo3(TimeFormat.solveToResult(solve))
+                else -> recalculate(TimeFormat.solveToResult(solve))
             }
         }
         return -3
     }
 
-    private fun sort() { sortedSolves.sort() }
+    private fun sort() {
+        sortedSolves.sort()
+    }
 
     private var lastStartIdx: Int = 0    // Все сборки с индексом <= этого удаляются
     private var firstEndIdx: Int = 0     // Все сборки с индексом >= этого удаляются
 
 
-    fun initStat() : Int {
-        solves = solvesInput.map { solveToResult(it) }.toMutableList()
+    fun initStat(): Int {
+        solves = solvesInput.map { TimeFormat.solveToResult(it) }.toMutableList()
         if (solvesInAvg == 0) {
             lastSum = solves.sum()
             return if (solves.size == 0) {
@@ -80,7 +83,7 @@ class StatisticsCalculator (
         }
 
         notCountingSolves = if (solvesInAvg == 3) 0 else ceil(solvesInAvg * 0.05).toInt()
-        countingSolves = solvesInAvg - notCountingSolves*2
+        countingSolves = solvesInAvg - notCountingSolves * 2
         lastStartIdx = notCountingSolves - 1
         firstEndIdx = solvesInAvg - lastStartIdx - 1
         sortedSolves = this.solves.toMutableList()
@@ -95,8 +98,8 @@ class StatisticsCalculator (
 
 
     // Вычисление первого среднего
-    private fun calculate() : Int {
-        DNFsCounter = solves.count{it == Int.MAX_VALUE}
+    private fun calculate(): Int {
+        DNFsCounter = solves.count { it == Int.MAX_VALUE }
         sortedSolves = this.solves.toMutableList()
         sort()
         val filteredSolves = sortedSolves.slice(    // сборки, которые идут в зачёт
@@ -108,40 +111,43 @@ class StatisticsCalculator (
         if (DNFsCounter > notCountingSolves) {
             return -1
         }
-        if (countingSolves != 0)  {
+        if (countingSolves != 0) {
             return lastSum / countingSolves // среднее арифмитическое
-        }   else {
+        } else {
             return -3
         }
     }
 
 
-    fun recalculateMean(time:Int) : Int {
-        lastSum += time
+    fun recalculateMean(time: Int): Int {
         solves.add(time)
-        if (Int.MAX_VALUE in solves) {
-            return -1
+        if (time == Int.MAX_VALUE) {
+            DNFsCounter += 1
         } else {
-            return lastSum / solves.size
+            lastSum += time
         }
+        return lastSum / (solves.size - DNFsCounter)
     }
+
 
 
     private fun recalculateMo3(time:Int): Int {
         if (solves[0] == Int.MAX_VALUE) {
             DNFsCounter -= 1
             lastSum -= 1
+        } else {
+            lastSum -= solves[0]
         }
         if (time == Int.MAX_VALUE) {
             DNFsCounter += 1
             lastSum += 1
         } else {
-            lastSum = lastSum - solves[0] + time
+            lastSum += time
         }
         solves.drop(1)
         solves.add(time)
 
-        return if (DNFsCounter > 0) -1 else lastSum / countingSolves
+        return if (DNFsCounter != 0) -1 else lastSum / countingSolves
     }
 
 
@@ -238,12 +244,5 @@ class StatisticsCalculator (
 
     }
 
-
-    private fun solveToResult(solve: ShortSolve): Int {
-        return when (solve.penalties) {
-            Penalties.NONE -> solve.result
-            Penalties.PLUS2 -> solve.result + 2000
-            Penalties.DNF -> Int.MAX_VALUE
-        }
-    }
+    
 }

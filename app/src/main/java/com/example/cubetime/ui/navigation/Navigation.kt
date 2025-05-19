@@ -92,9 +92,7 @@ fun Navigation(
         ) { entry ->
             viewModel.changeTopBottomVisibility(false)
             val token = entry.arguments?.getString("token") ?: ""
-            Log.d("TOKEN", token)
             SharedSolvesScreen(
-                sharedViewModel = viewModel,
                 sharedSolvesViewModel = sharedSolvesViewModel,
                 sessionDialogsViewModel = sessionDialogsViewModel,
                 navController = navController,
