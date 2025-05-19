@@ -9,6 +9,7 @@ import com.example.cubetime.data.ScramblesRepository
 import com.example.cubetime.data.local.AppDatabase
 import com.example.cubetime.data.local.SolvesRepository
 import com.example.cubetime.data.model.Penalties
+import com.example.cubetime.data.model.ShortSolve
 import com.example.cubetime.data.model.entities.Session
 import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.ui.screens.settings.Settings
@@ -18,6 +19,7 @@ import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlin.math.max
 
 class VersusViewModel : ViewModel() {
     lateinit var repository1: SolvesRepository
@@ -28,6 +30,8 @@ class VersusViewModel : ViewModel() {
     val currentScramble get() = _currentScramble.value
 
     var currentSolves: MutableMap<Int, Pair<Int, Penalties>?> = mutableMapOf(1 to null, 2 to null)
+
+    var solvesBack: MutableMap<Int, Pair<Int, Penalties>?> = mutableMapOf(1 to null, 2 to null)
 
     private var _counterTop = mutableStateOf<Int>(0)
     val counterTop get() = _counterTop.value
@@ -43,6 +47,7 @@ class VersusViewModel : ViewModel() {
     private var _scoreBottom = mutableStateOf<Int>(0)
     val scoreBottom get() = _scoreBottom.value
 
+    private var roundScores = mutableMapOf<Int, Int>()//очки зак каждый раунд
 
 
     //обнулить счет при запуске режима
@@ -79,34 +84,23 @@ class VersusViewModel : ViewModel() {
 
     private var settings = mutableStateOf(Settings(false, false, false))
 
-    private val _timer1 = mutableStateOf(
-        TimerController(
-            generateScr = {
-            },
-            //addSolve = { time, penalty -> addSolve(time, penalty) },
-            addSolve = { time, penalty ->
-                currentSolves[1] = Pair(time, Penalties.NONE)
-                addSolves()
-            },
-            settings = settings,
-            hideEverything = { }
-        )
+    private val _timer1 = mutableStateOf(TimerController(generateScr = {},
+        //addSolve = { time, penalty -> addSolve(time, penalty) },
+        addSolve = { time, penalty ->
+            solvesBack[1] = Pair(time, Penalties.NONE)
+            currentSolves[1] = Pair(time, Penalties.NONE)
+            addSolves()
+        }, settings = settings, hideEverything = { })
     )
     val timer1 get() = _timer1.value
 
-    private val _timer2 = mutableStateOf(
-        TimerController(
-            generateScr = {
+    private val _timer2 = mutableStateOf(TimerController(generateScr = {
 
-            },
-            addSolve = { time, penalty ->
-                currentSolves[2] = Pair(time, Penalties.NONE)
-                addSolves()
-            },
-            settings = settings,
-            hideEverything = { }
-        )
-    )
+    }, addSolve = { time, penalty ->
+        solvesBack[2] = Pair(time, Penalties.NONE)
+        currentSolves[2] = Pair(time, Penalties.NONE)
+        addSolves()
+    }, settings = settings, hideEverything = { }))
     val timer2 get() = _timer2.value
 
     init {
@@ -121,20 +115,63 @@ class VersusViewModel : ViewModel() {
         repository2.updateCurrentSessionById(session2.id)
     }
 
+
+
+    fun chnageScorePenalty() {
+        if (roundScores.isNotEmpty()) {
+            val lastRoundNum = roundScores.keys.max()
+
+            val winLastRound = roundScores[lastRoundNum]
+            if (winLastRound == 1)
+            {
+                _scoreTop.value = max(0, _scoreTop.value - 1)
+            }
+            else if (winLastRound == 2)
+            {
+                _scoreBottom.value = max(0, _scoreBottom.value - 1)
+            }
+            roundScores.remove(lastRoundNum)
+        }
+        changeScore()
+    }
+    fun changeScore() {
+
+        solvesBack[1] = solvesBack[1]?.copy(second = timer1.penaltyState)
+        solvesBack[2] = solvesBack[2]?.copy(second = timer2.penaltyState)
+        var solveTop = ShortSolve(
+            id = 0,
+            solvesBack[1]!!.first,
+            solvesBack[1]!!.second
+        )
+        var solveBot = ShortSolve(
+            id = 0,
+            solvesBack[2]!!.first,
+            solvesBack[2]!!.second
+        )
+
+        val resultTop = TimeFormat.solveToResult(solveTop)
+        val resultBottom = TimeFormat.solveToResult(solveBot)
+
+//        Log.d("счет раунда ", "${roundScores.size + 1}: $resultTop $resultBottom")
+
+        if (resultTop < resultBottom) {
+            _scoreTop.value += 1
+            roundScores[roundScores.size] = 1 // top выиграл
+
+//            Log.d("обновленный счет", " ${_scoreTop.value}:${_scoreBottom.value}")
+        } else if (resultTop > resultBottom) {
+            _scoreBottom.value += 1
+            roundScores[roundScores.size] = 2 // bottom победил
+
+//            Log.d("обновленный счет", "${_scoreTop.value}:${_scoreBottom.value}")
+        } else {
+            roundScores[roundScores.size] = 0 // ничтя
+//            Log.d("обновленный счет", "${_scoreTop.value}:${_scoreBottom.value}")
+        }
+    }
+
     fun addSolves() {
         if (currentSolves[1] != null && currentSolves[2] != null) {
-
-//
-//            if (currentSolves[1]!!.first < currentSolves[2]!!.first)
-//            {
-//                _scoreTop.value += 1
-//                Log.d("Score", _scoreBottom.value.toString() + ":" + _scoreTop.value.toString())
-//
-//            } else if (currentSolves[1]!!.first > currentSolves[2]!!.first) {
-//                _scoreBottom.value += 1
-//                Log.d("Score", _scoreBottom.value.toString() + ":" + _scoreTop.value.toString())
-//            }
-
             repository1.addSolve(
                 Solve(
                     id = 0,
@@ -151,6 +188,7 @@ class VersusViewModel : ViewModel() {
                 )
             )
 
+
             repository2.addSolve(
                 Solve(
                     id = 0,
@@ -166,10 +204,15 @@ class VersusViewModel : ViewModel() {
                 )
             )
 
+
             currentSolves[1] = null
             currentSolves[2] = null
 
+            Log.d("Score", solvesBack.toString())
+
             updateCurrentScramble()
+            changeScore()
+
         }
     }
 
@@ -177,13 +220,11 @@ class VersusViewModel : ViewModel() {
         this.settings.value = settings
     }
 
-    fun updatePenaltyTop(id: Int, new: Penalties) = repository1.updatePenalty(id, new, lastSolve=true)
-    fun updatePenaltyBottom(id: Int, new: Penalties) = repository2.updatePenalty(id, new, lastSolve=true)
+    fun updatePenaltyTop(id: Int, new: Penalties) =
+        repository1.updatePenalty(id, new, lastSolve = true)
 
-
-
-
-
+    fun updatePenaltyBottom(id: Int, new: Penalties) =
+        repository2.updatePenalty(id, new, lastSolve = true)
 
 
 }

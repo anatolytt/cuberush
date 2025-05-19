@@ -63,8 +63,8 @@ interface SolvesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSolve(solve: Solve) : Unit
 
-    @Query("SELECT id FROM Solve ORDER BY id DESC")
-    fun getLastSolveId() : Int
+    @Query("SELECT id FROM Solve WHERE sessionId = :sessionId ORDER BY id DESC")
+    fun getLastSolveId(sessionId: Int) : Int
 
 
 

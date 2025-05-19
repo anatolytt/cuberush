@@ -64,13 +64,12 @@ fun TimerBottom(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .fillMaxWidth()
-
+            .fillMaxSize()
             .pointerInput(Unit) {
 
                     detectTapGestures(
                         onPress = {
-                            if (versusViewModel.counterBottom ==2 && versusViewModel.counterTop ==2) versusViewModel.zeroCounter()
+                            if (versusViewModel.counterBottom ==2 && versusViewModel.counterTop == 2) versusViewModel.zeroCounter()
                             if (versusViewModel.counterBottom ==2) return@detectTapGestures
 
                             if (timer.timerState == TimerState.GOING) {

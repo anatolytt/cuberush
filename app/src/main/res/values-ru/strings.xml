@@ -91,6 +91,10 @@
 
     <string name="searchTime">Поиск времени</string>
 
+    <string name="viewScrable">Показать скрамбл</string>
+    <string name="session">Сессия</string>
+    <string name="penalty">Штраф</string>
+
 
 
 </resources>

@@ -65,7 +65,7 @@ fun TimerTop(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = {

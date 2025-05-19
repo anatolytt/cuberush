@@ -3,6 +3,7 @@ package com.example.cubetime.utils.statistics
 import android.util.Log
 import com.example.cubetime.data.model.Penalties
 import com.example.cubetime.data.model.ShortSolve
+import com.example.cubetime.utils.TimeFormat
 import java.io.Serializable
 import kotlin.math.ceil
 
@@ -42,19 +43,19 @@ class StatisticsCalculator (
         в список. Иначе вызываем метод для пересчета среднего.
          */
         if (solvesInAvg == 0) {
-            return recalculateMean(solveToResult(solve))
+            return recalculateMean(TimeFormat.solveToResult(solve))
         }
 
         if (solves.size < solvesInAvg) {
-            solves.add(solveToResult(solve))
+            solves.add(TimeFormat.solveToResult(solve))
             sortedSolves = solves
             if (solves.size == solvesInAvg) {
                 return calculate()
             }
         } else {
             return when (solvesInAvg) {
-                3 -> recalculateMo3(solveToResult(solve))
-                else -> recalculate(solveToResult(solve))
+                3 -> recalculateMo3(TimeFormat.solveToResult(solve))
+                else -> recalculate(TimeFormat.solveToResult(solve))
             }
         }
         return -3
@@ -67,7 +68,7 @@ class StatisticsCalculator (
 
 
     fun initStat() : Int {
-        solves = solvesInput.map { solveToResult(it) }.toMutableList()
+        solves = solvesInput.map { TimeFormat.solveToResult(it) }.toMutableList()
         if (solvesInAvg == 0) {
             lastSum = solves.sum()
             return if (solves.size == 0) {
@@ -239,11 +240,4 @@ class StatisticsCalculator (
     }
 
 
-    private fun solveToResult(solve: ShortSolve): Int {
-        return when (solve.penalties) {
-            Penalties.NONE -> solve.result
-            Penalties.PLUS2 -> solve.result + 2000
-            Penalties.DNF -> Int.MAX_VALUE
-        }
-    }
 }

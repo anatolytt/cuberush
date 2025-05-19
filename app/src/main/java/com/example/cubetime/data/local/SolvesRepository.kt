@@ -86,7 +86,7 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
     fun addSolve(solve: Solve) {
         coroutineScope.launch (Dispatchers.IO) {
             solvesDao.insertSolve(solve)
-            lastSolveId.update { solvesDao.getLastSolveId() }
+            lastSolveId.update { solvesDao.getLastSolveId(currentSession.value.id) }
             Log.d("Last solve:", solvesDao.getSolveById(lastSolveId.value).result.toString())
             updateStats(stats = statisticsManager.addSolve(
                 ShortSolve(

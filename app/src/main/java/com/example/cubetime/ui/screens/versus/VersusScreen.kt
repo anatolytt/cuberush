@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -25,8 +26,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
+import com.example.cubetime.R
 import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.ui.screens.timer.TimerViewModel
 import com.example.cubetime.ui.screens.versus.Dialogs.PenaltyVersus
@@ -90,8 +98,11 @@ fun VersusScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Box(){
+                TimerTop(Modifier, versusViewModel.timer1, versusViewModel)
+            }
 
-            TimerTop(Modifier.padding(100.dp), versusViewModel.timer1, versusViewModel)
+
         }
 
 
@@ -101,25 +112,36 @@ fun VersusScreen(
                 rotationX = 180f
                 rotationY = 180f
             }) {
-                if (versusViewModel.currentScramble.length >= 100) {
+                if (versusViewModel.currentScramble.length >= 65) {
                     Button(
                         onClick = {
                             openDialogScramble.value = true
                         }, modifier = Modifier.padding(8.dp)
                     ) {
-                        Text("Показать скрамбл")
+                        Text(stringResource(R.string.viewScrable))
                     }
                 } else {
-                    Text(text = versusViewModel.currentScramble)
+                    Text(
+                        modifier = Modifier.padding(end = 10.dp, start = 10.dp),
+                        text = versusViewModel.currentScramble)
                 }
             }
             Text(
-                versusViewModel.scoreTop.toString() + ":" + versusViewModel.scoreBottom.toString(),
+                buildAnnotatedString {
+                    withStyle(style = SpanStyle(color =  MaterialTheme.colorScheme.onPrimaryContainer)) {
+                        append(versusViewModel.scoreTop.toString())
+                    }
+                    append(":")
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
+                        append(versusViewModel.scoreBottom.toString())
+                    }
+                },
                 modifier = Modifier.padding(8.dp)
                     .graphicsLayer {
                         rotationX = 180f
                         rotationY = 180f
-                    }
+                    },
+                fontSize = 25.sp
             )
 
             Row(
@@ -130,39 +152,50 @@ fun VersusScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(onClick = {}) {
-                    Text("Сессия")
+                    Text(stringResource(R.string.session))
                 }
                 Button(onClick = {
                     navController.popBackStack()
                 }) {
-                    Text("Назад")
+                    Text(stringResource(R.string.back_to_session))
                 }
                 Button(onClick = {
                     openDialog.value = true
                 }) {
-                    Text("Штраф")
+                    Text(stringResource(R.string.penalty))
                 }
             }
             Text(
-                versusViewModel.scoreBottom.toString() + ":" + versusViewModel.scoreTop.toString(),
-                modifier = Modifier.padding(8.dp)
+                buildAnnotatedString {
+                    withStyle(style = SpanStyle(color =  MaterialTheme.colorScheme.onPrimaryContainer)) {
+                        append(versusViewModel.scoreTop.toString())
+                    }
+                    append(":")
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
+                        append(versusViewModel.scoreBottom.toString())
+                    }
+                },
+                modifier = Modifier.padding(8.dp),
+                fontSize = 25.sp
+
             )
 
-            if (versusViewModel.currentScramble.length >= 100) {
+            if (versusViewModel.currentScramble.length >= 65) {
                 Button(
                     onClick = {
                         openDialogScramble.value = true
                     }, modifier = Modifier.padding(8.dp)
                 ) {
 
-                    Text("Показать скрамбл")
+                    Text(stringResource(R.string.viewScrable))
                 }
             } else {
-                Text(text = versusViewModel.currentScramble)
+                Text(
+                    modifier = Modifier.padding(end = 10.dp, start = 10.dp),
+                    text = versusViewModel.currentScramble)
             }
 
         }
-
 
         // Нижний игрок
         Column(
@@ -170,14 +203,17 @@ fun VersusScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TimerBottom(Modifier.padding(100.dp), versusViewModel.timer2, versusViewModel)
+
+            TimerBottom(Modifier, versusViewModel.timer2, versusViewModel)
+
+
         }
     }
     if (openDialog.value) {
         PenaltyVersus(onDismissRequest = { openDialog.value = false },versusViewModel)
     }
     if (openDialogScramble.value) {
-        ScrambleVersus(onDismissRequest = { openDialogScramble.value = false })
+        ScrambleVersus(onDismissRequest = { openDialogScramble.value = false },versusViewModel)
     }
 
 }
