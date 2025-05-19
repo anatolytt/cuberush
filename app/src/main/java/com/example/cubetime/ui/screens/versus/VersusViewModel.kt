@@ -17,6 +17,7 @@ import com.example.cubetime.ui.screens.timer.TimerController
 import com.example.cubetime.ui.screens.timer.TimerState
 import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -110,7 +111,7 @@ class VersusViewModel : ViewModel() {
         repository2 = SolvesRepository(dao)
     }
 
-    fun setSessions(session1: Session, session2: Session) {
+    fun setSessions(session1: Session, session2: Session) = viewModelScope.launch(Dispatchers.IO) {
         repository1.updateCurrentSessionById(session1.id)
         repository2.updateCurrentSessionById(session2.id)
     }

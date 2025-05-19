@@ -412,14 +412,6 @@ object TimeFormat {
         }
 
     }
-
-    fun solveToResult(solve: ShortSolve): Int {
-        return when (solve.penalties) {
-            Penalties.NONE -> solve.result
-            Penalties.PLUS2 -> solve.result + 2000
-            Penalties.DNF -> Int.MAX_VALUE
-        }
-    }
 }
 
 
