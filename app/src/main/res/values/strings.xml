@@ -26,8 +26,8 @@
     <string name="settinstimer">Settings Timer</string>
     <string name="TIMEEVENT">Hide time</string>
     <string name="creat">Create</string>
-    <string name="print_scrambles">Print scrambles in statistics</string>
-
+<!--    <string name="print_scrambles">Print scrambles in statistics</string>-->
+    <string name="print_scrambles">Print scrambles</string>
 
 
 
@@ -111,7 +111,6 @@
     <string name="searchTime">Search time</string>
 
     <string name="viewScrable">Show scramble</string>
-    <string name="session">Session</string>
     <string name="penalty">Penalty</string>
 
 

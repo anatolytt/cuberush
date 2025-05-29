@@ -23,8 +23,8 @@
     <string name="settinstimer">Настройки таймера</string>
     <string name="TIMEEVENT">Прятать время</string>
     <string name="creat">Создать</string>
-    <string name="print_scrambles">Печатать скрамблы в статистику</string>
-
+<!--    <string name="print_scrambles">Печатать скрамблы в статистику</string>-->
+    <string name="print_scrambles">Печатать скрамблов</string>
 
 
     <string name="enter_scramble">Введите кастомный скрамбл</string>
@@ -95,7 +95,6 @@
     <string name="searchTime">Поиск времени</string>
 
     <string name="viewScrable">Показать скрамбл</string>
-    <string name="session">Сессия</string>
     <string name="penalty">Штраф</string>
 
 

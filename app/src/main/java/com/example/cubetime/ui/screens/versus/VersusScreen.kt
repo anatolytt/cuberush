@@ -66,11 +66,6 @@ fun VersusScreen(
     }
 
 
-
-
-
-
-
     var versusDialogState = remember { mutableStateOf(true) }
     if (versusDialogState.value) {
         createVersusDialog(
@@ -151,8 +146,9 @@ fun VersusScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(onClick = {}) {
-                    Text(stringResource(R.string.session))
+                Button(onClick = {
+                    navController.navigate("versusSolves") }) {
+                    Text(stringResource(R.string.solves))
                 }
                 Button(onClick = {
                     navController.popBackStack()
