@@ -25,6 +25,7 @@ import com.example.cubetime.ui.screens.solves.SolvesViewModel
 import com.example.cubetime.ui.screens.statistics.StatisticsViewModel
 import com.example.cubetime.ui.screens.timer.TimerViewModel
 import com.example.cubetime.ui.screens.versus.VersusScreen
+import com.example.cubetime.ui.screens.versus.VersusSolves.SolvesVersus
 import com.example.cubetime.ui.screens.versus.VersusViewModel
 import com.example.cubetime.ui.session_dialogs.SessionDialogsViewModel
 
@@ -73,8 +74,15 @@ fun Navigation(
                 versusViewModel,
                 sessionDialogsViewModel
             )
-        }
 
+        }
+        composable("versusSolves") {
+            viewModel.changeTopBottomVisibility(false)
+            SolvesVersus(
+                versusViewModel = versusViewModel,
+                navController = navController
+            )
+        }
         composable(
             route = "sharedSolves" ,
             deepLinks = listOf(

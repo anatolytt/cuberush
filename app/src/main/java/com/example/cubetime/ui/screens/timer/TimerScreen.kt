@@ -393,7 +393,7 @@ fun TimerScreen(
                     IconButton(onClick = {currentDialog = DialogTypes.ADD_COMMENT}
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.dnf),
+                            painter = painterResource(id = R.drawable.commentadd),
                             contentDescription = "Generate scramble"
                         )
                     }
