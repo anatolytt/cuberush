@@ -69,6 +69,7 @@ fun TimerBottom(
 
                     detectTapGestures(
                         onPress = {
+
                             if (versusViewModel.counterBottom ==2 && versusViewModel.counterTop == 2) versusViewModel.zeroCounter()
                             if (versusViewModel.counterBottom ==2) return@detectTapGestures
 

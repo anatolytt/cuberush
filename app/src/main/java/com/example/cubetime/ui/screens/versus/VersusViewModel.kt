@@ -18,6 +18,7 @@ import com.example.cubetime.ui.screens.timer.TimerState
 import com.example.cubetime.utils.TimeFormat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -50,6 +51,16 @@ class VersusViewModel : ViewModel() {
 
     private var roundScores = mutableMapOf<Int, Int>()//очки зак каждый раунд
 
+    private var _matchCreated = mutableStateOf<Boolean>(false)
+    val matchCreated get() = _matchCreated.value
+
+    val someTimerIsGoing get() = (
+            timer1.timerState == TimerState.GOING
+                    || timer2.timerState == TimerState.GOING
+            )
+
+    val someTimerFirstSolve get() = (timer1.isFirstSolve || timer2.isFirstSolve)
+
 
     //обнулить счет при запуске режима
     fun zeroScore() {
@@ -70,8 +81,17 @@ class VersusViewModel : ViewModel() {
         _counterBottom.value = 0
     }
 
+    init {
+        Log.d("VERSUS_VM", "created")
+    }
 
-    fun init() {
+
+    init {
+        val db = AppDatabase.getInstance()
+        val dao = db.SolvesDao()
+        repository1 = SolvesRepository(dao)
+        repository2 = SolvesRepository(dao)
+
         scramblesRepository = ScramblesRepository.getInstance()
         _currentScramble = scramblesRepository.currentScramble
         updateCurrentScramble()
@@ -107,16 +127,12 @@ class VersusViewModel : ViewModel() {
     }, settings = settings, hideEverything = { }))
     val timer2 get() = _timer2.value
 
-    init {
-        val db = AppDatabase.getInstance()
-        val dao = db.SolvesDao()
-        repository1 = SolvesRepository(dao)
-        repository2 = SolvesRepository(dao)
-    }
-
-    fun setSessions(session1: Session, session2: Session) = viewModelScope.launch(Dispatchers.IO) {
-        repository1.updateCurrentSessionById(session1.id)
-        repository2.updateCurrentSessionById(session2.id)
+    fun setSessions(session1: Session, session2: Session){
+        _matchCreated.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            repository1.updateCurrentSessionById(session1.id)
+            repository2.updateCurrentSessionById(session2.id)
+        }
     }
 
 
@@ -222,7 +238,7 @@ class VersusViewModel : ViewModel() {
     }
 
     fun updateTimerSettings(settings: Settings) {
-        this.settings.value = settings
+//        this.settings.value = settings
     }
 
     fun updatePenaltyTop(id: Int, new: Penalties) =
@@ -231,5 +247,20 @@ class VersusViewModel : ViewModel() {
     fun updatePenaltyBottom(id: Int, new: Penalties) =
         repository2.updatePenalty(id, new, lastSolve = true)
 
+    fun clear() {
+        zeroScore()
+        timer1.clear()
+        timer2.clear()
+    }
 
+
+    fun getSolves(player: Int): Flow<List<Solve>> {
+        if (player == 1) {
+            return repository1.getAllSessionSolves()
+        }
+        else {
+            return repository2.getAllSessionSolves()
+        }
+
+    }
 }

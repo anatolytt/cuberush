@@ -1,5 +1,6 @@
 package com.example.cubetime.ui.screens.versus
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +34,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -57,6 +60,7 @@ import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import com.example.cubetime.R
 import com.example.cubetime.data.model.entities.Solve
+import com.example.cubetime.ui.screens.settings.Settings
 import com.example.cubetime.ui.screens.timer.TimerViewModel
 import com.example.cubetime.ui.screens.versus.Dialogs.PenaltyVersus
 import com.example.cubetime.ui.screens.versus.Dialogs.ScrambleVersus
@@ -73,20 +77,30 @@ fun VersusScreen(
     viewModel: SharedViewModel,
     navController: NavController,
     versusViewModel: VersusViewModel,
-    sessionDialogsViewModel: SessionDialogsViewModel,
+    sessionDialogsViewModel: SessionDialogsViewModel
 ) {
 
     val openDialog = remember { mutableStateOf(false) }
     val openDialogScramble = remember { mutableStateOf(false) }
+    var versusDialogState = remember { mutableStateOf(false) }
+
+    val settings by viewModel.settingsManager.getTimerSettings().collectAsState(
+        initial = Settings()
+    )
+
 
     LaunchedEffect(Unit) {
-        versusViewModel.init()
-        versusViewModel.zeroScore()
-        versusViewModel.timer1.clear()
-        versusViewModel.timer2.clear()
+        versusDialogState.value = !versusViewModel.matchCreated
+        versusViewModel.updateTimerSettings(settings)
     }
 
-    var versusDialogState = remember { mutableStateOf(true) }
+    BackHandler {
+        if (!versusViewModel.someTimerIsGoing && ! versusViewModel.someTimerFirstSolve) {
+            versusViewModel.clear()
+            navController.popBackStack()
+        }
+    }
+
     if (versusDialogState.value) {
         createVersusDialog(
             navController = navController,
@@ -137,8 +151,10 @@ fun VersusScreen(
                     }
                 } else {
                     Text(
-                        modifier = Modifier.padding(end = 10.dp, start = 10.dp),
-                        text = versusViewModel.currentScramble)
+                        modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                        text = versusViewModel.currentScramble,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
 
@@ -158,7 +174,10 @@ fun VersusScreen(
                 ) {
                     IconButton(
                         onClick = {
-                            navController.popBackStack()
+                            if (!versusViewModel.someTimerIsGoing && ! versusViewModel.someTimerFirstSolve) {
+                                versusViewModel.clear()
+                                navController.popBackStack()
+                            }
                         },
                         modifier = Modifier
                             .clip(CircleShape)
@@ -173,7 +192,9 @@ fun VersusScreen(
 
                     IconButton(
                         onClick = {
-                            openDialog.value = true
+                            if (!versusViewModel.someTimerIsGoing && ! versusViewModel.someTimerFirstSolve) {
+                                openDialog.value = true
+                            }
                         },
                         modifier = Modifier
                             .clip(CircleShape)
@@ -217,7 +238,11 @@ fun VersusScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Button(
-                        onClick = {},
+                        onClick = {
+                            if (!versusViewModel.someTimerIsGoing && ! versusViewModel.someTimerFirstSolve) {
+                                navController.navigate("versusSolves")
+                            }
+                        },
 
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -225,7 +250,7 @@ fun VersusScreen(
                         )
 
                     ) {
-                        Text("solves")
+                        Text(stringResource(R.string.solves))
                     }
                 }
             }
@@ -243,8 +268,11 @@ fun VersusScreen(
                 }
             } else {
                 Text(
-                    modifier = Modifier.padding(end = 10.dp, start = 10.dp),
-                    text = versusViewModel.currentScramble)
+                    modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                    text = versusViewModel.currentScramble,
+                    textAlign = TextAlign.Center
+                )
+
             }
 
         }
@@ -255,9 +283,7 @@ fun VersusScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             TimerBottom(Modifier, versusViewModel.timer2, versusViewModel)
-
 
         }
     }

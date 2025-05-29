@@ -255,6 +255,10 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
         }
     }
 
+    fun getAllSessionSolves() : Flow<List<Solve>>{
+        return solvesDao.getAllSessionSolves(currentSession.value.id)
+    }
+
 
     companion object {
         private var INSTANCE: SolvesRepository? = null

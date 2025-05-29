@@ -16,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
@@ -25,33 +26,35 @@ import androidx.navigation.NavController
 import com.example.cubetime.R
 import com.example.cubetime.data.model.entities.Solve
 import com.example.cubetime.ui.screens.versus.VersusViewModel
+import com.example.cubetime.ui.shared.SolveColumnItem
 import com.example.cubetime.utils.TimeFormat
 
 @Composable
 fun SolvesVersus(
-    versusViewModel: VersusViewModel,
-    navController: NavController
+    solves1: List<Solve>,
+    solves2: List<Solve>,
+    back: () -> Unit
 )
 {
-    val solves1 by versusViewModel.repository1.shortSolves.collectAsState(initial = emptyList())
-    val solves2 by versusViewModel.repository2.shortSolves.collectAsState(initial = emptyList())
-
     Column(modifier = Modifier.fillMaxSize()) {
 
-        Column(modifier = Modifier.weight(1f).padding(5.dp)
-            .graphicsLayer {
-                rotationX = 180f
-                rotationY = 180f
-            }) {
-            LazyColumn(modifier = Modifier.fillMaxSize()
+        Column(modifier = Modifier.weight(1f).padding(5.dp).rotate(180f)
             ) {
-                itemsIndexed(solves1) { index, shortSolve ->
-                    SolveColumnItemVersus(
-                        solve = shortSolve,
-                        solveNumber = index + 1,
-                        versusViewModel,
-                        numPlayer = 1
-                    )
+            LazyColumn(modifier = Modifier.fillMaxSize().rotate(180f),
+                reverseLayout = true
+            ) {
+                itemsIndexed(solves1) { index, solve ->
+                    Box(modifier = Modifier.rotate(180f)) {
+                        SolveColumnItem(
+                            Pair(
+                                solve, TimeFormat.millisToString(
+                                    solve.result,
+                                    solve.penalties
+                                )
+                            ),
+                            solveNumber = solves1.size - index
+                        )
+                    }
 
                 }
             }
@@ -67,10 +70,7 @@ fun SolvesVersus(
 
             ){
             Button(onClick = {
-                navController.popBackStack(
-                    route = "versus",
-                    inclusive = false
-                )
+               back()
             }) {
                 Text(stringResource(R.string.back_to_session))
             }
@@ -84,14 +84,18 @@ fun SolvesVersus(
         )
         Column(modifier = Modifier.weight(1f).padding(5.dp)) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                itemsIndexed(solves2) { index, shortSolve ->
-                    SolveColumnItemVersus(
-                        solve = shortSolve,
-                        solveNumber = index + 1,
-                        versusViewModel,
-                        numPlayer = 2
-                    )
-
+                itemsIndexed(solves2) { index, solve ->
+                    Box(modifier = Modifier.rotate(180f)) {
+                        SolveColumnItem(
+                            Pair(
+                                solve, TimeFormat.millisToString(
+                                    solve.result,
+                                    solve.penalties
+                                )
+                            ),
+                            solveNumber = solves2.size - index
+                        )
+                    }
                 }
             }
         }

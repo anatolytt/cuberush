@@ -3,6 +3,7 @@ package com.example.cubetime.ui.navigation
 import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -79,8 +80,9 @@ fun Navigation(
         composable("versusSolves") {
             viewModel.changeTopBottomVisibility(false)
             SolvesVersus(
-                versusViewModel = versusViewModel,
-                navController = navController
+                back = { navController.popBackStack() },
+                solves1 = versusViewModel.getSolves(1).collectAsState(emptyList()).value,
+                solves2 = versusViewModel.getSolves(2).collectAsState(emptyList()).value
             )
         }
         composable(
