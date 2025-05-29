@@ -10,7 +10,7 @@ data class Session(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val name: String,
-    val event: Events,
+    val event: Events = Events.CUBE333,
     val createDate : String? = null,
     val bestSingle: Int = 0,
     val bestAo5: Int = 0,

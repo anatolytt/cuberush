@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cubetime.data.ScramblesRepository
 import com.example.cubetime.data.local.AppDatabase
 import com.example.cubetime.data.local.SolvesRepository
@@ -18,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -26,24 +28,23 @@ class TimerViewModel : ViewModel() {
     lateinit private var solvesRepository : SolvesRepository
     lateinit private var scramblesRepository: ScramblesRepository
     lateinit var currentSession: MutableStateFlow<Session>
-    var _currentScramble = mutableStateOf<String> ("")
+    private var _currentScramble = mutableStateOf<String> ("")
     val currentScramble get() = _currentScramble.value
-    var _currentImage = mutableStateOf<String?> ("")
+    private var _currentImage = mutableStateOf<String?> ("")
     val currentImage get() = _currentImage.value
     private var settings = mutableStateOf(Settings(false, false, false))
     var hideEverything: (Boolean) -> Unit = {}
     var setGeneratingState: (Boolean) -> Unit = {}
 
-    val _averages = MutableStateFlow<CurrentStatsUI>(CurrentStatsUI())
+    private val _averages = MutableStateFlow<CurrentStatsUI>(CurrentStatsUI())
     val averages = _averages.asStateFlow()
 
-    val _PBs = MutableStateFlow<CurrentStatsUI>(CurrentStatsUI())
+    private val _PBs = MutableStateFlow<CurrentStatsUI>(CurrentStatsUI())
     val PBs = _PBs.asStateFlow()
 
 
-    val _solvesCounter = MutableStateFlow<Int>(0)
+    private val _solvesCounter = MutableStateFlow<Int>(0)
     val solvesCounter = _solvesCounter.asStateFlow()
-
 
 
     fun init (
@@ -62,6 +63,12 @@ class TimerViewModel : ViewModel() {
         this.setGeneratingState = {state -> setGeneratingState(state)}
         updateCurrentScramble()
 
+//        viewModelScope.launch (Dispatchers.IO) {
+//            solvesRepository.updateCurrentSessionById(
+//                solvesRepository.getSessionId("Main")
+//            )
+//        }
+
         viewModelScope.launch (Dispatchers.Default) {
             solvesRepository.currentAverages.collect { newAverages ->
                 _averages.update { TimeFormat.mapToUIStats(newAverages) }
@@ -77,6 +84,12 @@ class TimerViewModel : ViewModel() {
         viewModelScope.launch (Dispatchers.Default) {
             solvesRepository.solvesCounter.collect { newCounter ->
                 _solvesCounter.update { newCounter }
+            }
+        }
+
+        viewModelScope.launch (Dispatchers.Default){
+            solvesRepository.currentSession.collect {
+                timer.clear()
             }
         }
     }

@@ -1,8 +1,10 @@
 package com.example.cubetime.utils.statistics
 
+import android.util.Log
 import com.example.cubetime.data.model.ShortSolve
 import com.example.cubetime.data.model.StatType
 import com.example.cubetime.data.model.entities.solvesAverages
+import kotlinx.coroutines.sync.Mutex
 
 class StatisticsManager () {
     val AVERAGES_LIST = listOf(StatType.MEAN, StatType.MO3, StatType.AO5, StatType.AO12, StatType.AO25, StatType.AO50, StatType.AO100)
@@ -10,6 +12,7 @@ class StatisticsManager () {
 
 
     private var sessionId: Int = 0
+    val mutex = Mutex()
 
 
     fun init(initSolves: List<ShortSolve>, sessionId: Int): List<solvesAverages>{
@@ -66,6 +69,7 @@ class StatisticsManager () {
 //                }
 //
 //            }
+            Log.d("calculators", calculators.toString())
             result.add(
                 solvesAverages(
                 solveId = solve.id,

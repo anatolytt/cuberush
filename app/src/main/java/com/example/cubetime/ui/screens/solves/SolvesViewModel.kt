@@ -115,8 +115,6 @@ class SolvesViewModel : ViewModel() {
     fun deleteSolve(id: Int) {
         Log.d("CalledDeleteSolve", "")
         repository.deleteSolvesById(listOf(id))
-
-
     }
 
     fun updateComment(id: Int, new: String) = repository.updateComment(id, new, false)

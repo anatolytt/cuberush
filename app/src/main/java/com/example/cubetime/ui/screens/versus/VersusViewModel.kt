@@ -85,13 +85,16 @@ class VersusViewModel : ViewModel() {
 
     private var settings = mutableStateOf(Settings(false, false, false))
 
-    private val _timer1 = mutableStateOf(TimerController(generateScr = {},
-        //addSolve = { time, penalty -> addSolve(time, penalty) },
+    private val _timer1 = mutableStateOf(TimerController(
+        generateScr = {},
         addSolve = { time, penalty ->
             solvesBack[1] = Pair(time, Penalties.NONE)
             currentSolves[1] = Pair(time, Penalties.NONE)
             addSolves()
-        }, settings = settings, hideEverything = { })
+        },
+        settings = settings,
+        hideEverything = { }
+    )
     )
     val timer1 get() = _timer1.value
 
@@ -135,6 +138,7 @@ class VersusViewModel : ViewModel() {
         }
         changeScore()
     }
+
     fun changeScore() {
 
         solvesBack[1] = solvesBack[1]?.copy(second = timer1.penaltyState)

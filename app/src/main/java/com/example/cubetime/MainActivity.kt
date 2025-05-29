@@ -29,6 +29,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.cubetime.data.local.AppDatabase
+import com.example.cubetime.data.local.SolvesDao
+import com.example.cubetime.data.local.SolvesRepository
 import com.example.cubetime.ui.appbar.AppBar
 import com.example.cubetime.ui.appbar.AppBarViewModel
 import com.example.cubetime.ui.navigation.Navigation
@@ -67,6 +69,8 @@ class MainActivity : ComponentActivity() {
         val versusViewModel: VersusViewModel by viewModels()
 
         AppDatabase.init(this)
+        val solvesRepo = SolvesRepository.getInstance(AppDatabase.getInstance().SolvesDao())
+        solvesRepo.init()
 
         enableEdgeToEdge()
         setContent {

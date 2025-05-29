@@ -21,8 +21,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -39,8 +43,14 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
     val lastSolveId = MutableStateFlow<Int>(0)
     val sessions : Flow<List<Session>> = solvesDao.getAllSessions()
     var currentSession = MutableStateFlow<Session>(Session(0, "", Events.CUBE333, ""))
+
     var shortSolves: Flow<List<ShortSolve>> = currentSession.flatMapLatest { session ->
-        solvesDao.getAllShortSessionSolves(session.id)
+        val solves = solvesDao.getAllShortSessionSolves(session.id)
+        Log.d("solvesUpdated", "solvesUpdated")
+        Log.d("newSolvesShort", solves.first().toString())
+
+        solves
+
     }
 
     val solvesCounter: Flow<Int> = currentSession.flatMapLatest { session ->
@@ -74,15 +84,17 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
 
     var currentAverages = MutableStateFlow<Map<StatType, AverageResult>>(mapOf())
 
-    init {
+    fun init() {
         coroutineScope.launch (Dispatchers.IO) {
             if (solvesDao.getSessionCount() == 0) {
                 addSession(Session(0, "Main", Events.CUBE333, ""))
             }
-            updateCurrentSessionById(solvesDao.getSessionId("Main"))
 
+            Log.d("Init", solvesDao.getSessionId("Main").toString())
+            updateCurrentSessionById(solvesDao.getSessionId("Main"))
         }
     }
+
 
     fun addSolve(solve: Solve) {
         coroutineScope.launch (Dispatchers.IO) {
@@ -133,12 +145,9 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
 
 
     private fun updateStatManager() {
-         coroutineScope.launch {
-            shortSolves.collectLatest() {solves ->
-                Log.d("New session solves", "${currentSession.value} ${solves.toString()}")
-                updateStats(stats = statisticsManager.init(solves, currentSession.value.id))
-                cancel()
-            }
+        coroutineScope.launch {
+            val solves = solvesDao.getAllShortSessionSolves(currentSession.value.id)
+            updateStats(stats = statisticsManager.init(solves.first(), currentSession.value.id))
         }
 
     }
@@ -158,6 +167,7 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
                     ).value.get(statType)?.solveId ?: 0
          ) ?: listOf()
     }
+
 
     fun updateComment(id: Int=0, new: String, lastSolve: Boolean) {
         coroutineScope.launch (Dispatchers.IO) {
@@ -187,7 +197,6 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
                     start = start,
                     end = end)
                 )
-                cancel()
             }
         }
     }
@@ -210,10 +219,9 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
         }
     }
 
-    fun addSession(session: Session) {
-        coroutineScope.launch (Dispatchers.IO) {
-            solvesDao.insertSession(session)
-        }
+    suspend fun addSession(session: Session) {
+        solvesDao.insertSession(session)
+        Log.d("session added", "true")
     }
 
     fun deleteSession(id: Int) {
@@ -231,11 +239,16 @@ class SolvesRepository(private val solvesDao: SolvesDao) {
         }
     }
 
-    suspend fun updateCurrentSessionById(id: Int) {
+
+    fun updateCurrentSessionById(id: Int) = coroutineScope.launch(Dispatchers.IO) {
+        Log.d("UpdateCurrentSession", "вызвано")
         ScramblesRepository.getInstance().clearScrambles()
         try {
-            currentSession.value = solvesDao.getSessionById(id)
+            val deferred = async (Dispatchers.IO) { currentSession.value = solvesDao.getSessionById(id) }
+            deferred.await()
+            //Log.d("Session ids", "P:${shortSolvesSessionId.value} Real:${currentSession.value.id}")
             updateStatManager()
+            Log.d("Current session", (currentSession.value == null).toString())
             ScramblesRepository.getInstance().updateNextScramble(currentSession.value.event)
         } catch (e: Exception) {
             Log.e("SolvesRepository", "Session update exception", e)

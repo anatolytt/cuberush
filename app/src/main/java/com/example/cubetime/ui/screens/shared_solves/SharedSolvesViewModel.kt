@@ -1,6 +1,7 @@
 package com.example.cubetime.ui.screens.shared_solves
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel

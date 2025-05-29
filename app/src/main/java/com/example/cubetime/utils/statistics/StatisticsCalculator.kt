@@ -19,9 +19,9 @@ class StatisticsCalculator (
     var solvesInAvg: Int, // Всего сборок в среднем,
 ) {
     /*
-    Храним и список со всеми сборками, и список с отсорированными сборкамиб чтобы не сортировать
-    список с нуля при каждом добавлении сборки.
- */
+        Храним и список со всеми сборками, и список с отсорированными сборкамиб чтобы не сортировать
+        список с нуля при каждом добавлении сборки.
+     */
     private var solves = mutableListOf<Int>()
     private var sortedSolves = mutableListOf<Int>()
 
@@ -120,39 +120,37 @@ class StatisticsCalculator (
 
 
     fun recalculateMean(time: Int): Int {
+        lastSum += time
         solves.add(time)
-        if (time == Int.MAX_VALUE) {
-            DNFsCounter += 1
+        if (Int.MAX_VALUE in solves) {
+            return -1
         } else {
-            lastSum += time
+            return lastSum / solves.size
         }
-        return lastSum / (solves.size - DNFsCounter)
     }
 
 
-
-    private fun recalculateMo3(time:Int): Int {
+    private fun recalculateMo3(time: Int): Int {
         if (solves[0] == Int.MAX_VALUE) {
             DNFsCounter -= 1
             lastSum -= 1
-        } else {
-            lastSum -= solves[0]
         }
         if (time == Int.MAX_VALUE) {
             DNFsCounter += 1
             lastSum += 1
         } else {
-            lastSum += time
+            lastSum = lastSum - solves[0] + time
         }
         solves.drop(1)
         solves.add(time)
 
-        return if (DNFsCounter != 0) -1 else lastSum / countingSolves
+        return if (DNFsCounter > 0) -1 else lastSum / countingSolves
     }
 
 
-    enum class resultType {BEST, COUNT, WORST}
-    private fun recalculate(time:Int) : Int {
+    enum class resultType { BEST, COUNT, WORST }
+
+    private fun recalculate(time: Int): Int {
 
         val outgoingSolve = solves[0]  // уходящая сборка
 
@@ -179,6 +177,7 @@ class StatisticsCalculator (
             (outgoingSolve >= sortedSolves[firstEndIdx]) -> {
                 resultType.WORST
             }
+
             else -> {
                 resultType.COUNT
             }
@@ -215,10 +214,10 @@ class StatisticsCalculator (
             } else if (outgoingType == resultType.WORST) {
                 if (time <= sortedSolves[lastStartIdx]) {
                     lastSum - sortedSolves[firstEndIdx - 1] + sortedSolves[lastStartIdx]
-                } else if (time >= sortedSolves[firstEndIdx-1]) {
+                } else if (time >= sortedSolves[firstEndIdx - 1]) {
                     lastSum
                 } else {
-                    lastSum - sortedSolves[firstEndIdx-1] + time
+                    lastSum - sortedSolves[firstEndIdx - 1] + time
                 }
             } else {
                 if (time <= sortedSolves[lastStartIdx]) {
@@ -243,6 +242,4 @@ class StatisticsCalculator (
         return -3
 
     }
-
-    
 }

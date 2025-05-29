@@ -87,10 +87,10 @@ class SettingsDataManager(val context: Context) {
     fun getTimerSettings() : Flow<Settings> {
         return context.dataStore.data.map { preferences ->
             Settings(
-                  timerInspection = preferences[inspectionKey] ?: true,
-                  timerHideTime = preferences[timehiddenKey] ?: true,
-                  timerDelay = preferences[delayKey] ?: true,
-                  printScrambles = preferences[printScramblesKey] ?: true
+                  timerInspection = preferences[inspectionKey] ?: false,
+                  timerHideTime = preferences[timehiddenKey] ?: false,
+                  timerDelay = preferences[delayKey] ?: false,
+                  printScrambles = preferences[printScramblesKey] ?: false
             )
 
         }

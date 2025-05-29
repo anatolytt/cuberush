@@ -215,7 +215,9 @@ class TimerController(
     }
 
     private fun measureTime(timeMillis: Int) {
-        LockSupport.parkNanos((timeMillis*1000000).toLong())
+        val start = System.nanoTime()
+        val target = start + timeMillis * 1_000_000L
+        while (System.nanoTime() < target) { }
     }
 
 }

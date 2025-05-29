@@ -34,7 +34,7 @@ class SessionDialogsViewModel: ViewModel() {
 
 
     fun addSession(name: String, events: Events) {
-        viewModelScope.launch {
+        viewModelScope.launch (Dispatchers.IO) {
             val newSession = Session(0, name, events, "")
             repository.addSession(newSession)
             _sessionsList.first{it.last().name == name}
